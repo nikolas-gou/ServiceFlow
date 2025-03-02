@@ -92,6 +92,33 @@ export default function StatisticsCards() {
     },
   ];
 
+  const repairs = [
+    {
+      title: "Μηχανή Αυτοκινήτου",
+      status: "Ολοκληρώθηκε",
+      users: 120,
+      eventCount: 30,
+      avgTime: "2 ώρες",
+      data: [5, 10, 15, 20, 15, 10, 5],
+    },
+    {
+      title: "Αντικατάσταση Μπαταρίας",
+      status: "Σε εξέλιξη",
+      users: 90,
+      eventCount: 20,
+      avgTime: "1.5 ώρες",
+      data: [3, 5, 10, 15, 10, 5, 3],
+    },
+    {
+      title: "Έλεγχος Κλιματισμού",
+      status: "Αναμονή",
+      users: 75,
+      eventCount: 10,
+      avgTime: "1 ώρα",
+      data: [2, 3, 5, 7, 5, 3, 2],
+    },
+  ];
+
   return (
     <Box sx={{ p: 2 }}>
       <Grid container spacing={2}>

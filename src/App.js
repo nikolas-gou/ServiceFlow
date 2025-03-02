@@ -9,6 +9,7 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Dashboard from "./components/dashboard/Dashboard";
 import Layout from "./components/layout/Layout";
 import StatisticsCards from "./components/stats/StatisticsCards";
+import Repairs from "./components/repairs/Repairs";
 
 function App() {
   return (
@@ -26,8 +27,9 @@ function App() {
               path="/dashboard/overview"
               element={
                 <>
+                  <Typography variant="h6">overview</Typography>
                   <StatisticsCards />
-                  <Typography>overview</Typography>
+                  <Repairs />
                 </>
               }
             />
