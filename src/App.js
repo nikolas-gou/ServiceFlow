@@ -1,24 +1,17 @@
 import logo from "./logo.svg";
 import "./App.css";
+import { ThemeProvider, CssBaseline } from "@mui/material";
+
+import theme from "./styles/Themes";
+import SideBar from "./components/layout/SideBar";
+import TopAppBar from "./components/layout/TopAppBar";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Service Flow
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <CssBaseline /> {/* Resets styles for consistency */}
+      <SideBar />
+    </ThemeProvider>
   );
 }
 
