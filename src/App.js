@@ -8,6 +8,7 @@ import TopAppBar from "./components/layout/TopAppBar";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Dashboard from "./components/dashboard/Dashboard";
 import Layout from "./components/layout/Layout";
+import StatisticsCards from "./components/stats/StatisticsCards";
 
 function App() {
   return (
@@ -23,7 +24,12 @@ function App() {
             <Route
               exact
               path="/dashboard/overview"
-              element={<Typography>overview</Typography>}
+              element={
+                <>
+                  <StatisticsCards />
+                  <Typography>overview</Typography>
+                </>
+              }
             />
             <Route
               exact

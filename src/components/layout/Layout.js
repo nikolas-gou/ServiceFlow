@@ -1,5 +1,5 @@
 import React from "react";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import SideBar from "./SideBar";
 import TopAppBar from "./TopAppBar";
 
@@ -22,6 +22,7 @@ const Layout = (props) => {
           overflow: "hidden",
         }}
       >
+        <TopAppBar />
         {/* Scrollable Content */}
         <Box sx={{ flexGrow: 1, p: 3, overflowY: "auto" }}>
           {props.children}
