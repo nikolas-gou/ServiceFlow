@@ -5,7 +5,7 @@ import { ThemeProvider, CssBaseline, Typography } from "@mui/material";
 import theme from "./styles/Themes";
 import SideBar from "./components/layout/SideBar";
 import TopAppBar from "./components/layout/TopAppBar";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Dashboard from "./components/dashboard/Dashboard";
 import Layout from "./components/layout/Layout";
 
@@ -17,10 +17,28 @@ function App() {
         <Layout sideBar={<SideBar />}>
           <SideBar />
           <Routes>
+            {/* default route */}
+            <Route path="/" element={<Navigate to="/dashboard/overview" />} />
+
             <Route
               exact
               path="/dashboard/overview"
               element={<Typography>overview</Typography>}
+            />
+            <Route
+              exact
+              path="/dashboard/analytics"
+              element={<Typography>analytics</Typography>}
+            />
+            <Route
+              exact
+              path="/dashboard/customers"
+              element={<Typography>customers</Typography>}
+            />
+            <Route
+              exact
+              path="/dashboard/services"
+              element={<Typography>services</Typography>}
             />
           </Routes>
         </Layout>

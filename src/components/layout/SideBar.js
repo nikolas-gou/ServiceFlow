@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Drawer,
   List,
@@ -45,17 +46,40 @@ const StyledListItem = styled(ListItemButton)(({ theme }) => ({
 }));
 
 export default function SideBar() {
+  const navigate = useNavigate();
+
   const [selectedIndex, setSelectedIndex] = React.useState(0);
 
-  const handleListItemClick = (event, index) => {
+  const handleListItemClick = (event, index, route) => {
+    navigate(route);
     setSelectedIndex(index);
   };
 
   const menuItems = [
-    { text: "Αρχική", icon: <HomeIcon />, index: 0 },
-    { text: "Στατιστικά", icon: <AssessmentIcon />, index: 1 },
-    { text: "Πελάτες", icon: <GroupIcon />, index: 2 },
-    { text: "Επισκευές", icon: <BuildIcon />, index: 3 },
+    {
+      text: "Αρχική",
+      route: "/dashboard/overview",
+      icon: <HomeIcon />,
+      index: 0,
+    },
+    {
+      text: "Στατιστικά",
+      route: "/dashboard/analytics",
+      icon: <AssessmentIcon />,
+      index: 1,
+    },
+    {
+      text: "Πελάτες",
+      route: "/dashboard/customers",
+      icon: <GroupIcon />,
+      index: 2,
+    },
+    {
+      text: "Επισκευές",
+      route: "/dashboard/services",
+      icon: <BuildIcon />,
+      index: 3,
+    },
   ];
 
   const settingsItems = [
@@ -89,11 +113,13 @@ export default function SideBar() {
 
       {/* MENU ITEMS */}
       <List>
-        {menuItems.map((item) => (
+        {menuItems.map((item, index) => (
           <StyledListItem
             key={item.index}
             selected={selectedIndex === item.index}
-            onClick={(event) => handleListItemClick(event, item.index)}
+            onClick={(event) =>
+              handleListItemClick(event, item.index, item.route)
+            }
           >
             <ListItemIcon
               sx={{ color: selectedIndex === item.index ? "black" : "gray" }}
