@@ -10,14 +10,15 @@ import Dashboard from "./components/dashboard/Dashboard";
 import Layout from "./components/layout/Layout";
 import StatisticsCards from "./components/stats/StatisticsCards";
 import Repairs from "./components/repairs/Repairs";
+import StatisticsCardsCustomer from "./components/stats/StatisticsCardsCustomer";
+import Customers from "./components/layout/customers/Customers";
 
 function App() {
   return (
     <ThemeProvider theme={theme}>
       <BrowserRouter>
         <CssBaseline /> {/* Resets styles for consistency */}
-        <Layout sideBar={<SideBar />}>
-          <SideBar />
+        <Layout>
           <Routes>
             {/* default route */}
             <Route path="/" element={<Navigate to="/dashboard/overview" />} />
@@ -27,7 +28,7 @@ function App() {
               path="/dashboard/overview"
               element={
                 <>
-                  <Typography variant="h6">overview</Typography>
+                  <Typography variant="h6">Αρχική</Typography>
                   <StatisticsCards />
                   <Repairs />
                 </>
@@ -41,7 +42,13 @@ function App() {
             <Route
               exact
               path="/dashboard/customers"
-              element={<Typography>customers</Typography>}
+              element={
+                <>
+                  <Typography variant="h6">Πελάτες</Typography>
+                  <StatisticsCardsCustomer />
+                  <Customers />
+                </>
+              }
             />
             <Route
               exact

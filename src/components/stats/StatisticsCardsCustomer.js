@@ -1,42 +1,3 @@
-// import React from "react";
-// import { Box, Grid, Card, CardContent, Typography } from "@mui/material";
-
-// export default function StatisticsCards() {
-//   const stats = [
-//     { title: "Συνολικοί Χρήστες", value: "14k", trend: "+25%", color: "green" },
-//     { title: "Μετατροπές", value: "325", trend: "-25%", color: "red" },
-//     { title: "Συμβάντα", value: "200k", trend: "+5%", color: "blue" },
-//     { title: "Συνολικά Έσοδα", value: "€50k", trend: "+10%", color: "purple" },
-//   ];
-
-//   return (
-//     <Box sx={{ p: 2 }}>
-//       <Grid container spacing={2}>
-//         {stats.map((stat, index) => (
-//           <Grid item xs={12} sm={6} md={3} key={index}>
-//             <Card sx={{ boxShadow: 3 }}>
-//               <CardContent>
-//                 <Typography variant="subtitle2" color="textSecondary">
-//                   {stat.title}
-//                 </Typography>
-//                 <Typography variant="h4" sx={{ fontWeight: "bold" }}>
-//                   {stat.value}
-//                 </Typography>
-//                 <Typography
-//                   variant="body2"
-//                   sx={{ color: stat.color, fontWeight: "bold" }}
-//                 >
-//                   {stat.trend}
-//                 </Typography>
-//               </CardContent>
-//             </Card>
-//           </Grid>
-//         ))}
-//       </Grid>
-//     </Box>
-//   );
-// }
-
 import React from "react";
 import { Box, Grid, Card, CardContent, Typography } from "@mui/material";
 import { Line } from "react-chartjs-2";
@@ -60,24 +21,24 @@ const chartOptions = {
   elements: { point: { radius: 0 } },
 };
 
-export default function StatisticsCards() {
+export default function StatisticsCardsCustomer() {
   const stats = [
     {
-      title: "Συνολικες Επισκευές",
+      title: "Συνολικοί πελάτες",
       value: "1056",
       trend: "+25%",
       color: "green",
       data: [5, 6, 7, 8, 7, 8, 10],
     },
     {
-      title: "Πελάτες",
+      title: "Εργοστάσια",
       value: "325",
       trend: "-25%",
       color: "red",
       data: [8, 7, 6, 5, 4, 3, 2],
     },
     {
-      title: "Αντικαταστήσεις",
+      title: "Ιδιώτες",
       value: "200k",
       trend: "+5%",
       color: "blue",

@@ -1,4 +1,5 @@
 import React from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   Table,
@@ -32,6 +33,7 @@ const chartOptions = {
 const repairs = [
   {
     id: "1",
+    phone: "6971945467",
     serialNumber: "4589",
     customer: "ΑΓΕΤ ΗΡΑΚΛΗΣ",
     manufacturer: "Valiadis",
@@ -45,6 +47,7 @@ const repairs = [
   },
   {
     id: "2",
+    phone: "6971945467",
     serialNumber: "5647",
     customer: "Χαλυβουργία Ελλάδος",
     manufacturer: "ΚΗΜ",
@@ -58,6 +61,7 @@ const repairs = [
   },
   {
     id: "3",
+    phone: "6971945467",
     serialNumber: "-",
     customer: "Μαιμάρης",
     manufacturer: "Seipe",
@@ -71,6 +75,7 @@ const repairs = [
   },
   {
     id: "4",
+    phone: "6971945467",
     serialNumber: "4589",
     customer: "ΑΓΕΤ ΗΡΑΚΛΗΣ",
     manufacturer: "Valiadis",
@@ -110,6 +115,7 @@ export default function Repairs() {
               <TableCell>A/A</TableCell>
               <TableCell>S/N</TableCell>
               <TableCell>Πελάτης</TableCell>
+              <TableCell>Τηλέφωνο</TableCell>
               <TableCell>Μάρκα</TableCell>
               <TableCell>Βήμα</TableCell>
               <TableCell>Σπείρες</TableCell>
@@ -130,8 +136,9 @@ export default function Repairs() {
             {repairs.map((repair, index) => (
               <TableRow key={index}>
                 <TableCell>{repair.id}</TableCell>
-                <TableCell>{repair.customer}</TableCell>
                 <TableCell>{repair.serialNumber}</TableCell>
+                <TableCell>{repair.customer}</TableCell>
+                <TableCell>{repair.phone}</TableCell>
                 <TableCell>{repair.manufacturer}</TableCell>
                 <TableCell>{repair.step}</TableCell>
                 <TableCell>{repair.spiral}</TableCell>

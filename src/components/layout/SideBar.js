@@ -150,6 +150,12 @@ export default function SideBar() {
           </StyledListItem>
         ))}
       </List>
+      <Typography
+        variant="caption"
+        sx={{ position: "absolute", bottom: 10, left: 20, color: "gray" }}
+      >
+        © 2025 Nikolaos Gkouziotis. All rights reserved.
+      </Typography>
     </StyledDrawer>
   );
 }
