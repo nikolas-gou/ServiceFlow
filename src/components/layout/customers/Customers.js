@@ -1,4 +1,5 @@
 import React from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Table,
@@ -8,71 +9,27 @@ import {
   TableHead,
   TableRow,
   Paper,
-  Chip,
   Typography,
 } from "@mui/material";
-import { Line } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  LineElement,
-  PointElement,
-  LinearScale,
-  CategoryScale,
-} from "chart.js";
-
-ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale);
-
-const chartOptions = {
-  responsive: true,
-  maintainAspectRatio: false,
-  scales: { x: { display: false }, y: { display: false } },
-  elements: { point: { radius: 0 } },
-};
-
-const customers = [
-  {
-    id: "1",
-    phone: "6971945467",
-    name: "ΑΓΕΤ ΗΡΑΚΛΗΣ",
-    email: "info@aget.gr",
-    type: "Εργοστάσιο",
-    createdAt: "12-05-2023",
-  },
-  {
-    id: "2",
-    phone: "6987456123",
-    name: "Χαλυβουργία Ελλάδος",
-    email: "contact@steel.gr",
-    type: "Εργοστάσιο",
-    createdAt: "08-11-2022",
-  },
-  {
-    id: "3",
-    phone: "6932154789",
-    name: "Μαρίνος Παπαδόπουλος",
-    email: "marinos.p@gmail.com",
-    type: "Ιδιώτης",
-    createdAt: "25-07-2021",
-  },
-  {
-    id: "4",
-    phone: "6945879632",
-    name: "Βιομηχανία Μετάλλων",
-    email: "sales@metal.gr",
-    type: "Εργοστάσιο",
-    createdAt: "30-09-2020",
-  },
-  {
-    id: "5",
-    phone: "6901234567",
-    name: "Γιάννης Καλογήρου",
-    email: "johnkal@yahoo.com",
-    type: "Ιδιώτης",
-    createdAt: "18-03-2024",
-  },
-];
+import { CustomerRepository } from "../../Repositories/CustomerRepository";
 
 export default function Customers() {
+  const [customers, setCustomers] = useState([]);
+
+  useEffect(() => {
+    getCustomers();
+  }, []);
+
+  // Φόρτωση πελατών από το repository
+  const getCustomers = async () => {
+    try {
+      const data = await CustomerRepository.getAll();
+      setCustomers(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <Box sx={{ mt: 4 }}>
       <Typography variant="h6" sx={{ mb: 2 }}>
@@ -98,7 +55,7 @@ export default function Customers() {
                 <TableCell>{customer.type}</TableCell>
                 <TableCell>{customer.phone}</TableCell>
                 <TableCell>{customer.email}</TableCell>
-                <TableCell>{customer.createdAt}</TableCell>
+                <TableCell>{customer.created_at}</TableCell>
               </TableRow>
             ))}
           </TableBody>
