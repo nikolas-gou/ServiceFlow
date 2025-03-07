@@ -22,7 +22,6 @@ export default function Breadcrumbs() {
         {pathnames.map((name, index) => {
           const isLast = index === pathnames.length - 1;
           const mappingName = pathMap[name];
-          console.log(mappingName, name);
           return isLast ? (
             <Typography key={name} sx={{ fontWeight: "bold", color: "#000" }}>
               {mappingName.charAt(0).toUpperCase() + mappingName.slice(1)}
