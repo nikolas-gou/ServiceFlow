@@ -9,6 +9,11 @@ export class CustomerRepository {
     return data.map((customer) => new Customer(customer));
   }
 
+  static async getStats() {
+    const data = await apiCall(config.server, "/api/statsOfCustomers", "GET");
+    return data;
+  }
+
   //   static async getById(id) {
   //     const data = await apiCall(config.server, `/customers/${id}`, "GET");
   //     return new Customer(data);
