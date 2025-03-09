@@ -4,7 +4,7 @@ const config = {
 };
 
 if (!process.env.NODE_ENV || process.env.NODE_ENV !== "development") {
-  config.server = "domain.gr";
+  config.server = "serviceflow.infinityfreeapp.com/ServiceFlow-Backend";
 }
 
 export default config;
