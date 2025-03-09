@@ -24,6 +24,14 @@ const statusLabels = {
   Delivered: "Παραδόθηκε",
 };
 
+const connectionismTranslated = {
+  simple: "Απλή",
+  "1-parallel": "1 φορά παράλληλη",
+  "2-parallel": "2 φορές παράλληλη",
+  "3-parallel": "3 φορές παράλληλη",
+  "4-parallel": "4 φορές παράλληλη",
+};
+
 // Row component for collapsible functionality
 function RepairRow(props) {
   const { repair, index } = props;
@@ -62,8 +70,12 @@ function RepairRow(props) {
           <TableCell>{repair.motor.manufacturer}</TableCell>
           <TableCell>{repair.motor.step}</TableCell>
           <TableCell>{repair.motor.spiral}</TableCell>
-          <TableCell>{repair.motor.cross_section}</TableCell>
-          <TableCell>{repair.motor.connectionism}</TableCell>
+          <TableCell>
+            {repair.motor.cross_section} <b>/ 10</b>
+          </TableCell>
+          <TableCell>
+            {connectionismTranslated[repair.motor.connectionism]}
+          </TableCell>
           <TableCell>{repair.motor.kw}kw</TableCell>
           <TableCell>{repair.motor.hp}hp</TableCell>
           <TableCell>
