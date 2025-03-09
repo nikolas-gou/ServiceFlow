@@ -5,7 +5,6 @@ import apiCall from "../../utils/apiCall";
 
 export class CustomerRepository {
   static async getAll() {
-    console.log("test", config);
     const data = await apiCall(config.server, "/api/customers", "GET");
     return data.map((customer) => new Customer(customer));
   }

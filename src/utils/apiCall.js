@@ -36,7 +36,7 @@ export default function apiCall(
   } else {
     reqData["body"] = data;
   }
-  console.log("apicall", host, endpoint);
+
   const res = fetch(`${host}${endpoint}`, reqData)
     .then((response) => {
       if (response.status === 403) {
