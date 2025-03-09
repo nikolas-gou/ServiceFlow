@@ -2,13 +2,20 @@ import React from "react";
 import { TextField, InputAdornment, Box } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import EventIcon from "@mui/icons-material/Event";
+import { useSearch } from "../../context/SearchContext";
 
 export default function Search() {
+  const { searchQuery, setSearchQuery } = useSearch();
+
   const today = new Date().toLocaleDateString("el-GR", {
     year: "numeric",
     month: "short",
     day: "2-digit",
   });
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
 
   return (
     <Box
@@ -23,6 +30,8 @@ export default function Search() {
         variant="outlined"
         placeholder="Μάρκα, kw, hp, πελάτης"
         size="small"
+        value={searchQuery}
+        onChange={handleSearchChange}
         sx={{
           backgroundColor: "#f3f4f6",
           borderRadius: "8px",

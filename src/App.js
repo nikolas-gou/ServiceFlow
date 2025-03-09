@@ -12,52 +12,55 @@ import StatisticsCards from "./components/stats/StatisticsCards";
 import Repairs from "./components/layout/repairs/Repairs";
 import StatisticsCardsCustomer from "./components/stats/StatisticsCardsCustomer";
 import Customers from "./components/layout/customers/Customers";
+import { SearchProvider } from "./context/SearchContext";
 
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <BrowserRouter>
-        <CssBaseline /> {/* Resets styles for consistency */}
-        <Layout>
-          <Routes>
-            {/* default route */}
-            <Route path="/" element={<Navigate to="/dashboard/overview" />} />
+      <SearchProvider>
+        <BrowserRouter>
+          <CssBaseline /> {/* Resets styles for consistency */}
+          <Layout>
+            <Routes>
+              {/* default route */}
+              <Route path="/" element={<Navigate to="/dashboard/overview" />} />
 
-            <Route
-              exact
-              path="/dashboard/overview"
-              element={
-                <>
-                  <Typography variant="h6">Αρχική</Typography>
-                  <StatisticsCards />
-                  <Repairs />
-                </>
-              }
-            />
-            <Route
-              exact
-              path="/dashboard/analytics"
-              element={<Typography>analytics</Typography>}
-            />
-            <Route
-              exact
-              path="/dashboard/customers"
-              element={
-                <>
-                  <Typography variant="h6">Πελάτες</Typography>
-                  <StatisticsCardsCustomer />
-                  <Customers />
-                </>
-              }
-            />
-            <Route
-              exact
-              path="/dashboard/services"
-              element={<Typography>services</Typography>}
-            />
-          </Routes>
-        </Layout>
-      </BrowserRouter>
+              <Route
+                exact
+                path="/dashboard/overview"
+                element={
+                  <>
+                    <Typography variant="h6">Αρχική</Typography>
+                    <StatisticsCards />
+                    <Repairs />
+                  </>
+                }
+              />
+              <Route
+                exact
+                path="/dashboard/analytics"
+                element={<Typography>analytics</Typography>}
+              />
+              <Route
+                exact
+                path="/dashboard/customers"
+                element={
+                  <>
+                    <Typography variant="h6">Πελάτες</Typography>
+                    <StatisticsCardsCustomer />
+                    <Customers />
+                  </>
+                }
+              />
+              <Route
+                exact
+                path="/dashboard/services"
+                element={<Typography>services</Typography>}
+              />
+            </Routes>
+          </Layout>
+        </BrowserRouter>
+      </SearchProvider>
     </ThemeProvider>
   );
 }
