@@ -64,8 +64,8 @@ function RepairRow(props) {
           <TableCell>{repair.motor.spiral}</TableCell>
           <TableCell>{repair.motor.cross_section}</TableCell>
           <TableCell>{repair.motor.connectionism}</TableCell>
-          <TableCell>{repair.motor.kw}</TableCell>
-          <TableCell>{repair.motor.hp}</TableCell>
+          <TableCell>{repair.motor.kw}kw</TableCell>
+          <TableCell>{repair.motor.hp}hp</TableCell>
           <TableCell>
             <Chip
               label={statusLabels[repair.repair_status]}
