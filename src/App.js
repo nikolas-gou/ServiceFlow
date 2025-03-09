@@ -9,7 +9,7 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Dashboard from "./components/dashboard/Dashboard";
 import Layout from "./components/layout/Layout";
 import StatisticsCards from "./components/stats/StatisticsCards";
-import Repairs from "./components/repairs/Repairs";
+import Repairs from "./components/layout/repairs/Repairs";
 import StatisticsCardsCustomer from "./components/stats/StatisticsCardsCustomer";
 import Customers from "./components/layout/customers/Customers";
 
