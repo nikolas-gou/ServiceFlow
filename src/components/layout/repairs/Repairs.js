@@ -78,6 +78,7 @@ function RepairRow(props) {
           </TableCell>
           <TableCell>{repair.motor.kw}kw</TableCell>
           <TableCell>{repair.motor.hp}hp</TableCell>
+          <TableCell>{repair.motor.volt}</TableCell>
           <TableCell>
             <Chip
               label={statusLabels[repair.repair_status]}
@@ -167,7 +168,7 @@ function RepairRow(props) {
                   )}
                   {!repair.repairs_details && (
                     <Typography variant="body2" color="text.secondary">
-                      Δεν υπάρχουν διαθέσιμες λεπτομέρειες επισκευής
+                      Περιέλιξη, ρουλεμά ν, μηχανουργικές εργασίες
                     </Typography>
                   )}
                   {repair.notes && (
@@ -241,6 +242,7 @@ export default function Repairs() {
               <TableCell>Σύνδεση</TableCell>
               <TableCell>kw</TableCell>
               <TableCell>hp</TableCell>
+              <TableCell>volt</TableCell>
               <TableCell>Κατάσταση</TableCell>
             </TableRow>
           </TableHead>

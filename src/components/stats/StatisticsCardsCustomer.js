@@ -1,4 +1,5 @@
 import React from "react";
+import { useState, useEffect } from "react";
 import { Box, Grid, Card, CardContent, Typography } from "@mui/material";
 import { Line } from "react-chartjs-2";
 import {
@@ -8,6 +9,7 @@ import {
   LinearScale,
   CategoryScale,
 } from "chart.js";
+import { CustomerRepository } from "../Repositories/CustomerRepository";
 
 ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale);
 
@@ -22,24 +24,43 @@ const chartOptions = {
 };
 
 export default function StatisticsCardsCustomer() {
+  const [statsOfCustomers, setStatsOfCustomers] = useState([]);
+
+  useEffect(() => {
+    getStats();
+  }, []);
+
+  const getStats = async () => {
+    try {
+      const data = await CustomerRepository.getStats();
+      setStatsOfCustomers(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const stats = [
     {
       title: "Συνολικοί πελάτες",
-      value: "1056",
+      value: statsOfCustomers.totalCustomers,
       trend: "+25%",
       color: "green",
       data: [5, 6, 7, 8, 7, 8, 10],
     },
     {
       title: "Εργοστάσια",
-      value: "325",
+      value: statsOfCustomers.totalCustomersByType?.find(
+        (item) => item.type == "factory"
+      )?.total,
       trend: "-25%",
       color: "red",
       data: [8, 7, 6, 5, 4, 3, 2],
     },
     {
       title: "Ιδιώτες",
-      value: "200k",
+      value: statsOfCustomers.totalCustomersByType?.find(
+        (item) => item.type == "individual"
+      )?.total,
       trend: "+5%",
       color: "blue",
       data: [20, 19, 18, 18, 19, 20, 21],

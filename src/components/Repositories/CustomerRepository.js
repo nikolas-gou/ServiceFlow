@@ -14,6 +14,11 @@ export class CustomerRepository {
     return data;
   }
 
+  static async listOfNames() {
+    const data = await apiCall(config.server, "/api/customers", "GET");
+    return data.map((customer) => customer.name);
+  }
+
   //   static async getById(id) {
   //     const data = await apiCall(config.server, `/customers/${id}`, "GET");
   //     return new Customer(data);

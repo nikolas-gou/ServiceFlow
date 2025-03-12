@@ -13,6 +13,7 @@ import Repairs from "./components/layout/repairs/Repairs";
 import StatisticsCardsCustomer from "./components/stats/StatisticsCardsCustomer";
 import Customers from "./components/layout/customers/Customers";
 import { SearchProvider } from "./context/SearchContext";
+import CreateRepairForm from "./components/layout/form/CreateRepairForm";
 
 function App() {
   return (
@@ -31,8 +32,9 @@ function App() {
                 element={
                   <>
                     <Typography variant="h6">Αρχική</Typography>
-                    <StatisticsCards />
-                    <Repairs />
+                    {/* <StatisticsCards />
+                    <Repairs /> */}
+                    <CreateRepairForm />
                   </>
                 }
               />
