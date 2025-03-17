@@ -13,4 +13,8 @@ export class RepairRepository {
     const data = await apiCall(config.server, "/api/statsOfRepair", "GET");
     return data;
   }
+  static async createNewRepair(repair) {
+    const data = await apiCall(config.server, "/api/repairs", "POST", repair);
+    return data;
+  }
 }
