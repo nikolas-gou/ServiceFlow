@@ -1,11 +1,11 @@
 export class Customer {
   constructor(data = {}) {
     this.id = data.id || null;
-    this.type = data.type || "";
+    this.type = data.type || "individual";
     this.name = data.name || "";
     this.email = data.email || "";
     this.phone = data.phone || "";
-    this.created_at = data.created_at || "";
+    this.created_at = data.created_at || new Date().toISOString().split("T")[0];
   }
 
   isValid() {
@@ -18,6 +18,7 @@ export class Customer {
       name: this.name,
       email: this.email,
       phone: this.phone,
+      type: this.type,
       created_at: this.created_at,
     };
   }
