@@ -12,7 +12,7 @@ export class Motor {
     this.connectionism = data.connectionism || "";
     this.volt = data.volt || "";
     this.poles = data.poles || "";
-    this.created_at = data.created_at || "";
+    this.created_at = data.created_at || new Date().toISOString().split("T")[0];
     this.customerID = data.customerID || "";
   }
 
@@ -39,3 +39,35 @@ export class Motor {
     };
   }
 }
+
+export const connectionism_types = [
+  "simple",
+  "1-parallel",
+  "2-parallel",
+  "3-parallel",
+  "other",
+];
+
+export const connectionism_types_translated = [
+  "Απλή",
+  "1 φορά παράλληλη",
+  "2 φορές παράλληλη",
+  "3 φορές παράλληλη",
+  "Άλλο",
+];
+
+export const rpm_types = ["900", "1490", "2900", "other"];
+export const rpm_types_translated = ["900", "1490", "2900", "Αλλο"];
+
+export const poles_types = ["2", "4", "6", "8", "12", "other"];
+export const poles_types_translated = ["2", "4", "6", "8", "12", "Άλλο"];
+
+export const volt_types = ["230VY", "230VYY", "380VY", "380VYY", "other"];
+
+export const volt_types_translated = [
+  "230VY",
+  "230VΔ",
+  "380VY",
+  "380VΔ",
+  "Άλλο",
+];
