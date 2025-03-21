@@ -71,6 +71,7 @@ function RepairRow(props) {
           <TableCell>{repair.motor.kw}kw</TableCell>
           <TableCell>{repair.motor.hp}hp</TableCell>
           <TableCell>{volt_types_mapping[repair.motor.volt]}</TableCell>
+          <TableCell>{repair.motor.created_at}</TableCell>
         </TableRow>
       </Tooltip>
       <TableRow sx={{ backgroundColor: open ? "#f5f5f5" : "inherit" }}>
@@ -220,6 +221,7 @@ export default function Repairs() {
               <TableCell>kw</TableCell>
               <TableCell>hp</TableCell>
               <TableCell>volt</TableCell>
+              <TableCell>Ημ/νία Παραλαβής</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
