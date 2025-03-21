@@ -71,3 +71,11 @@ export const volt_types_translated = [
   "380VΔ",
   "Άλλο",
 ];
+
+export const volt_types_mapping = {
+  "230VY": "230VY",
+  "230VYY": "230VΔ",
+  "380VY": "380VY",
+  "380VYY": "380VΔ",
+  other: "Αλλο",
+};

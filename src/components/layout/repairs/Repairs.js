@@ -8,7 +8,6 @@ import {
   TableHead,
   TableRow,
   Paper,
-  Chip,
   Typography,
   Collapse,
   Grid,
@@ -17,12 +16,7 @@ import {
 } from "@mui/material";
 import { RepairRepository } from "../../Repositories/RepairRepository";
 import { useSearch } from "../../../context/SearchContext";
-
-const statusLabels = {
-  Completed: "Ολοκληρώθηκε",
-  "In-progress": "Σε εξέλιξη",
-  Delivered: "Παραδόθηκε",
-};
+import { volt_types_mapping } from "../../Models/Motor";
 
 const connectionismTranslated = {
   simple: "Απλή",
@@ -70,30 +64,13 @@ function RepairRow(props) {
           <TableCell>{repair.motor.manufacturer}</TableCell>
           <TableCell>{repair.motor.step}</TableCell>
           <TableCell>{repair.motor.spiral}</TableCell>
-          <TableCell>
-            {repair.motor.cross_section} <b>/ 10</b>
-          </TableCell>
+          <TableCell>{repair.motor.cross_section}</TableCell>
           <TableCell>
             {connectionismTranslated[repair.motor.connectionism]}
           </TableCell>
           <TableCell>{repair.motor.kw}kw</TableCell>
           <TableCell>{repair.motor.hp}hp</TableCell>
-          <TableCell>{repair.motor.volt}</TableCell>
-          <TableCell>
-            <Chip
-              label={statusLabels[repair.repair_status]}
-              color={
-                repair.repair_status === "Completed"
-                  ? "success"
-                  : repair.repair_status === "In-progress"
-                  ? "warning"
-                  : repair.repair_status === "Delivered"
-                  ? "info"
-                  : "default"
-              }
-              sx={{ width: "100%" }}
-            />
-          </TableCell>
+          <TableCell>{volt_types_mapping[repair.motor.volt]}</TableCell>
         </TableRow>
       </Tooltip>
       <TableRow sx={{ backgroundColor: open ? "#f5f5f5" : "inherit" }}>
@@ -243,7 +220,6 @@ export default function Repairs() {
               <TableCell>kw</TableCell>
               <TableCell>hp</TableCell>
               <TableCell>volt</TableCell>
-              <TableCell>Κατάσταση</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
