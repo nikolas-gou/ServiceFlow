@@ -3,10 +3,7 @@ import "./App.css";
 import { ThemeProvider, CssBaseline, Typography } from "@mui/material";
 
 import theme from "./styles/Themes";
-import SideBar from "./components/layout/SideBar";
-import TopAppBar from "./components/layout/TopAppBar";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
-import Dashboard from "./components/dashboard/Dashboard";
 import Layout from "./components/layout/Layout";
 import StatisticsCards from "./components/stats/StatisticsCards";
 import Repairs from "./components/layout/repairs/Repairs";
@@ -32,9 +29,8 @@ function App() {
                 element={
                   <>
                     <Typography variant="h6">Αρχική</Typography>
-                    {/* <StatisticsCards />
-                    <Repairs /> */}
-                    <CreateRepairForm />
+                    <StatisticsCards />
+                    <Repairs />
                   </>
                 }
               />
