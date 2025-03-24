@@ -13,4 +13,9 @@ export class MotorRepository {
     const data = await apiCall(config.server, `/api/motors/${id}`, "GET");
     return new Motor(data);
   }
+
+  static async getAllBrands() {
+    const data = await apiCall(config.server, `/api/motors/brands`, "GET");
+    return data;
+  }
 }
