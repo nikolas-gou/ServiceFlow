@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
   Box,
-  Paper,
   Typography,
   Tabs,
   Tab,
@@ -16,7 +15,6 @@ import {
   Divider,
   Snackbar,
   Alert,
-  FormHelperText,
 } from "@mui/material";
 import {
   Save as SaveIcon,
@@ -25,55 +23,58 @@ import {
 } from "@mui/icons-material";
 import { Customer } from "../../Models/Customer";
 import { Repair } from "../../Models/Repair";
-import { Motor } from "../../Models/Motor";
 import { CustomerRepository } from "../../Repositories/CustomerRepository";
+import { MotorRepository } from "../../Repositories/MotorRepository";
+import {
+  rpm_types,
+  rpm_types_translated,
+  poles_types,
+  poles_types_translated,
+  volt_types,
+  volt_types_translated,
+  connectionism_types,
+  connectionism_types_translated,
+} from "../../Models/Motor";
+import {
+  repair_types,
+  repair_types_translated,
+} from "../../Models/Repair_Types";
+import { RepairRepository } from "../../Repositories/RepairRepository";
 
-// Υποθετικά δεδομένα για τα dropdowns
-const brandsData = [
-  "SIEMENS",
-  "ABB",
-  "ELECTROTECH",
-  "SCHNEIDER",
-  "TOSHIBA",
-  "Άλλο",
-];
-const motorConnectionTypes = ["Αστέρας", "Τρίγωνο", "Άλλο"];
-const commonIssues = [
-  "Βραχυκύκλωμα περιέλιξης",
-  "Φθορά ρουλεμάν",
-  "Πρόβλημα στο φρένο",
-  "Διαρροή ρεύματος",
-  "Φθορά ψηκτρών",
-];
-
-function CreateRepairForm() {
+function CreateRepairForm(props) {
   const [tabValue, setTabValue] = useState(0);
   const [repair, setRepair] = useState(new Repair());
+  const [selectedRepairTypes, setSelectedRepairTypes] = useState([]);
   const [customers, setCustomers] = useState([]);
+  const [motorBrands, setMotorBrands] = useState([]);
   const [successAlert, setSuccessAlert] = useState(false);
   const [errorAlert, setErrorAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [errors, setErrors] = useState({});
-
   // Αρχικοποίηση των δεδομένων φόρμας
   useEffect(() => {
-    const initialRepair = new Repair();
-    initialRepair.customer = new Customer();
-    initialRepair.motor = new Motor();
-    initialRepair.description = "";
-    initialRepair.cost = 0;
-    setRepair(initialRepair);
-
     loadCustomers();
+    loadMotorBrands();
+    // *θα φετσαρω και τα μοτορς
   }, []);
 
   // Φόρτωση πελατών από το repository
   const loadCustomers = async () => {
     try {
-      const data = await CustomerRepository.listOfNames();
+      const data = await CustomerRepository.getAll();
       setCustomers(data || []);
     } catch (err) {
       console.error("Σφάλμα φόρτωσης πελατών:", err);
+      setCustomers([]);
+    }
+  };
+
+  const loadMotorBrands = async () => {
+    try {
+      const data = await MotorRepository.getAllBrands();
+      setMotorBrands(data || []);
+    } catch (err) {
+      console.error("Σφάλμα φόρτωσης Κινητήρων:", err);
       setCustomers([]);
     }
   };
@@ -86,17 +87,45 @@ function CreateRepairForm() {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
+    // Μετατροπή σε κεφαλαία αν είναι το πεδίο customer.name
+    const processedValue =
+      name === "customer.name" || name === "motor.manufacturer"
+        ? value.toUpperCase()
+        : value;
+
     if (name.includes(".")) {
       // Διαχείριση ένθετων πεδίων (π.χ. customer.name, motor.manufacturer)
       const [parent, child] = name.split(".");
 
-      setRepair((prev) => ({
-        ...prev,
-        [parent]: {
-          ...prev[parent],
-          [child]: value,
-        },
-      }));
+      if (child === "hp") {
+        // Όταν αλλάζει η τιμή hp, θέτουμε το hp και υπολογίζουμε το kw
+        setRepair((prev) => ({
+          ...prev,
+          [parent]: {
+            ...prev[parent],
+            hp: processedValue,
+            kw: (parseFloat(processedValue) * 0.745699872).toFixed(2), // Μετατροπή hp σε kw
+          },
+        }));
+      } else if (child === "kw") {
+        // Όταν αλλάζει η τιμή kw, θέτουμε το kw και υπολογίζουμε το hp
+        setRepair((prev) => ({
+          ...prev,
+          [parent]: {
+            ...prev[parent],
+            kw: processedValue,
+            hp: (parseFloat(processedValue) / 0.745699872).toFixed(2), // Μετατροπή kw σε hp
+          },
+        }));
+      } else {
+        setRepair((prev) => ({
+          ...prev,
+          [parent]: {
+            ...prev[parent],
+            [child]: processedValue,
+          },
+        }));
+      }
 
       // Καθαρισμός τυχόν σφαλμάτων
       if (errors[`${parent}.${child}`]) {
@@ -109,7 +138,7 @@ function CreateRepairForm() {
       // Διαχείριση απλών πεδίων
       setRepair((prev) => ({
         ...prev,
-        [name]: value,
+        [name]: processedValue,
       }));
 
       // Καθαρισμός τυχόν σφαλμάτων
@@ -132,6 +161,19 @@ function CreateRepairForm() {
       },
     }));
 
+    // αν επιλεξει καποιον που υπαρχει παρε ολα τα στοιχεια
+    if (customers.map((customer) => customer.name).includes(newValue)) {
+      setRepair((prev) => ({
+        ...prev,
+        customer: customers.find((customer) => customer.name == newValue),
+      }));
+    } else {
+      setRepair((prev) => ({
+        ...prev,
+        customer: new Customer(),
+      }));
+    }
+
     // Καθαρισμός τυχόν σφαλμάτων
     if (errors["customer.name"]) {
       setErrors((prev) => ({
@@ -141,16 +183,45 @@ function CreateRepairForm() {
     }
   };
 
+  // Για το Autocomplete του manufacturer
+  const handleManufacturerChange = (event, newValue) => {
+    setRepair((prev) => ({
+      ...prev,
+      motor: {
+        ...prev.motor,
+        manufacturer: newValue,
+      },
+    }));
+
+    // Καθαρισμός τυχόν σφαλμάτων
+    if (errors["motor.manufacturer"]) {
+      setErrors((prev) => ({
+        ...prev,
+        ["motor.manufacturer"]: null,
+      }));
+    }
+  };
+
   // Προσθήκη συνηθισμένων θεμάτων στην περιγραφή
-  const handleAddCommonIssue = (issue) => {
+  const handleAddCommonIssue = (repair_type) => {
     const updatedDescription = repair.description
-      ? `${repair.description}\n- ${issue}`
-      : `- ${issue}`;
+      ? `${repair.description}\n- ${
+          repair_types_translated[repair_type.id - 1].name
+        }`
+      : `- ${repair_types_translated[repair_type.id - 1].name}`;
 
     setRepair((prev) => ({
       ...prev,
       description: updatedDescription,
     }));
+
+    // Προσθήκη του ID της βλάβης στον πίνακα, αν δεν υπάρχει ήδη
+    setSelectedRepairTypes((prev) => {
+      if (!prev.includes(repair_type.id)) {
+        return [...prev, repair_type.id];
+      }
+      return prev;
+    });
 
     // Καθαρισμός τυχόν σφαλμάτων
     if (errors.description) {
@@ -274,10 +345,29 @@ function CreateRepairForm() {
 
     if (validateAllTabs()) {
       // Εδώ θα γινόταν η αποστολή στο API
-      console.log("Δεδομένα Επισκευής για Αποθήκευση:", repair);
+      const dataApi = new Repair(repair);
+
+      createNewRepair(dataApi);
       setSuccessAlert(true);
+      props.onSubmitSuccess();
     } else {
       setErrorAlert(true);
+    }
+  };
+
+  // Φόρτωση πελατών από το repository
+  const createNewRepair = async (dataApi) => {
+    try {
+      const response = await RepairRepository.createNewRepair({
+        repair: dataApi.toJSON(),
+        customer: dataApi.customer.toJSON(),
+        motor: dataApi.motor.toJSON(),
+        repair_types: selectedRepairTypes,
+      });
+      setRepair(response || []);
+    } catch (err) {
+      console.error("Σφάλμα Δημιουργίας Επισκευής:", err);
+      setRepair([]);
     }
   };
 
@@ -291,328 +381,379 @@ function CreateRepairForm() {
 
   return (
     <Box sx={{ width: "100%", p: 2 }}>
-      <Paper elevation={3} sx={{ p: 2 }}>
-        <Typography
-          variant="h5"
-          component="h1"
-          sx={{ mb: 3, color: "#1976d2" }}
-        >
-          Καταχώρηση Νέας Επισκευής
-        </Typography>
+      <Typography variant="h5" component="h1" sx={{ mb: 3, color: "#1976d2" }}>
+        Καταχώρηση Νέας Επισκευής
+      </Typography>
 
-        <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 3 }}>
-          <Tabs
-            value={tabValue}
-            onChange={handleTabChange}
-            aria-label="repair form tabs"
-          >
-            <Tab label="Βασικά Στοιχεία" />
-            <Tab label="Τεχνικά Χαρακτηριστικά" />
-            <Tab label="Περιγραφή Βλάβης" />
-            <Tab label="Κόστος & Παράδοση" />
-          </Tabs>
+      <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 3 }}>
+        <Tabs
+          value={tabValue}
+          onChange={handleTabChange}
+          aria-label="repair form tabs"
+        >
+          <Tab label="Βασικά Στοιχεία" />
+          <Tab label="Τεχνικά Χαρακτηριστικά" />
+          <Tab label="Περιγραφή Βλάβης" />
+          <Tab label="Κόστος & Παράδοση" />
+        </Tabs>
+      </Box>
+
+      <form onSubmit={handleSubmit}>
+        {/* Tab 1: Βασικά Στοιχεία */}
+        <Box hidden={tabValue !== 0} sx={{ pb: 3 }}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={6}>
+              <Autocomplete
+                freeSolo
+                options={customers.map((customer) => customer.name) || []}
+                value={repair.customer?.name || ""}
+                onChange={handleCustomerChange}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    required
+                    label="Πελάτης"
+                    name="customer.name"
+                    variant="outlined"
+                    onChange={(e) => handleInputChange(e)}
+                    error={hasError("customer.name")}
+                    helperText={getErrorMessage("customer.name")}
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel id="type-select-label">Τύπος</InputLabel>
+                <Select
+                  labelId="type-select-label"
+                  id="type-select"
+                  name="customer.type"
+                  value={repair.customer?.type || ""}
+                  label="Τύπος"
+                  onChange={handleInputChange}
+                >
+                  <MenuItem value="individual">Ιδιώτης</MenuItem>
+                  <MenuItem value="factory">Εργοστάσιο</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                required
+                fullWidth
+                label="Τηλέφωνο"
+                name="customer.phone"
+                variant="outlined"
+                value={repair.customer?.phone || ""}
+                onChange={handleInputChange}
+                error={hasError("customer.phone")}
+                helperText={getErrorMessage("customer.phone")}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Email"
+                name="customer.email"
+                variant="outlined"
+                value={repair.customer?.email || ""}
+                onChange={handleInputChange}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Autocomplete
+                freeSolo
+                options={motorBrands || []}
+                value={repair.motor?.manufacturer || ""}
+                onChange={handleManufacturerChange}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    required
+                    label="Μάρκα"
+                    name="motor.manufacturer"
+                    variant="outlined"
+                    onChange={(e) => handleInputChange(e)}
+                    error={hasError("motor.manufacturer")}
+                    helperText={getErrorMessage("motor.manufacturer")}
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Ημερομηνία Παραλαβής"
+                name="motor.created_at"
+                type="date"
+                value={repair.motor?.created_at || ""}
+                onChange={handleInputChange}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+            </Grid>
+          </Grid>
         </Box>
 
-        <form onSubmit={handleSubmit}>
-          {/* Tab 1: Βασικά Στοιχεία */}
-          <Box hidden={tabValue !== 0} sx={{ pb: 3 }}>
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={6}>
-                <Autocomplete
-                  freeSolo
-                  options={customers || []}
-                  value={repair.customer?.name || ""}
-                  onChange={handleCustomerChange}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      required
-                      label="Πελάτης"
-                      name="customer.name"
-                      variant="outlined"
-                      onChange={(e) => handleInputChange(e)}
-                      error={hasError("customer.name")}
-                      helperText={getErrorMessage("customer.name")}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormControl fullWidth>
-                  <InputLabel id="type-select-label">Τύπος</InputLabel>
-                  <Select
-                    labelId="type-select-label"
-                    id="type-select"
-                    name="customer.type"
-                    value={repair.customer?.type || ""}
-                    label="Τύπος"
-                    onChange={handleInputChange}
-                  >
-                    <MenuItem value="ιδιωτης">Ιδιώτης</MenuItem>
-                    <MenuItem value="εργοστασιο">Εργοστάσιο</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  label="Τηλέφωνο"
-                  name="customer.phone"
-                  variant="outlined"
-                  value={repair.customer?.phone || ""}
-                  onChange={handleInputChange}
-                  error={hasError("customer.phone")}
-                  helperText={getErrorMessage("customer.phone")}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Email"
-                  name="customer.email"
-                  variant="outlined"
-                  value={repair.customer?.email || ""}
-                  onChange={handleInputChange}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormControl
-                  fullWidth
-                  required
-                  error={hasError("motor.manufacturer")}
-                >
-                  <InputLabel>Μάρκα</InputLabel>
-                  <Select
-                    name="motor.manufacturer"
-                    value={repair.motor?.manufacturer || ""}
-                    label="Μάρκα"
-                    onChange={handleInputChange}
-                  >
-                    {brandsData.map((brand) => (
-                      <MenuItem key={brand} value={brand}>
-                        {brand}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  {hasError("motor.manufacturer") && (
-                    <FormHelperText>
-                      {getErrorMessage("motor.manufacturer")}
-                    </FormHelperText>
-                  )}
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Ημερομηνία Παραλαβής"
-                  name="motor.created_at"
-                  type="date"
-                  value={repair.motor?.created_at || ""}
-                  onChange={handleInputChange}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                />
-              </Grid>
+        {/* Tab 2: Τεχνικά Χαρακτηριστικά */}
+        <Box hidden={tabValue !== 1} sx={{ pb: 3 }}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Serial Number"
+                name="motor.serial_number"
+                variant="outlined"
+                value={repair.motor?.serial_number || ""}
+                onChange={handleInputChange}
+                placeholder="π.χ. 3568"
+              />
             </Grid>
-          </Box>
-
-          {/* Tab 2: Τεχνικά Χαρακτηριστικά */}
-          <Box hidden={tabValue !== 1} sx={{ pb: 3 }}>
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Serial Number"
-                  name="motor.serial_number"
-                  variant="outlined"
-                  value={repair.motor?.serial_number || ""}
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Βήμα"
+                name="motor.step"
+                variant="outlined"
+                value={repair.motor?.step || ""}
+                onChange={handleInputChange}
+                placeholder="π.χ. 8-10-12"
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Σπείρες"
+                name="motor.spiral"
+                variant="outlined"
+                value={repair.motor?.spiral || ""}
+                onChange={handleInputChange}
+                placeholder="π.χ. 66"
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Διατομή"
+                name="motor.cross_section"
+                variant="outlined"
+                value={repair.motor?.cross_section || ""}
+                onChange={handleInputChange}
+                placeholder="π.χ. 6/10 + 7/10 + 2X8/10"
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel>Σύνδεση</InputLabel>
+                <Select
+                  name="motor.connectionism"
+                  value={repair.motor?.connectionism || ""}
+                  label="Σύνδεση"
                   onChange={handleInputChange}
-                  placeholder="π.χ. 3568"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Βήμα"
-                  name="motor.step"
-                  variant="outlined"
-                  value={repair.motor?.step || ""}
-                  onChange={handleInputChange}
-                  placeholder="π.χ. 8-10-12"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Σπείρες"
-                  name="motor.spiral"
-                  variant="outlined"
-                  value={repair.motor?.spiral || ""}
-                  onChange={handleInputChange}
-                  placeholder="π.χ. 66"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Διατομή"
-                  name="motor.cross_section"
-                  variant="outlined"
-                  value={repair.motor?.cross_section || ""}
-                  onChange={handleInputChange}
-                  placeholder="π.χ. 6/10 + 7/10 + 2X8/10"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormControl fullWidth>
-                  <InputLabel>Σύνδεση</InputLabel>
-                  <Select
-                    name="motor.connectionism"
-                    value={repair.motor?.connectionism || ""}
-                    label="Σύνδεση"
-                    onChange={handleInputChange}
-                  >
-                    {motorConnectionTypes.map((type) => (
+                >
+                  {connectionism_types.map((type, index) => {
+                    // * ενα converter για translated
+                    return (
                       <MenuItem key={type} value={type.toLowerCase()}>
-                        {type}
+                        {connectionism_types_translated[index]}
                       </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Ισχύς (kW)"
-                  name="motor.kw"
-                  type="number"
-                  variant="outlined"
-                  value={repair.motor?.kw || ""}
-                  onChange={handleInputChange}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Ισχύς (HP)"
-                  name="motor.hp"
-                  type="number"
-                  variant="outlined"
-                  value={repair.motor?.hp || ""}
-                  onChange={handleInputChange}
-                />
-              </Grid>
+                    );
+                  })}
+                </Select>
+              </FormControl>
             </Grid>
-          </Box>
-
-          {/* Tab 3: Περιγραφή Βλάβης */}
-          <Box hidden={tabValue !== 2} sx={{ pb: 3 }}>
-            <Grid container spacing={3}>
-              <Grid item xs={12}>
-                <Typography variant="subtitle2" gutterBottom>
-                  Συνήθεις βλάβες:
-                </Typography>
-                <Box sx={{ mb: 2 }}>
-                  {commonIssues.map((issue) => (
-                    <Button
-                      key={issue}
-                      variant="outlined"
-                      size="small"
-                      sx={{ mr: 1, mb: 1 }}
-                      onClick={() => handleAddCommonIssue(issue)}
-                    >
-                      {issue}
-                    </Button>
-                  ))}
-                </Box>
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  required
-                  label="Περιγραφή Βλάβης"
-                  name="description"
-                  multiline
-                  rows={6}
-                  variant="outlined"
-                  value={repair.description || ""}
-                  onChange={handleInputChange}
-                  error={hasError("description")}
-                  helperText={getErrorMessage("description")}
-                />
-              </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Ισχύς (kW)"
+                name="motor.kw"
+                type="number"
+                variant="outlined"
+                value={repair.motor?.kw || ""}
+                onChange={handleInputChange}
+              />
             </Grid>
-          </Box>
-
-          {/* Tab 4: Κόστος & Παράδοση */}
-          <Box hidden={tabValue !== 3} sx={{ pb: 3 }}>
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  required
-                  label="Εκτιμώμενο Κόστος (€)"
-                  name="cost"
-                  type="number"
-                  variant="outlined"
-                  value={repair.cost || ""}
-                  onChange={handleInputChange}
-                  error={hasError("cost")}
-                  helperText={getErrorMessage("cost")}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Εκτιμώμενη Ημερομηνία Παράδοσης"
-                  name="estimated_delivery_date"
-                  type="date"
-                  InputLabelProps={{ shrink: true }}
-                  value={repair.estimated_delivery_date || ""}
-                  onChange={handleInputChange}
-                />
-              </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Ισχύς (HP)"
+                name="motor.hp"
+                type="number"
+                variant="outlined"
+                value={repair.motor?.hp || ""}
+                onChange={handleInputChange}
+              />
             </Grid>
-          </Box>
-
-          <Divider sx={{ my: 3 }} />
-
-          {/* Form Actions */}
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            {tabValue > 0 && (
-              <Box>
-                <Button
-                  variant="outlined"
-                  startIcon={<NavigateBeforeIcon />}
-                  onClick={handlePreviousStep}
-                  sx={{ mr: 2 }}
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel>Τάση (volt)</InputLabel>
+                <Select
+                  name="motor.volt"
+                  value={repair.motor?.volt || ""}
+                  label="Τάση (volt)"
+                  onChange={handleInputChange}
                 >
-                  Προηγούμενο Βήμα
-                </Button>
-              </Box>
-            )}
+                  {volt_types.map((type, index) => {
+                    // * ενα converter για translated
+                    return (
+                      <MenuItem key={type} value={type}>
+                        {volt_types_translated[index]}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel>Στροφές (rpm)</InputLabel>
+                <Select
+                  name="motor.rpm"
+                  value={repair.motor?.rpm || ""}
+                  label="Στροφές (rpm)"
+                  onChange={handleInputChange}
+                >
+                  {rpm_types.map((type, index) => {
+                    // * ενα converter για translated
+                    return (
+                      <MenuItem key={type} value={type}>
+                        {rpm_types_translated[index]}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel>Πόλοι</InputLabel>
+                <Select
+                  name="motor.poles"
+                  value={repair.motor?.poles || ""}
+                  label="Πόλοι"
+                  onChange={handleInputChange}
+                >
+                  {poles_types.map((type, index) => {
+                    // * ενα converter για translated
+                    return (
+                      <MenuItem key={type} value={type}>
+                        {poles_types_translated[index]}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+            </Grid>
+          </Grid>
+        </Box>
 
+        {/* Tab 3: Περιγραφή Βλάβης */}
+        <Box hidden={tabValue !== 2} sx={{ pb: 3 }}>
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <Typography variant="subtitle2" gutterBottom>
+                Συνήθεις βλάβες:
+              </Typography>
+              <Box sx={{ mb: 2 }}>
+                {repair_types.map((repair_type) => (
+                  <Button
+                    key={repair_type.id}
+                    variant="outlined"
+                    size="small"
+                    sx={{ mr: 1, mb: 1 }}
+                    onClick={() => handleAddCommonIssue(repair_type)}
+                  >
+                    {repair_types_translated[repair_type?.id - 1]?.name}
+                  </Button>
+                ))}
+              </Box>
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                required
+                label="Περιγραφή Βλάβης"
+                name="description"
+                multiline
+                rows={6}
+                variant="outlined"
+                value={repair.description || ""}
+                onChange={handleInputChange}
+                error={hasError("description")}
+                helperText={getErrorMessage("description")}
+              />
+            </Grid>
+          </Grid>
+        </Box>
+
+        {/* Tab 4: Κόστος & Παράδοση */}
+        <Box hidden={tabValue !== 3} sx={{ pb: 3 }}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                required
+                label="Εκτιμώμενο Κόστος (€)"
+                name="cost"
+                type="number"
+                variant="outlined"
+                value={repair.cost || ""}
+                onChange={handleInputChange}
+                error={hasError("cost")}
+                helperText={getErrorMessage("cost")}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Εκτιμώμενη Ημερομηνία Παράδοσης"
+                name="estimatedIsComplete"
+                type="date"
+                InputLabelProps={{ shrink: true }}
+                value={repair.estimatedIsComplete || ""}
+                onChange={handleInputChange}
+              />
+            </Grid>
+          </Grid>
+        </Box>
+
+        <Divider sx={{ my: 3 }} />
+
+        {/* Form Actions */}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          {tabValue > 0 && (
             <Box>
               <Button
-                variant="contained"
-                color="primary"
-                startIcon={buttonIcon}
-                onClick={handleNextStep}
+                variant="outlined"
+                startIcon={<NavigateBeforeIcon />}
+                onClick={handlePreviousStep}
+                sx={{ mr: 2 }}
               >
-                {buttonText}
+                Προηγούμενο Βήμα
               </Button>
             </Box>
+          )}
+
+          <Box>
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={buttonIcon}
+              onClick={handleNextStep}
+            >
+              {buttonText}
+            </Button>
           </Box>
-        </form>
-      </Paper>
+        </Box>
+      </form>
 
       {/* Success Alert */}
       <Snackbar

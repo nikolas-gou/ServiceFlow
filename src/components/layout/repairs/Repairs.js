@@ -117,7 +117,7 @@ function RepairRow(props) {
                         Σύνδεση:
                       </Typography>
                       <Typography variant="body1">
-                        {repair.motor.connectionism}
+                        {connectionismTranslated[repair.motor.connectionism]}
                       </Typography>
                     </Grid>
                     <Grid item xs={6}>
@@ -139,14 +139,14 @@ function RepairRow(props) {
                     Στοιχεία Επισκευής
                   </Typography>
                   <Divider sx={{ my: 1 }} />
-                  {repair.repairs_details && (
+                  {repair.description && (
                     <Typography variant="body1">
-                      {repair.repairs_details}
+                      {repair.description}
                     </Typography>
                   )}
-                  {!repair.repairs_details && (
+                  {!repair.description && (
                     <Typography variant="body2" color="text.secondary">
-                      Περιέλιξη, ρουλεμά ν, μηχανουργικές εργασίες
+                      Δεν υπάρχει περιγραφή.
                     </Typography>
                   )}
                   {repair.notes && (
