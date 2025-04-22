@@ -12,6 +12,9 @@ export class Motor {
     this.connectionism = data.connectionism || "";
     this.volt = data.volt || "";
     this.poles = data.poles || "";
+    this.typeOfStep = data.typeOfStep || "standard";
+    this.typeOfMotor = data.typeOfMotor || "el_motor";
+    this.typeOfVolt = data.typeOfVolt || "3-phase";
     this.created_at = data.created_at || new Date().toISOString().split("T")[0];
     this.customerID = data.customerID || "";
   }
@@ -34,6 +37,9 @@ export class Motor {
       connectionism: this.connectionism,
       volt: this.volt,
       poles: this.poles,
+      typeOfStep: this.typeOfStep,
+      typeOfMotor: this.typeOfMotor,
+      typeOfVolt: this.typeOfVolt,
       created_at: this.created_at,
       customerID: this.customerID,
     };
@@ -79,3 +85,16 @@ export const volt_types_mapping = {
   "380VYY": "380VΔ",
   other: "Αλλο",
 };
+
+export const typeOfVolt = ["1-phase", "3-phase"];
+export const typeOfVolt_translated = ["Μονοφασικός", "Τριφασικός"];
+
+export const typeOfMotor = ["el_motor", "pump", "generator"];
+export const typeOfMotor_translated = ["Μοτέρ", "Αντλία", "Γεννήτρια"];
+
+export const typeOfStep = ["standard", "half", "combined"];
+export const typeOfStep_translated = [
+  "Ολόκληρο",
+  "Μισό-Μισό",
+  "Μισό-Μισό και Ολόκληρο",
+];

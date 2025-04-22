@@ -34,12 +34,21 @@ import {
   volt_types_translated,
   connectionism_types,
   connectionism_types_translated,
+  typeOfMotor_translated,
+  typeOfMotor,
+  typeOfVolt,
+  typeOfVolt_translated,
+  typeOfStep,
+  typeOfStep_translated,
 } from "../../Models/Motor";
 import {
   repair_types,
   repair_types_translated,
 } from "../../Models/Repair_Types";
 import { RepairRepository } from "../../Repositories/RepairRepository";
+import StepField from "./parts/StepFieldThreePhase";
+import StepFieldThreePhase from "./parts/StepFieldThreePhase";
+import TypeOfStepField from "./parts/TypeOfStepField";
 
 function CreateRepairForm(props) {
   const [tabValue, setTabValue] = useState(0);
@@ -51,6 +60,7 @@ function CreateRepairForm(props) {
   const [errorAlert, setErrorAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [errors, setErrors] = useState({});
+
   // Αρχικοποίηση των δεδομένων φόρμας
   useEffect(() => {
     loadCustomers();
@@ -482,6 +492,27 @@ function CreateRepairForm(props) {
               />
             </Grid>
             <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel id="type-select-label">Τύπος Κινητήρα</InputLabel>
+                <Select
+                  labelId="type-select-label"
+                  id="type-select"
+                  name="motor.typeOfMotor"
+                  value={repair.motor?.typeOfMotor || ""}
+                  label="Τύπος Κινητήρα"
+                  onChange={handleInputChange}
+                >
+                  {typeOfMotor.map((value, index) => {
+                    return (
+                      <MenuItem key={value} value={value}>
+                        {typeOfMotor_translated[index]}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
                 label="Ημερομηνία Παραλαβής"
@@ -512,14 +543,36 @@ function CreateRepairForm(props) {
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="Βήμα"
-                name="motor.step"
-                variant="outlined"
-                value={repair.motor?.step || ""}
-                onChange={handleInputChange}
-                placeholder="π.χ. 8-10-12"
+              <FormControl fullWidth>
+                <InputLabel>Φάσεις Κινητήρα</InputLabel>
+                <Select
+                  name="motor.typeOfVolt"
+                  value={repair.motor?.typeOfVolt || ""}
+                  label="Φάσεις Κινητήρα"
+                  onChange={handleInputChange}
+                >
+                  {typeOfVolt.map((type, index) => {
+                    // * ενα converter για translated
+                    return (
+                      <MenuItem key={type} value={type}>
+                        {typeOfVolt_translated[index]}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+            </Grid>
+            {/* parts: Βοηθητικο component γαι μισο-μισο/ολ, Κ, Β */}
+            <Grid item xs={12} sm={8}>
+              <StepFieldThreePhase
+                repair={repair}
+                handleInputChange={handleInputChange}
+              />
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <TypeOfStepField
+                repair={repair}
+                handleInputChange={handleInputChange}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
