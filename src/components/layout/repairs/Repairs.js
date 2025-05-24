@@ -57,21 +57,21 @@ function RepairRow(props) {
             },
           }}
         >
-          <TableCell>{repair.id}</TableCell>
-          <TableCell>{repair.motor.serial_number}</TableCell>
-          <TableCell>{repair.customer.name}</TableCell>
-          <TableCell>{repair.customer.phone}</TableCell>
-          <TableCell>{repair.motor.manufacturer}</TableCell>
-          <TableCell>{repair.motor.step}</TableCell>
-          <TableCell>{repair.motor.spiral}</TableCell>
-          <TableCell>{repair.motor.cross_section}</TableCell>
+          {/* <TableCell><strong>{repair.id}</strong></TableCell> */}
+          <TableCell>{repair.motor.serial_number || "-"}</TableCell>
+          <TableCell>{repair.customer.name || "-"}</TableCell>
+          <TableCell>{repair.customer.phone || "-"}</TableCell>
+          <TableCell>{repair.motor.manufacturer || "-"}</TableCell>
+          <TableCell>{repair.motor.step || "-"}</TableCell>
+          <TableCell>{repair.motor.spiral || "-"}</TableCell>
+          <TableCell>{repair.motor.cross_section || "-"}</TableCell>
           <TableCell>
-            {connectionismTranslated[repair.motor.connectionism]}
+            {connectionismTranslated[repair.motor.connectionism] || "-"}
           </TableCell>
-          <TableCell>{repair.motor.kw}kw</TableCell>
-          <TableCell>{repair.motor.hp}hp</TableCell>
-          <TableCell>{volt_types_mapping[repair.motor.volt]}</TableCell>
-          <TableCell>{repair.motor.created_at}</TableCell>
+          <TableCell>{repair.motor.kw ? `${repair.motor.kw}kw` : "-"}</TableCell>
+          <TableCell>{repair.motor.hp ? `${repair.motor.hp}hp` : "-"}</TableCell>
+          <TableCell>{volt_types_mapping[repair.motor.volt] || "-"}</TableCell>
+          <TableCell>{repair.isArrived || "-"}</TableCell>
         </TableRow>
       </Tooltip>
       <TableRow sx={{ backgroundColor: open ? "#f5f5f5" : "inherit" }}>
@@ -205,11 +205,11 @@ export default function Repairs() {
       <Typography variant="h6" sx={{ mb: 2 }}>
         Λεπτομέρειες Επισκευών
       </Typography>
-      <TableContainer component={Paper}>
-        <Table>
+      <TableContainer component={Paper} sx={{ maxHeight: 'calc(100vh - 200px)' }}>
+        <Table stickyHeader>
           <TableHead>
             <TableRow>
-              <TableCell>A/A</TableCell>
+              {/* <TableCell>A/A</TableCell> */}
               <TableCell>S/N</TableCell>
               <TableCell>Πελάτης</TableCell>
               <TableCell>Τηλέφωνο</TableCell>
