@@ -44,6 +44,7 @@ function RepairRow(props) {
         placement="top-start"
       >
         <TableRow
+          className="main-row"
           onClick={handleRowClick}
           onMouseEnter={() => setHover(true)}
           onMouseLeave={() => setHover(false)}
@@ -206,9 +207,17 @@ export default function Repairs() {
         Λεπτομέρειες Επισκευών
       </Typography>
       <TableContainer component={Paper} sx={{ maxHeight: 'calc(100vh - 200px)' }}>
-        <Table stickyHeader>
+        <Table 
+          stickyHeader  
+           sx={{
+            // Κεντράρισμα για headers και main rows μόνο
+            '& .MuiTableHead-root .MuiTableCell-root, & .main-row .MuiTableCell-root': {
+              textAlign: 'center'
+            }
+          }}
+        >
           <TableHead>
-            <TableRow>
+            <TableRow className="main-row">
               {/* <TableCell>A/A</TableCell> */}
               <TableCell>S/N</TableCell>
               <TableCell>Πελάτης</TableCell>
