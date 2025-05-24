@@ -1,9 +1,7 @@
 import React from "react";
-import { TextField, Grid, Grid2 } from "@mui/material";
 import ThreePhaseFields from "./winding/parts/ThreePhaseFields";
 
 function WindingsContentFields(props) {
-  console.log(props);
   return (
     <>
       {props.repair.motor?.typeOfVolt == "3-phase" && (

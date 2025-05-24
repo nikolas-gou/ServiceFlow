@@ -12,7 +12,6 @@ import {
 
 
 function TypeOfStepField(props) {
-  console.log(props, "yaa tyep" );
   return (
     <FormControl fullWidth>
       <InputLabel id="type-select-label">Τύπος Βήματος</InputLabel>
