@@ -2,7 +2,7 @@ export class Motor {
   constructor(data = {}) {
     this.id = data.id || null;
     this.serial_number = data.serial_number || null;
-    this.manufacturer = data.manufacturer || null;
+    this.manufacturer = data.manufacturer || "";
     this.kw = data.kw || null;
     this.hp = data.hp || null;
     this.rpm = data.rpm || "1490";
