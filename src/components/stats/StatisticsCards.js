@@ -37,7 +37,7 @@
 //   );
 // }
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Grid, Card, CardContent, Typography } from "@mui/material";
 import { Line } from "react-chartjs-2";
 import {
@@ -47,6 +47,8 @@ import {
   LinearScale,
   CategoryScale,
 } from "chart.js";
+import { RepairRepository } from "../Repositories/RepairRepository";
+import { CustomerRepository } from "../Repositories/CustomerRepository";
 
 ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale);
 
@@ -61,17 +63,19 @@ const chartOptions = {
 };
 
 export default function StatisticsCards() {
+  const [countRepairs, setCountRepairs] = useState("");
+  const [countCustomers, setCountCustomers] = useState("");
   const stats = [
     {
       title: "Συνολικες Επισκευές",
-      value: "1056",
+      value: countRepairs,
       trend: "+25%",
       color: "green",
       data: [5, 6, 7, 8, 7, 8, 10],
     },
     {
       title: "Πελάτες",
-      value: "325",
+      value: countCustomers,
       trend: "-25%",
       color: "red",
       data: [8, 7, 6, 5, 4, 3, 2],
@@ -92,6 +96,33 @@ export default function StatisticsCards() {
     },
   ];
 
+  useEffect(() => {
+    // Get All Repairs, customers,
+    loadStatsRepair();
+    loadStatsCustomer();
+  }, []);
+
+  // Φόρτωση αριθμό επισευών από το repository
+  const loadStatsRepair = async () => {
+    try {
+      const data = await RepairRepository.getStats();
+      setCountRepairs(data || []);
+    } catch (err) {
+      console.error("Σφάλμα φόρτωσης επισκευών:", err);
+      setCountRepairs([]);
+    }
+  };
+  // Φόρτωση πελατών από το repository
+  const loadStatsCustomer = async () => {
+    try {
+      const data = await CustomerRepository.getStats();
+      setCountCustomers(data || []);
+    } catch (err) {
+      console.error("Σφάλμα φόρτωσης επισκευών:", err);
+      setCountCustomers([]);
+    }
+  };
+  
   return (
     <Box sx={{ p: 2 }}>
       <Grid container spacing={2}>
