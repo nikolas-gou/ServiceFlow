@@ -67,7 +67,7 @@ export default function StatisticsCards() {
   const [countCustomers, setCountCustomers] = useState("");
   const stats = [
     {
-      title: "Συνολικες Επισκευές",
+      title: "Συνολικές Επισκευές",
       value: countRepairs,
       trend: "+25%",
       color: "green",
@@ -81,7 +81,7 @@ export default function StatisticsCards() {
       data: [8, 7, 6, 5, 4, 3, 2],
     },
     {
-      title: "Αντικαταστήσεις",
+      title: "Αντικαταστάσεις",
       value: "200k",
       trend: "+5%",
       color: "blue",
