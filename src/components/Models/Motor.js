@@ -24,7 +24,7 @@ export class Motor {
     this.typeOfStep = data.typeOfStep || "standard";
     this.typeOfMotor = data.typeOfMotor || "el_motor";
     this.typeOfVolt = data.typeOfVolt || "3-phase";
-    this.created_at = data.created_at || new Date().toISOString().split("T")[0];
+    this.created_at = data.created_at || new Date();
     this.customerID = data.customerID || null;
   }
 

@@ -9,7 +9,8 @@ export class Repair {
     this.repair_status = data.repair_status || "In-progress";
     this.description = data.description || "";
     this.cost = data.cost || "";
-    this.created_at = data.created_at || new Date().toISOString().split("T")[0];
+    this.created_at = data.created_at || new Date();
+    this.isArrived = data.isArrived || new Date().toISOString().split("T")[0];
     this.estimatedIsComplete =
       data.estimatedIsComplete || new Date().toISOString().split("T")[0];
     this.customer = data.customer
@@ -25,6 +26,7 @@ export class Repair {
       customerID: this.customerID,
       repair_status: this.repair_status,
       created_at: this.created_at,
+      isArrived: this.isArrived,
       estimatedIsComplete: this.estimatedIsComplete,
       description: this.description,
       cost: this.cost,

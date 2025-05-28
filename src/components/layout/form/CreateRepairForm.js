@@ -513,9 +513,9 @@ function CreateRepairForm(props) {
               <TextField
                 fullWidth
                 label="Ημερομηνία Παραλαβής"
-                name="motor.created_at"
+                name="repair.isArrived"
                 type="date"
-                value={repair.motor?.created_at || ""}
+                value={repair?.isArrived || ""}
                 onChange={handleInputChange}
                 InputLabelProps={{
                   shrink: true,
