@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Typography,
@@ -15,16 +15,16 @@ import {
   Divider,
   Snackbar,
   Alert,
-} from "@mui/material";
+} from '@mui/material';
 import {
   Save as SaveIcon,
   NavigateNext as NavigateNextIcon,
   NavigateBefore as NavigateBeforeIcon,
-} from "@mui/icons-material";
-import { Customer } from "../../Models/Customer";
-import { Repair } from "../../Models/Repair";
-import { CustomerRepository } from "../../Repositories/CustomerRepository";
-import { MotorRepository } from "../../Repositories/MotorRepository";
+} from '@mui/icons-material';
+import { Customer } from '../../Models/Customer';
+import { Repair } from '../../Models/Repair';
+import { CustomerRepository } from '../../Repositories/CustomerRepository';
+import { MotorRepository } from '../../Repositories/MotorRepository';
 import {
   rpm_types,
   rpm_types_translated,
@@ -38,15 +38,12 @@ import {
   typeOfMotor,
   typeOfVolt,
   typeOfVolt_translated,
-} from "../../Models/Motor";
-import {
-  common_faults,
-  common_faults_translated,
-} from "../../Models/CommonFault";
-import { RepairRepository } from "../../Repositories/RepairRepository";
+} from '../../Models/Motor';
+import { common_faults, common_faults_translated } from '../../Models/CommonFault';
+import { RepairRepository } from '../../Repositories/RepairRepository';
 
-import WindingsContentFields from "./parts/WindingsContentFields";
-import TypeOfStepField from "./parts/TypeOfStepField";
+import WindingsContentFields from './parts/WindingsContentFields';
+import TypeOfStepField from './parts/TypeOfStepField';
 
 function CreateRepairForm(props) {
   const [tabValue, setTabValue] = useState(0);
@@ -56,7 +53,7 @@ function CreateRepairForm(props) {
   const [motorBrands, setMotorBrands] = useState([]);
   const [successAlert, setSuccessAlert] = useState(false);
   const [errorAlert, setErrorAlert] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState('');
   const [errors, setErrors] = useState({});
 
   // Αρχικοποίηση των δεδομένων φόρμας
@@ -71,7 +68,7 @@ function CreateRepairForm(props) {
       const data = await CustomerRepository.getAll();
       setCustomers(data || []);
     } catch (err) {
-      console.error("Σφάλμα φόρτωσης πελατών:", err);
+      console.error('Σφάλμα φόρτωσης πελατών:', err);
       setCustomers([]);
     }
   };
@@ -81,7 +78,7 @@ function CreateRepairForm(props) {
       const data = await MotorRepository.getAllBrands();
       setMotorBrands(data || []);
     } catch (err) {
-      console.error("Σφάλμα φόρτωσης Κινητήρων:", err);
+      console.error('Σφάλμα φόρτωσης Κινητήρων:', err);
       setCustomers([]);
     }
   };
@@ -96,15 +93,13 @@ function CreateRepairForm(props) {
 
     // Μετατροπή σε κεφαλαία αν είναι το πεδίο customer.name
     const processedValue =
-      name === "customer.name" || name === "motor.manufacturer"
-        ? value.toUpperCase()
-        : value;
+      name === 'customer.name' || name === 'motor.manufacturer' ? value.toUpperCase() : value;
 
-    if (name.includes(".")) {
+    if (name.includes('.')) {
       // Διαχείριση ένθετων πεδίων (π.χ. customer.name, motor.manufacturer)
-      const [parent, child] = name.split(".");
+      const [parent, child] = name.split('.');
 
-      if (child === "hp") {
+      if (child === 'hp') {
         // Όταν αλλάζει η τιμή hp, θέτουμε το hp και υπολογίζουμε το kw
         setRepair((prev) => ({
           ...prev,
@@ -114,7 +109,7 @@ function CreateRepairForm(props) {
             kw: (parseFloat(processedValue) * 0.745699872).toFixed(2), // Μετατροπή hp σε kw
           },
         }));
-      } else if (child === "kw") {
+      } else if (child === 'kw') {
         // Όταν αλλάζει η τιμή kw, θέτουμε το kw και υπολογίζουμε το hp
         setRepair((prev) => ({
           ...prev,
@@ -182,10 +177,10 @@ function CreateRepairForm(props) {
     }
 
     // Καθαρισμός τυχόν σφαλμάτων
-    if (errors["customer.name"]) {
+    if (errors['customer.name']) {
       setErrors((prev) => ({
         ...prev,
-        ["customer.name"]: null,
+        ['customer.name']: null,
       }));
     }
   };
@@ -201,10 +196,10 @@ function CreateRepairForm(props) {
     }));
 
     // Καθαρισμός τυχόν σφαλμάτων
-    if (errors["motor.manufacturer"]) {
+    if (errors['motor.manufacturer']) {
       setErrors((prev) => ({
         ...prev,
-        ["motor.manufacturer"]: null,
+        ['motor.manufacturer']: null,
       }));
     }
   };
@@ -212,9 +207,7 @@ function CreateRepairForm(props) {
   // Προσθήκη συνηθισμένων θεμάτων στην περιγραφή
   const handleAddCommonIssue = (common_fault) => {
     const updatedDescription = repair.description
-      ? `${repair.description}\n- ${
-          common_faults_translated[common_fault.id - 1].name
-        }`
+      ? `${repair.description}\n- ${common_faults_translated[common_fault.id - 1].name}`
       : `- ${common_faults_translated[common_fault.id - 1].name}`;
 
     setRepair((prev) => ({
@@ -243,38 +236,37 @@ function CreateRepairForm(props) {
   const validateCurrentTab = () => {
     const newErrors = {};
     let isValid = true;
-    let errorMsg = "";
+    let errorMsg = '';
 
     switch (tabValue) {
       case 0: // Βασικά Στοιχεία
         if (!repair.customer?.name) {
-          newErrors["customer.name"] = "Το πεδίο Πελάτης είναι υποχρεωτικό";
-          errorMsg = "Ξέχασες να συμπληρώσεις το πεδίο Πελάτης";
+          newErrors['customer.name'] = 'Το πεδίο Πελάτης είναι υποχρεωτικό';
+          errorMsg = 'Ξέχασες να συμπληρώσεις το πεδίο Πελάτης';
           isValid = false;
         }
         if (!repair.motor?.manufacturer) {
-          newErrors["motor.manufacturer"] =
-            "Η επιλογή Μάρκας είναι υποχρεωτική";
-          errorMsg = errorMsg || "Ξέχασες να επιλέξεις Μάρκα";
+          newErrors['motor.manufacturer'] = 'Η επιλογή Μάρκας είναι υποχρεωτική';
+          errorMsg = errorMsg || 'Ξέχασες να επιλέξεις Μάρκα';
           isValid = false;
         }
         if (!repair.customer?.phone) {
-          newErrors["customer.phone"] = "Το πεδίο Τηλέφωνο είναι υποχρεωτικό";
-          errorMsg = errorMsg || "Ξέχασες να συμπληρώσεις το πεδίο Τηλέφωνο";
+          newErrors['customer.phone'] = 'Το πεδίο Τηλέφωνο είναι υποχρεωτικό';
+          errorMsg = errorMsg || 'Ξέχασες να συμπληρώσεις το πεδίο Τηλέφωνο';
           isValid = false;
         }
         break;
       case 2: // Περιγραφή Βλάβης
         if (!repair.description) {
-          newErrors.description = "Η περιγραφή βλάβης είναι υποχρεωτική";
-          errorMsg = "Ξέχασες να συμπληρώσεις την περιγραφή βλάβης";
+          newErrors.description = 'Η περιγραφή βλάβης είναι υποχρεωτική';
+          errorMsg = 'Ξέχασες να συμπληρώσεις την περιγραφή βλάβης';
           isValid = false;
         }
         break;
       case 3: // Κόστος & Παράδοση
         if (!repair.cost) {
-          newErrors.cost = "Το εκτιμώμενο κόστος είναι υποχρεωτικό";
-          errorMsg = "Ξέχασες να συμπληρώσεις το εκτιμώμενο κόστος";
+          newErrors.cost = 'Το εκτιμώμενο κόστος είναι υποχρεωτικό';
+          errorMsg = 'Ξέχασες να συμπληρώσεις το εκτιμώμενο κόστος';
           isValid = false;
         }
         break;
@@ -292,36 +284,36 @@ function CreateRepairForm(props) {
   const validateAllTabs = () => {
     const allErrors = {};
     let isValid = true;
-    let errorMsg = "";
+    let errorMsg = '';
 
     // Έλεγχος Βασικών Στοιχείων
     if (!repair.customer?.name) {
-      allErrors["customer.name"] = "Το πεδίο Πελάτης είναι υποχρεωτικό";
-      errorMsg = "Ξέχασες να συμπληρώσεις το πεδίο Πελάτης";
+      allErrors['customer.name'] = 'Το πεδίο Πελάτης είναι υποχρεωτικό';
+      errorMsg = 'Ξέχασες να συμπληρώσεις το πεδίο Πελάτης';
       isValid = false;
     }
     if (!repair.motor?.manufacturer) {
-      allErrors["motor.manufacturer"] = "Η επιλογή Μάρκας είναι υποχρεωτική";
-      errorMsg = errorMsg || "Ξέχασες να επιλέξεις Μάρκα";
+      allErrors['motor.manufacturer'] = 'Η επιλογή Μάρκας είναι υποχρεωτική';
+      errorMsg = errorMsg || 'Ξέχασες να επιλέξεις Μάρκα';
       isValid = false;
     }
     if (!repair.customer?.phone) {
-      allErrors["customer.phone"] = "Το πεδίο Τηλέφωνο είναι υποχρεωτικό";
-      errorMsg = errorMsg || "Ξέχασες να συμπληρώσεις το πεδίο Τηλέφωνο";
+      allErrors['customer.phone'] = 'Το πεδίο Τηλέφωνο είναι υποχρεωτικό';
+      errorMsg = errorMsg || 'Ξέχασες να συμπληρώσεις το πεδίο Τηλέφωνο';
       isValid = false;
     }
 
     // Έλεγχος Περιγραφής Βλάβης
     if (!repair.description) {
-      allErrors.description = "Η περιγραφή βλάβης είναι υποχρεωτική";
-      errorMsg = errorMsg || "Ξέχασες να συμπληρώσεις την περιγραφή βλάβης";
+      allErrors.description = 'Η περιγραφή βλάβης είναι υποχρεωτική';
+      errorMsg = errorMsg || 'Ξέχασες να συμπληρώσεις την περιγραφή βλάβης';
       isValid = false;
     }
 
     // Έλεγχος Κόστους
     if (!repair.cost) {
-      allErrors.cost = "Το εκτιμώμενο κόστος είναι υποχρεωτικό";
-      errorMsg = errorMsg || "Ξέχασες να συμπληρώσεις το εκτιμώμενο κόστος";
+      allErrors.cost = 'Το εκτιμώμενο κόστος είναι υποχρεωτικό';
+      errorMsg = errorMsg || 'Ξέχασες να συμπληρώσεις το εκτιμώμενο κόστος';
       isValid = false;
     }
 
@@ -373,31 +365,27 @@ function CreateRepairForm(props) {
       });
       setRepair(response || []);
     } catch (err) {
-      console.error("Σφάλμα Δημιουργίας Επισκευής:", err);
+      console.error('Σφάλμα Δημιουργίας Επισκευής:', err);
       setRepair([]);
     }
   };
 
   // Τίτλος κουμπιού ανάλογα με την καρτέλα
-  const buttonText = tabValue === 3 ? "Αποθήκευση" : "Επόμενο Βήμα";
+  const buttonText = tabValue === 3 ? 'Αποθήκευση' : 'Επόμενο Βήμα';
   const buttonIcon = tabValue === 3 ? <SaveIcon /> : <NavigateNextIcon />;
 
   // Έλεγχος σφαλμάτων για κάθε πεδίο
   const hasError = (fieldName) => Boolean(errors[fieldName]);
-  const getErrorMessage = (fieldName) => errors[fieldName] || "";
+  const getErrorMessage = (fieldName) => errors[fieldName] || '';
 
   return (
-    <Box sx={{ width: "100%", p: 2 }}>
-      <Typography variant="h5" component="h1" sx={{ mb: 3, color: "#1976d2" }}>
+    <Box sx={{ width: '100%', p: 2 }}>
+      <Typography variant="h5" component="h1" sx={{ mb: 3, color: '#1976d2' }}>
         Καταχώρηση Νέας Επισκευής
       </Typography>
 
-      <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 3 }}>
-        <Tabs
-          value={tabValue}
-          onChange={handleTabChange}
-          aria-label="repair form tabs"
-        >
+      <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+        <Tabs value={tabValue} onChange={handleTabChange} aria-label="repair form tabs">
           <Tab label="Βασικά Στοιχεία" />
           <Tab label="Τεχνικά Χαρακτηριστικά" />
           <Tab label="Περιγραφή Βλάβης" />
@@ -413,7 +401,7 @@ function CreateRepairForm(props) {
               <Autocomplete
                 freeSolo
                 options={customers.map((customer) => customer.name) || []}
-                value={repair.customer?.name || ""}
+                value={repair.customer?.name || ''}
                 onChange={handleCustomerChange}
                 renderInput={(params) => (
                   <TextField
@@ -423,8 +411,8 @@ function CreateRepairForm(props) {
                     name="customer.name"
                     variant="outlined"
                     onChange={(e) => handleInputChange(e)}
-                    error={hasError("customer.name")}
-                    helperText={getErrorMessage("customer.name")}
+                    error={hasError('customer.name')}
+                    helperText={getErrorMessage('customer.name')}
                   />
                 )}
               />
@@ -436,7 +424,7 @@ function CreateRepairForm(props) {
                   labelId="type-select-label"
                   id="type-select"
                   name="customer.type"
-                  value={repair.customer?.type || ""}
+                  value={repair.customer?.type || ''}
                   label="Τύπος"
                   onChange={handleInputChange}
                 >
@@ -452,10 +440,10 @@ function CreateRepairForm(props) {
                 label="Τηλέφωνο"
                 name="customer.phone"
                 variant="outlined"
-                value={repair.customer?.phone || ""}
+                value={repair.customer?.phone || ''}
                 onChange={handleInputChange}
-                error={hasError("customer.phone")}
-                helperText={getErrorMessage("customer.phone")}
+                error={hasError('customer.phone')}
+                helperText={getErrorMessage('customer.phone')}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -464,7 +452,7 @@ function CreateRepairForm(props) {
                 label="Email"
                 name="customer.email"
                 variant="outlined"
-                value={repair.customer?.email || ""}
+                value={repair.customer?.email || ''}
                 onChange={handleInputChange}
               />
             </Grid>
@@ -472,7 +460,7 @@ function CreateRepairForm(props) {
               <Autocomplete
                 freeSolo
                 options={motorBrands || []}
-                value={repair.motor?.manufacturer || ""}
+                value={repair.motor?.manufacturer || ''}
                 onChange={handleManufacturerChange}
                 renderInput={(params) => (
                   <TextField
@@ -482,8 +470,8 @@ function CreateRepairForm(props) {
                     name="motor.manufacturer"
                     variant="outlined"
                     onChange={(e) => handleInputChange(e)}
-                    error={hasError("motor.manufacturer")}
-                    helperText={getErrorMessage("motor.manufacturer")}
+                    error={hasError('motor.manufacturer')}
+                    helperText={getErrorMessage('motor.manufacturer')}
                   />
                 )}
               />
@@ -495,7 +483,7 @@ function CreateRepairForm(props) {
                   labelId="type-select-label"
                   id="type-select"
                   name="motor.typeOfMotor"
-                  value={repair.motor?.typeOfMotor || ""}
+                  value={repair.motor?.typeOfMotor || ''}
                   label="Τύπος Κινητήρα"
                   onChange={handleInputChange}
                 >
@@ -515,7 +503,7 @@ function CreateRepairForm(props) {
                 label="Ημερομηνία Παραλαβής"
                 name="repair.isArrived"
                 type="date"
-                value={repair?.isArrived || ""}
+                value={repair?.isArrived || ''}
                 onChange={handleInputChange}
                 InputLabelProps={{
                   shrink: true,
@@ -534,7 +522,7 @@ function CreateRepairForm(props) {
                 label="Serial Number"
                 name="motor.serialNumber"
                 variant="outlined"
-                value={repair.motor?.serialNumber || ""}
+                value={repair.motor?.serialNumber || ''}
                 onChange={handleInputChange}
                 placeholder="π.χ. 3568"
               />
@@ -544,7 +532,7 @@ function CreateRepairForm(props) {
                 <InputLabel>Φάσεις Κινητήρα</InputLabel>
                 <Select
                   name="motor.typeOfVolt"
-                  value={repair.motor?.typeOfVolt || ""}
+                  value={repair.motor?.typeOfVolt || ''}
                   label="Φάσεις Κινητήρα"
                   onChange={handleInputChange}
                 >
@@ -561,25 +549,19 @@ function CreateRepairForm(props) {
             </Grid>
             {/* template motor fields (step, spiral, crossSection) */}
             <Grid item xs={12} sm={3}>
-              <TypeOfStepField
-                repair={repair}
-                handleInputChange={handleInputChange}
-              />
+              <TypeOfStepField repair={repair} handleInputChange={handleInputChange} />
             </Grid>
 
             {/* parts: Βοηθητικο component γαι μισο-μισο/ολ, Κ, Β */}
             <Grid item xs={12} sm={12} fullWidth>
-              <WindingsContentFields
-                repair={repair}
-                handleInputChange={handleInputChange}
-              />
+              <WindingsContentFields repair={repair} handleInputChange={handleInputChange} />
             </Grid>
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth>
                 <InputLabel>Σύνδεση</InputLabel>
                 <Select
                   name="motor.connectionism"
-                  value={repair.motor?.connectionism || ""}
+                  value={repair.motor?.connectionism || ''}
                   label="Σύνδεση"
                   onChange={handleInputChange}
                 >
@@ -601,7 +583,7 @@ function CreateRepairForm(props) {
                 name="motor.kw"
                 type="number"
                 variant="outlined"
-                value={repair.motor?.kw || ""}
+                value={repair.motor?.kw || ''}
                 onChange={handleInputChange}
               />
             </Grid>
@@ -612,7 +594,7 @@ function CreateRepairForm(props) {
                 name="motor.hp"
                 type="number"
                 variant="outlined"
-                value={repair.motor?.hp || ""}
+                value={repair.motor?.hp || ''}
                 onChange={handleInputChange}
               />
             </Grid>
@@ -621,7 +603,7 @@ function CreateRepairForm(props) {
                 <InputLabel>Τάση (volt)</InputLabel>
                 <Select
                   name="motor.volt"
-                  value={repair.motor?.volt || ""}
+                  value={repair.motor?.volt || ''}
                   label="Τάση (volt)"
                   onChange={handleInputChange}
                 >
@@ -641,7 +623,7 @@ function CreateRepairForm(props) {
                 <InputLabel>Στροφές (rpm)</InputLabel>
                 <Select
                   name="motor.rpm"
-                  value={repair.motor?.rpm || ""}
+                  value={repair.motor?.rpm || ''}
                   label="Στροφές (rpm)"
                   onChange={handleInputChange}
                 >
@@ -661,7 +643,7 @@ function CreateRepairForm(props) {
                 <InputLabel>Πόλοι</InputLabel>
                 <Select
                   name="motor.poles"
-                  value={repair.motor?.poles || ""}
+                  value={repair.motor?.poles || ''}
                   label="Πόλοι"
                   onChange={handleInputChange}
                 >
@@ -709,10 +691,10 @@ function CreateRepairForm(props) {
                 multiline
                 rows={6}
                 variant="outlined"
-                value={repair.description || ""}
+                value={repair.description || ''}
                 onChange={handleInputChange}
-                error={hasError("description")}
-                helperText={getErrorMessage("description")}
+                error={hasError('description')}
+                helperText={getErrorMessage('description')}
               />
             </Grid>
           </Grid>
@@ -729,10 +711,10 @@ function CreateRepairForm(props) {
                 name="cost"
                 type="number"
                 variant="outlined"
-                value={repair.cost || ""}
+                value={repair.cost || ''}
                 onChange={handleInputChange}
-                error={hasError("cost")}
-                helperText={getErrorMessage("cost")}
+                error={hasError('cost')}
+                helperText={getErrorMessage('cost')}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -742,7 +724,7 @@ function CreateRepairForm(props) {
                 name="repair.estimatedIsComplete"
                 type="date"
                 InputLabelProps={{ shrink: true }}
-                value={repair.estimatedIsComplete || ""}
+                value={repair.estimatedIsComplete || ''}
                 onChange={handleInputChange}
               />
             </Grid>
@@ -754,9 +736,9 @@ function CreateRepairForm(props) {
         {/* Form Actions */}
         <Box
           sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
           }}
         >
           {tabValue > 0 && (
@@ -786,22 +768,14 @@ function CreateRepairForm(props) {
       </form>
 
       {/* Success Alert */}
-      <Snackbar
-        open={successAlert}
-        autoHideDuration={6000}
-        onClose={() => setSuccessAlert(false)}
-      >
+      <Snackbar open={successAlert} autoHideDuration={6000} onClose={() => setSuccessAlert(false)}>
         <Alert onClose={() => setSuccessAlert(false)} severity="success">
           Η επισκευή καταχωρήθηκε με επιτυχία!
         </Alert>
       </Snackbar>
 
       {/* Error Alert */}
-      <Snackbar
-        open={errorAlert}
-        autoHideDuration={6000}
-        onClose={() => setErrorAlert(false)}
-      >
+      <Snackbar open={errorAlert} autoHideDuration={6000} onClose={() => setErrorAlert(false)}>
         <Alert onClose={() => setErrorAlert(false)} severity="error">
           {errorMessage}
         </Alert>
