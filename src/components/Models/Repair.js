@@ -58,7 +58,7 @@ export class Repair {
       repair_status: this.repairStatus,
       created_at: this.createdAt,
       is_arrived: this.isArrived,
-      estimated_is_Complete: this.estimatedIsComplete,
+      estimated_is_complete: this.estimatedIsComplete,
       cost: this.cost,
       customer: this.customer ? this.customer.toApiFormat() : null,
       motor: this.motor ? this.motor.toApiFormat() : null,

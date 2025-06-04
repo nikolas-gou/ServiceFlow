@@ -501,7 +501,7 @@ function CreateRepairForm(props) {
               <TextField
                 fullWidth
                 label="Ημερομηνία Παραλαβής"
-                name="repair.isArrived"
+                name="isArrived"
                 type="date"
                 value={repair?.isArrived || ''}
                 onChange={handleInputChange}
@@ -721,10 +721,10 @@ function CreateRepairForm(props) {
               <TextField
                 fullWidth
                 label="Εκτιμώμενη Ημερομηνία Παράδοσης"
-                name="repair.estimatedIsComplete"
+                name="estimatedIsComplete"
                 type="date"
                 InputLabelProps={{ shrink: true }}
-                value={repair.estimatedIsComplete || ''}
+                value={repair?.estimatedIsComplete || ''}
                 onChange={handleInputChange}
               />
             </Grid>
