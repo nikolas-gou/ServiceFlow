@@ -1,7 +1,7 @@
 export class Motor {
   constructor(data = {}) {
     this.id = data.id || null;
-    this.serial_number = data.serial_number || null;
+    this.serialNumber = data.serialNumber || null;
     this.manufacturer = data.manufacturer || "";
     this.kw = data.kw || null;
     this.hp = data.hp || null;
@@ -14,17 +14,17 @@ export class Motor {
     this.halfSpiral = data.halfSpiral || null;
     this.helperSpiral = data.helperSpiral || null;
     this.helperHalfSpiral = data.helperHalfSpiral || null;
-    this.cross_section = data.cross_section || null;
-    this.halfCross_section = data.halfCross_section || null;
-    this.helperCross_section = data.helperCross_section || null;
-    this.helperHalfCross_section = data.helperHalfCross_section || null;
+    this.crossSection = data.crossSection || null;
+    this.halfCrossSection = data.halfCrossSection || null;
+    this.helperCrossSection = data.helperCrossSection || null;
+    this.helperHalfCrossSection = data.helperHalfCrossSection || null;
     this.connectionism = data.connectionism || "simple";
     this.volt = data.volt || "380VY";
     this.poles = data.poles || null;
     this.typeOfStep = data.typeOfStep || "standard";
     this.typeOfMotor = data.typeOfMotor || "el_motor";
     this.typeOfVolt = data.typeOfVolt || "3-phase";
-    this.created_at = data.created_at || new Date();
+    this.createdAt = data.createdAt || new Date();
     this.customerID = data.customerID || null;
   }
 
@@ -32,10 +32,43 @@ export class Motor {
     return this.manufacturer.trim() !== "" && this.manufacturer.trim() !== "";
   }
 
+  static fromApiFormat(apiData) {
+    // console.log(apiData)
+    const transformedData = {
+      id: apiData.id,
+      serialNumber: apiData.serial_number,
+      manufacturer: apiData.manufacturer,
+      kw: apiData.kw,
+      hp: apiData.hp,
+      rpm: apiData.rpm,
+      step: apiData.step,
+      halfStep: apiData.half_step,
+      helperStep: apiData.helper_step,
+      helperHalfStep: apiData.helper_half_step,
+      spiral: apiData.spiral,
+      halfSpiral: apiData.half_spiral,
+      helperSpiral: apiData.helper_spiral,
+      helperHalfSpiral: apiData.helper_half_spiral,
+      crossSection: apiData.cross_section,
+      halfCrossSection: apiData.half_cross_section,
+      helperCrossSection: apiData.helper_cross_section,
+      helperHalfCrossSection: apiData.helper_half_cross_section,
+      connectionism: apiData.connectionism,
+      volt: apiData.volt,
+      poles: apiData.poles,
+      typeOfStep: apiData.type_of_step,
+      typeOfMotor: apiData.type_of_motor,
+      typeOfVolt: apiData.type_of_volt,
+      createdAt: apiData.created_at,
+      customerID: apiData.customer_id,
+    }
+    return new Motor(transformedData)
+  }
+
   toJSON() {
     return {
       id: this.id,
-      serial_number: this.serial_number,
+      serialNumber: this.serialNumber,
       manufacturer: this.manufacturer,
       kw: this.kw,
       hp: this.hp,
@@ -48,18 +81,48 @@ export class Motor {
       halfSpiral: this.halfSpiral,
       helperSpiral: this.helperSpiral,
       helperHalfSpiral: this.helperHalfSpiral,
-      cross_section: this.cross_section,
-      halfCross_section: this.halfCross_section,
-      helperCross_section: this.helperCross_section,
-      helperHalfCross_section: this.helperHalfCross_section,
+      crossSection: this.crossSection,
+      halfCrossSection: this.halfCrossSection,
+      helperCrossSection: this.helperCrossSection,
+      helperHalfCrossSection: this.helperHalfCrossSection,
       connectionism: this.connectionism,
       volt: this.volt,
       poles: this.poles,
       typeOfStep: this.typeOfStep,
       typeOfMotor: this.typeOfMotor,
       typeOfVolt: this.typeOfVolt,
-      created_at: this.created_at,
+      createdAt: this.createdAt,
       customerID: this.customerID,
+    };
+  }
+   toApiFormat() {
+    return {
+      id: this.id,
+      serial_number: this.serialNumber,
+      manufacturer: this.manufacturer,
+      kw: this.kw,
+      hp: this.hp,
+      rpm: this.rpm,
+      step: this.step,
+      half_step: this.halfStep,
+      helper_step: this.helperStep,
+      helper_half_step: this.helperHalfStep,
+      spiral: this.spiral,
+      half_spiral: this.halfSpiral,
+      helper_spiral: this.helperSpiral,
+      helper_half_spiral: this.helperHalfSpiral,
+      cross_section: this.crossSection,
+      half_cross_section: this.halfCrossSection,
+      helper_cross_section: this.helperCrossSection,
+      helper_half_cross_section: this.helperHalfCrossSection,
+      connectionism: this.connectionism,
+      volt: this.volt,
+      poles: this.poles,
+      type_of_step: this.typeOfStep,
+      type_of_motor: this.typeOfMotor,
+      type_of_volt: this.typeOfVolt,
+      created_at: this.createdAt,
+      customer_id: this.customerID,
     };
   }
 }

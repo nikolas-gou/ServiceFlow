@@ -40,9 +40,9 @@ import {
   typeOfVolt_translated,
 } from "../../Models/Motor";
 import {
-  repair_types,
-  repair_types_translated,
-} from "../../Models/Repair_Types";
+  common_faults,
+  common_faults_translated,
+} from "../../Models/CommonFault";
 import { RepairRepository } from "../../Repositories/RepairRepository";
 
 import WindingsContentFields from "./parts/WindingsContentFields";
@@ -51,7 +51,7 @@ import TypeOfStepField from "./parts/TypeOfStepField";
 function CreateRepairForm(props) {
   const [tabValue, setTabValue] = useState(0);
   const [repair, setRepair] = useState(new Repair());
-  const [selectedRepairTypes, setSelectedRepairTypes] = useState([]);
+  const [selectedCommonFault, setSelectedCommonFault] = useState([]);
   const [customers, setCustomers] = useState([]);
   const [motorBrands, setMotorBrands] = useState([]);
   const [successAlert, setSuccessAlert] = useState(false);
@@ -210,12 +210,12 @@ function CreateRepairForm(props) {
   };
 
   // Προσθήκη συνηθισμένων θεμάτων στην περιγραφή
-  const handleAddCommonIssue = (repair_type) => {
+  const handleAddCommonIssue = (common_fault) => {
     const updatedDescription = repair.description
       ? `${repair.description}\n- ${
-          repair_types_translated[repair_type.id - 1].name
+          common_faults_translated[common_fault.id - 1].name
         }`
-      : `- ${repair_types_translated[repair_type.id - 1].name}`;
+      : `- ${common_faults_translated[common_fault.id - 1].name}`;
 
     setRepair((prev) => ({
       ...prev,
@@ -223,9 +223,9 @@ function CreateRepairForm(props) {
     }));
 
     // Προσθήκη του ID της βλάβης στον πίνακα, αν δεν υπάρχει ήδη
-    setSelectedRepairTypes((prev) => {
-      if (!prev.includes(repair_type.id)) {
-        return [...prev, repair_type.id];
+    setSelectedCommonFault((prev) => {
+      if (!prev.includes(common_fault.id)) {
+        return [...prev, common_fault.id];
       }
       return prev;
     });
@@ -366,10 +366,10 @@ function CreateRepairForm(props) {
   const createNewRepair = async (dataApi) => {
     try {
       const response = await RepairRepository.createNewRepair({
-        repair: dataApi.toJSON(),
-        customer: dataApi.customer.toJSON(),
-        motor: dataApi.motor.toJSON(),
-        repair_types: selectedRepairTypes,
+        repair: dataApi.toApiFormat(),
+        customer: dataApi.customer.toApiFormat(),
+        motor: dataApi.motor.toApiFormat(),
+        common_faults: selectedCommonFault,
       });
       setRepair(response || []);
     } catch (err) {
@@ -532,9 +532,9 @@ function CreateRepairForm(props) {
               <TextField
                 fullWidth
                 label="Serial Number"
-                name="motor.serial_number"
+                name="motor.serialNumber"
                 variant="outlined"
-                value={repair.motor?.serial_number || ""}
+                value={repair.motor?.serialNumber || ""}
                 onChange={handleInputChange}
                 placeholder="π.χ. 3568"
               />
@@ -559,7 +559,7 @@ function CreateRepairForm(props) {
                 </Select>
               </FormControl>
             </Grid>
-            {/* template motor fields (step, spiral, cross_section) */}
+            {/* template motor fields (step, spiral, crossSection) */}
             <Grid item xs={12} sm={3}>
               <TypeOfStepField
                 repair={repair}
@@ -687,15 +687,15 @@ function CreateRepairForm(props) {
                 Συνήθεις βλάβες:
               </Typography>
               <Box sx={{ mb: 2 }}>
-                {repair_types.map((repair_type) => (
+                {common_faults.map((common_fault) => (
                   <Button
-                    key={repair_type.id}
+                    key={common_fault.id}
                     variant="outlined"
                     size="small"
                     sx={{ mr: 1, mb: 1 }}
-                    onClick={() => handleAddCommonIssue(repair_type)}
+                    onClick={() => handleAddCommonIssue(common_fault)}
                   >
-                    {repair_types_translated[repair_type?.id - 1]?.name}
+                    {common_faults_translated[common_fault?.id - 1]?.name}
                   </Button>
                 ))}
               </Box>
@@ -739,7 +739,7 @@ function CreateRepairForm(props) {
               <TextField
                 fullWidth
                 label="Εκτιμώμενη Ημερομηνία Παράδοσης"
-                name="estimatedIsComplete"
+                name="repair.estimatedIsComplete"
                 type="date"
                 InputLabelProps={{ shrink: true }}
                 value={repair.estimatedIsComplete || ""}

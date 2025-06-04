@@ -1,4 +1,4 @@
-export class Repair_Types {
+export class CommonFault {
   constructor(data = {}) {
     this.id = data.id || null;
     this.name = data.name || "";
@@ -16,7 +16,7 @@ export class Repair_Types {
   }
 }
 
-export const repair_types = [
+export const common_faults = [
   { id: 1, name: "winding" },
   { id: 2, name: "bearings" },
   { id: 3, name: "terminal_panel" },
@@ -26,7 +26,7 @@ export const repair_types = [
   { id: 7, name: "metalwork" },
   { id: 8, name: "other" },
 ];
-export const repair_types_translated = [
+export const common_faults_translated = [
   { id: 1, name: "Περιέλιξη" },
   { id: 2, name: "Ρουλεμάν" },
   { id: 3, name: "Κασέτα" },

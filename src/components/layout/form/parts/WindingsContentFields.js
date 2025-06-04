@@ -16,8 +16,8 @@ function WindingsContentFields(props) {
               spiral_name="motor.spiral"
               spiral_value={props.repair.motor?.spiral || ""}
               cross_section_label="Διατομή (Ολόκληρο)"
-              cross_section_name="motor.cross_section"
-              cross_section_value={props.repair.motor?.cross_section || ""}
+              cross_section_name="motor.crossSection"
+              cross_section_value={props.repair.motor?.crossSection || ""}
               onChange={props.handleInputChange}
             />
           )}
@@ -31,8 +31,8 @@ function WindingsContentFields(props) {
               spiral_name="motor.halfSpiral"
               spiral_value={props.repair.motor?.halfSpiral || ""}
               cross_section_label="Διατομή (Μισό - Μισό)"
-              cross_section_name="motor.halfCross_section"
-              cross_section_value={props.repair.motor?.halfCross_section || ""}
+              cross_section_name="motor.halfCrossSection"
+              cross_section_value={props.repair.motor?.halfCrossSection || ""}
               onChange={props.handleInputChange}
             />
           )}
@@ -49,9 +49,9 @@ function WindingsContentFields(props) {
                 spiral_name="motor.halfSpiral"
                 spiral_value={props.repair.motor?.halfSpiral || ""}
                 cross_section_label="Διατομή (Μισό - Μισό)"
-                cross_section_name="motor.halfCross_section"
+                cross_section_name="motor.halfCrossSection"
                 cross_section_value={
-                  props.repair.motor?.halfCross_section || ""
+                  props.repair.motor?.halfCrossSection || ""
                 }
                 onChange={props.handleInputChange}
               />
@@ -64,8 +64,8 @@ function WindingsContentFields(props) {
                 spiral_name="motor.spiral"
                 spiral_value={props.repair.motor?.spiral || ""}
                 cross_section_label="Διατομή (Ολόκληρο)"
-                cross_section_name="motor.cross_section"
-                cross_section_value={props.repair.motor?.cross_section || ""}
+                cross_section_name="motor.crossSection"
+                cross_section_value={props.repair.motor?.crossSection || ""}
                 onChange={props.handleInputChange}
               />
             </>
@@ -86,8 +86,8 @@ function WindingsContentFields(props) {
                 spiral_name="motor.spiral"
                 spiral_value={props.repair.motor?.spiral || ""}
                 cross_section_label="Κυρίως Διατομή (Ολόκληρο)"
-                cross_section_name="motor.cross_section"
-                cross_section_value={props.repair.motor?.cross_section || ""}
+                cross_section_name="motor.crossSection"
+                cross_section_value={props.repair.motor?.crossSection || ""}
                 onChange={props.handleInputChange}
               />
               {/* ολόκληρο - Βοηθητικό */}
@@ -99,9 +99,9 @@ function WindingsContentFields(props) {
                 spiral_name="motor.helperSpiral"
                 spiral_value={props.repair.motor?.helperSpiral || ""}
                 cross_section_label="Βοηθητικό Διατομή (Ολόκληρο)"
-                cross_section_name="motor.helperCross_section"
+                cross_section_name="motor.helperCrossSection"
                 cross_section_value={
-                  props.repair.motor?.helperCross_section || ""
+                  props.repair.motor?.helperCrossSection || ""
                 }
                 onChange={props.handleInputChange}
               />
@@ -119,9 +119,9 @@ function WindingsContentFields(props) {
                 spiral_name="motor.halfSpiral"
                 spiral_value={props.repair.motor?.halfSpiral || ""}
                 cross_section_label="Κυρίως Διατομή (Μισό - Μισό)"
-                cross_section_name="motor.halfCross_section"
+                cross_section_name="motor.halfCrossSection"
                 cross_section_value={
-                  props.repair.motor?.halfCross_section || ""
+                  props.repair.motor?.halfCrossSection || ""
                 }
                 onChange={props.handleInputChange}
               />
@@ -134,9 +134,9 @@ function WindingsContentFields(props) {
                 spiral_name="motor.helperHalfSpiral"
                 spiral_value={props.repair.motor?.helperHalfSpiral || ""}
                 cross_section_label="Βοηθητικό Διατομή (Μισό - Μισό)"
-                cross_section_name="motor.helperHalfCross_section"
+                cross_section_name="motor.helperHalfCrossSection"
                 cross_section_value={
-                  props.repair.motor?.helperHalfCross_section || ""
+                  props.repair.motor?.helperHalfCrossSection || ""
                 }
                 onChange={props.handleInputChange}
               />
@@ -154,9 +154,9 @@ function WindingsContentFields(props) {
                 spiral_name="motor.halfSpiral"
                 spiral_value={props.repair.motor?.halfSpiral || ""}
                 cross_section_label="Κυρίως Διατομή (Μισό - Μισό)"
-                cross_section_name="motor.halfCross_section"
+                cross_section_name="motor.halfCrossSection"
                 cross_section_value={
-                  props.repair.motor?.halfCross_section || ""
+                  props.repair.motor?.halfCrossSection || ""
                 }
                 onChange={props.handleInputChange}
               />
@@ -170,8 +170,8 @@ function WindingsContentFields(props) {
                 spiral_name="motor.spiral"
                 spiral_value={props.repair.motor?.spiral || ""}
                 cross_section_label="Κυρίως Διατομή (Ολόκληρο)"
-                cross_section_name="motor.cross_section"
-                cross_section_value={props.repair.motor?.cross_section || ""}
+                cross_section_name="motor.crossSection"
+                cross_section_value={props.repair.motor?.crossSection || ""}
                 onChange={props.handleInputChange}
               />
               {/* Μισό - Μισό - Βοηθητικό */}
@@ -184,9 +184,9 @@ function WindingsContentFields(props) {
                 spiral_name="motor.helperHalfSpiral"
                 spiral_value={props.repair.motor?.helperHalfSpiral || ""}
                 cross_section_label="Βοηθητικό Διατομή (Μισό - Μισό)"
-                cross_section_name="motor.helperHalfCross_section"
+                cross_section_name="motor.helperHalfCrossSection"
                 cross_section_value={
-                  props.repair.motor?.helperHalfCross_section || ""
+                  props.repair.motor?.helperHalfCrossSection || ""
                 }
                 onChange={props.handleInputChange}
               />
@@ -199,9 +199,9 @@ function WindingsContentFields(props) {
                 spiral_name="motor.helperSpiral"
                 spiral_value={props.repair.motor?.helperSpiral || ""}
                 cross_section_label="Βοηθητικό Διατομή (Ολόκληρο)"
-                cross_section_name="motor.helperCross_section"
+                cross_section_name="motor.helperCrossSection"
                 cross_section_value={
-                  props.repair.motor?.helperCross_section || ""
+                  props.repair.motor?.helperCrossSection || ""
                 }
                 onChange={props.handleInputChange}
               />

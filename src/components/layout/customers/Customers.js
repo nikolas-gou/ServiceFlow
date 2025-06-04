@@ -55,7 +55,7 @@ export default function Customers() {
                 <TableCell>{customer.type}</TableCell>
                 <TableCell>{customer.phone}</TableCell>
                 <TableCell>{customer.email}</TableCell>
-                <TableCell>{customer.created_at}</TableCell>
+                <TableCell>{customer.createdAt}</TableCell>
               </TableRow>
             ))}
           </TableBody>

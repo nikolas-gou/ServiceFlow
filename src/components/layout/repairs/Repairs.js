@@ -59,13 +59,13 @@ function RepairRow(props) {
           }}
         >
           {/* <TableCell><strong>{repair.id}</strong></TableCell> */}
-          <TableCell>{repair.motor.serial_number || "-"}</TableCell>
+          <TableCell>{repair.motor.serialNumber || "-"}</TableCell>
           <TableCell>{repair.customer.name || "-"}</TableCell>
           <TableCell>{repair.customer.phone || "-"}</TableCell>
           <TableCell>{repair.motor.manufacturer || "-"}</TableCell>
           <TableCell>{repair.motor.step || "-"}</TableCell>
           <TableCell>{repair.motor.spiral || "-"}</TableCell>
-          <TableCell>{repair.motor.cross_section || "-"}</TableCell>
+          <TableCell>{repair.motor.crossSection || "-"}</TableCell>
           <TableCell>
             {connectionismTranslated[repair.motor.connectionism] || "-"}
           </TableCell>
@@ -110,7 +110,7 @@ function RepairRow(props) {
                         Διατομή:
                       </Typography>
                       <Typography variant="body1">
-                        {repair.motor.cross_section}
+                        {repair.motor.crossSection}
                       </Typography>
                     </Grid>
                     <Grid item xs={6}>
