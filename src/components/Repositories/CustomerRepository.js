@@ -1,21 +1,21 @@
 // repositories/CustomerRepository.js
-import config from "../../config";
-import { Customer } from "../Models/Customer";
-import apiCall from "../../utils/apiCall";
+import config from '../../config';
+import { Customer } from '../Models/Customer';
+import apiCall from '../../utils/apiCall';
 
 export class CustomerRepository {
   static async getAll() {
-    const data = await apiCall(config.server, "/api/customers", "GET");
+    const data = await apiCall(config.server, '/api/customers', 'GET');
     return data.map((customer) => new Customer(customer));
   }
 
   static async getStats() {
-    const data = await apiCall(config.server, "/api/statsOfCustomers", "GET");
+    const data = await apiCall(config.server, '/api/statsOfCustomers', 'GET');
     return data;
   }
 
   static async listOfNames() {
-    const data = await apiCall(config.server, "/api/customers", "GET");
+    const data = await apiCall(config.server, '/api/customers', 'GET');
     return data.map((customer) => customer.name);
   }
 

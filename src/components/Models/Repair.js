@@ -1,21 +1,18 @@
-import { Customer } from "./Customer";
-import { Motor } from "./Motor";
+import { Customer } from './Customer';
+import { Motor } from './Motor';
 
 export class Repair {
   constructor(data = {}) {
     this.id = data.id || null;
     this.motorID = data.motorID || null;
     this.customerID = data.customerID || null;
-    this.repairStatus = data.repairStatus || "In-progress";
-    this.description = data.description || "";
-    this.cost = data.cost || "";
+    this.repairStatus = data.repairStatus || 'In-progress';
+    this.description = data.description || '';
+    this.cost = data.cost || '';
     this.createdAt = data.createdAt || new Date();
-    this.isArrived = data.isArrived || new Date().toISOString().split("T")[0];
-    this.estimatedIsComplete =
-      data.estimatedIsComplete || new Date().toISOString().split("T")[0];
-    this.customer = data.customer
-      ? new Customer(data.customer)
-      : new Customer();
+    this.isArrived = data.isArrived || new Date().toISOString().split('T')[0];
+    this.estimatedIsComplete = data.estimatedIsComplete || new Date().toISOString().split('T')[0];
+    this.customer = data.customer ? new Customer(data.customer) : new Customer();
     this.motor = data.motor ? new Motor(data.motor) : new Motor();
   }
 
@@ -32,8 +29,8 @@ export class Repair {
       cost: apiData.cost,
       customer: apiData.customer ? apiData.customer : null,
       motor: apiData.motor ? Motor.fromApiFormat(apiData.motor) : null,
-    }
-    return new Repair(transformedData)
+    };
+    return new Repair(transformedData);
   }
 
   toJSON() {

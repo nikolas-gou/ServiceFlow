@@ -2,10 +2,10 @@ export class Motor {
   constructor(data = {}) {
     this.id = data.id || null;
     this.serialNumber = data.serialNumber || null;
-    this.manufacturer = data.manufacturer || "";
+    this.manufacturer = data.manufacturer || '';
     this.kw = data.kw || null;
     this.hp = data.hp || null;
-    this.rpm = data.rpm || "1490";
+    this.rpm = data.rpm || '1490';
     this.step = data.step || null;
     this.halfStep = data.halfStep || null;
     this.helperStep = data.helperStep || null;
@@ -18,18 +18,18 @@ export class Motor {
     this.halfCrossSection = data.halfCrossSection || null;
     this.helperCrossSection = data.helperCrossSection || null;
     this.helperHalfCrossSection = data.helperHalfCrossSection || null;
-    this.connectionism = data.connectionism || "simple";
-    this.volt = data.volt || "380VY";
+    this.connectionism = data.connectionism || 'simple';
+    this.volt = data.volt || '380VY';
     this.poles = data.poles || null;
-    this.typeOfStep = data.typeOfStep || "standard";
-    this.typeOfMotor = data.typeOfMotor || "el_motor";
-    this.typeOfVolt = data.typeOfVolt || "3-phase";
+    this.typeOfStep = data.typeOfStep || 'standard';
+    this.typeOfMotor = data.typeOfMotor || 'el_motor';
+    this.typeOfVolt = data.typeOfVolt || '3-phase';
     this.createdAt = data.createdAt || new Date();
     this.customerID = data.customerID || null;
   }
 
   isValid() {
-    return this.manufacturer.trim() !== "" && this.manufacturer.trim() !== "";
+    return this.manufacturer.trim() !== '' && this.manufacturer.trim() !== '';
   }
 
   static fromApiFormat(apiData) {
@@ -61,8 +61,8 @@ export class Motor {
       typeOfVolt: apiData.type_of_volt,
       createdAt: apiData.created_at,
       customerID: apiData.customer_id,
-    }
-    return new Motor(transformedData)
+    };
+    return new Motor(transformedData);
   }
 
   toJSON() {
@@ -95,7 +95,7 @@ export class Motor {
       customerID: this.customerID,
     };
   }
-   toApiFormat() {
+  toApiFormat() {
     return {
       id: this.id,
       serial_number: this.serialNumber,
@@ -127,55 +127,39 @@ export class Motor {
   }
 }
 
-export const connectionism_types = [
-  "simple",
-  "1-parallel",
-  "2-parallel",
-  "3-parallel",
-  "other",
-];
+export const connectionism_types = ['simple', '1-parallel', '2-parallel', '3-parallel', 'other'];
 
 export const connectionism_types_translated = [
-  "Απλή",
-  "1 φορά παράλληλη",
-  "2 φορές παράλληλη",
-  "3 φορές παράλληλη",
-  "Άλλο",
+  'Απλή',
+  '1 φορά παράλληλη',
+  '2 φορές παράλληλη',
+  '3 φορές παράλληλη',
+  'Άλλο',
 ];
 
-export const rpm_types = ["900", "1490", "2900", "other"];
-export const rpm_types_translated = ["900", "1490", "2900", "Αλλο"];
+export const rpm_types = ['900', '1490', '2900', 'other'];
+export const rpm_types_translated = ['900', '1490', '2900', 'Αλλο'];
 
-export const poles_types = ["2", "4", "6", "8", "12", "other"];
-export const poles_types_translated = ["2", "4", "6", "8", "12", "Άλλο"];
+export const poles_types = ['2', '4', '6', '8', '12', 'other'];
+export const poles_types_translated = ['2', '4', '6', '8', '12', 'Άλλο'];
 
-export const volt_types = ["230VY", "230VYY", "380VY", "380VYY", "other"];
+export const volt_types = ['230VY', '230VYY', '380VY', '380VYY', 'other'];
 
-export const volt_types_translated = [
-  "230VY",
-  "230VΔ",
-  "380VY",
-  "380VΔ",
-  "Άλλο",
-];
+export const volt_types_translated = ['230VY', '230VΔ', '380VY', '380VΔ', 'Άλλο'];
 
 export const volt_types_mapping = {
-  "230VY": "230VY",
-  "230VYY": "230VΔ",
-  "380VY": "380VY",
-  "380VYY": "380VΔ",
-  other: "Αλλο",
+  '230VY': '230VY',
+  '230VYY': '230VΔ',
+  '380VY': '380VY',
+  '380VYY': '380VΔ',
+  other: 'Αλλο',
 };
 
-export const typeOfVolt = ["1-phase", "3-phase"];
-export const typeOfVolt_translated = ["Μονοφασικός", "Τριφασικός"];
+export const typeOfVolt = ['1-phase', '3-phase'];
+export const typeOfVolt_translated = ['Μονοφασικός', 'Τριφασικός'];
 
-export const typeOfMotor = ["el_motor", "pump", "generator"];
-export const typeOfMotor_translated = ["Μοτέρ", "Αντλία", "Γεννήτρια"];
+export const typeOfMotor = ['el_motor', 'pump', 'generator'];
+export const typeOfMotor_translated = ['Μοτέρ', 'Αντλία', 'Γεννήτρια'];
 
-export const typeOfStep = ["standard", "half", "combined"];
-export const typeOfStep_translated = [
-  "Ολόκληρο",
-  "Μισό-Μισό",
-  "Μισό-Μισό και Ολόκληρο",
-];
+export const typeOfStep = ['standard', 'half', 'combined'];
+export const typeOfStep_translated = ['Ολόκληρο', 'Μισό-Μισό', 'Μισό-Μισό και Ολόκληρο'];

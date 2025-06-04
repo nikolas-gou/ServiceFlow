@@ -1,15 +1,15 @@
 export class Customer {
   constructor(data = {}) {
     this.id = data.id || null;
-    this.type = data.type || "individual";
-    this.name = data.name || "";
-    this.email = data.email || "";
-    this.phone = data.phone || "";
+    this.type = data.type || 'individual';
+    this.name = data.name || '';
+    this.email = data.email || '';
+    this.phone = data.phone || '';
     this.createdAt = data.createdAt || new Date();
   }
 
   isValid() {
-    return this.name.trim() !== "" && this.phone.trim() !== "";
+    return this.name.trim() !== '' && this.phone.trim() !== '';
   }
 
   static fromApiFormat() {
@@ -20,7 +20,7 @@ export class Customer {
       phone: this.phone,
       type: this.type,
       createdAt: this.created_at,
-    }
+    };
   }
 
   toJSON() {
@@ -42,6 +42,6 @@ export class Customer {
       phone: this.phone,
       type: this.type,
       created_at: this.createdAt,
-    }
+    };
   }
 }

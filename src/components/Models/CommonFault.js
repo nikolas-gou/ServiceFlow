@@ -1,7 +1,7 @@
 export class CommonFault {
   constructor(data = {}) {
     this.id = data.id || null;
-    this.name = data.name || "";
+    this.name = data.name || '';
   }
 
   //   isValid() {
@@ -17,22 +17,22 @@ export class CommonFault {
 }
 
 export const common_faults = [
-  { id: 1, name: "winding" },
-  { id: 2, name: "bearings" },
-  { id: 3, name: "terminal_panel" },
-  { id: 4, name: "terminal_box" },
-  { id: 5, name: "cables" },
-  { id: 6, name: "bracket" },
-  { id: 7, name: "metalwork" },
-  { id: 8, name: "other" },
+  { id: 1, name: 'winding' },
+  { id: 2, name: 'bearings' },
+  { id: 3, name: 'terminal_panel' },
+  { id: 4, name: 'terminal_box' },
+  { id: 5, name: 'cables' },
+  { id: 6, name: 'bracket' },
+  { id: 7, name: 'metalwork' },
+  { id: 8, name: 'other' },
 ];
 export const common_faults_translated = [
-  { id: 1, name: "Περιέλιξη" },
-  { id: 2, name: "Ρουλεμάν" },
-  { id: 3, name: "Κασέτα" },
-  { id: 4, name: "Καπάκι κασέτας" },
-  { id: 5, name: "Καλώδια" },
-  { id: 6, name: "Καπάκια" },
-  { id: 7, name: "Μηχανουργείο" },
-  { id: 8, name: "Άλλο" },
+  { id: 1, name: 'Περιέλιξη' },
+  { id: 2, name: 'Ρουλεμάν' },
+  { id: 3, name: 'Κασέτα' },
+  { id: 4, name: 'Καπάκι κασέτας' },
+  { id: 5, name: 'Καλώδια' },
+  { id: 6, name: 'Καπάκια' },
+  { id: 7, name: 'Μηχανουργείο' },
+  { id: 8, name: 'Άλλο' },
 ];

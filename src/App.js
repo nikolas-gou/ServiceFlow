@@ -1,16 +1,16 @@
-import logo from "./logo.svg";
-import "./App.css";
-import { ThemeProvider, CssBaseline, Typography } from "@mui/material";
+import logo from './logo.svg';
+import './App.css';
+import { ThemeProvider, CssBaseline, Typography } from '@mui/material';
 
-import theme from "./styles/Themes";
-import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
-import Layout from "./components/layout/Layout";
-import StatisticsCards from "./components/stats/StatisticsCards";
-import Repairs from "./components/layout/repairs/Repairs";
-import StatisticsCardsCustomer from "./components/stats/StatisticsCardsCustomer";
-import Customers from "./components/layout/customers/Customers";
-import { SearchProvider } from "./context/SearchContext";
-import CreateRepairForm from "./components/layout/form/CreateRepairForm";
+import theme from './styles/Themes';
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
+import Layout from './components/layout/Layout';
+import StatisticsCards from './components/stats/StatisticsCards';
+import Repairs from './components/layout/repairs/Repairs';
+import StatisticsCardsCustomer from './components/stats/StatisticsCardsCustomer';
+import Customers from './components/layout/customers/Customers';
+import { SearchProvider } from './context/SearchContext';
+import CreateRepairForm from './components/layout/form/CreateRepairForm';
 
 function App() {
   return (
@@ -50,11 +50,7 @@ function App() {
                   </>
                 }
               />
-              <Route
-                exact
-                path="/dashboard/services"
-                element={<Typography>services</Typography>}
-              />
+              <Route exact path="/dashboard/services" element={<Typography>services</Typography>} />
             </Routes>
           </Layout>
         </BrowserRouter>

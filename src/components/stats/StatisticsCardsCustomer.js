@@ -1,15 +1,9 @@
-import React from "react";
-import { useState, useEffect } from "react";
-import { Box, Grid, Card, CardContent, Typography } from "@mui/material";
-import { Line } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  LineElement,
-  PointElement,
-  LinearScale,
-  CategoryScale,
-} from "chart.js";
-import { CustomerRepository } from "../Repositories/CustomerRepository";
+import React from 'react';
+import { useState, useEffect } from 'react';
+import { Box, Grid, Card, CardContent, Typography } from '@mui/material';
+import { Line } from 'react-chartjs-2';
+import { Chart as ChartJS, LineElement, PointElement, LinearScale, CategoryScale } from 'chart.js';
+import { CustomerRepository } from '../Repositories/CustomerRepository';
 
 ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale);
 
@@ -41,35 +35,32 @@ export default function StatisticsCardsCustomer() {
 
   const stats = [
     {
-      title: "Συνολικοί πελάτες",
+      title: 'Συνολικοί πελάτες',
       value: statsOfCustomers.totalCustomers,
-      trend: "+25%",
-      color: "green",
+      trend: '+25%',
+      color: 'green',
       data: [5, 6, 7, 8, 7, 8, 10],
     },
     {
-      title: "Εργοστάσια",
-      value: statsOfCustomers.totalCustomersByType?.find(
-        (item) => item.type == "factory"
-      )?.total,
-      trend: "-25%",
-      color: "red",
+      title: 'Εργοστάσια',
+      value: statsOfCustomers.totalCustomersByType?.find((item) => item.type == 'factory')?.total,
+      trend: '-25%',
+      color: 'red',
       data: [8, 7, 6, 5, 4, 3, 2],
     },
     {
-      title: "Ιδιώτες",
-      value: statsOfCustomers.totalCustomersByType?.find(
-        (item) => item.type == "individual"
-      )?.total,
-      trend: "+5%",
-      color: "blue",
+      title: 'Ιδιώτες',
+      value: statsOfCustomers.totalCustomersByType?.find((item) => item.type == 'individual')
+        ?.total,
+      trend: '+5%',
+      color: 'blue',
       data: [20, 19, 18, 18, 19, 20, 21],
     },
     {
-      title: "Πωλήσεις",
-      value: "€50k",
-      trend: "+10%",
-      color: "purple",
+      title: 'Πωλήσεις',
+      value: '€50k',
+      trend: '+10%',
+      color: 'purple',
       data: [10, 11, 12, 13, 14, 15, 16],
     },
   ];
@@ -84,13 +75,10 @@ export default function StatisticsCardsCustomer() {
                 <Typography variant="subtitle2" color="textSecondary">
                   {stat.title}
                 </Typography>
-                <Typography variant="h4" sx={{ fontWeight: "bold" }}>
+                <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
                   {stat.value}
                 </Typography>
-                <Typography
-                  variant="body2"
-                  sx={{ color: stat.color, fontWeight: "bold" }}
-                >
+                <Typography variant="body2" sx={{ color: stat.color, fontWeight: 'bold' }}>
                   {stat.trend}
                 </Typography>
                 <Box sx={{ height: 40, mt: 1 }}>
