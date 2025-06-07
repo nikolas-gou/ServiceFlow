@@ -20,7 +20,7 @@ export class Motor {
     this.helperHalfCrossSection = data.helperHalfCrossSection || null;
     this.connectionism = data.connectionism || 'simple';
     this.volt = data.volt || '380VY';
-    this.poles = data.poles || null;
+    this.poles = data.poles || '6';
     this.typeOfStep = data.typeOfStep || 'standard';
     this.typeOfMotor = data.typeOfMotor || 'el_motor';
     this.typeOfVolt = data.typeOfVolt || '3-phase';
