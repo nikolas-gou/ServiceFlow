@@ -60,7 +60,7 @@ function StepField(props) {
   return (
     // sx pb  3 mono se sundiasmo
     <Grid container spacing={2} sx={props.sx && props.sx}>
-      <Grid item xs={12} sm={6}>
+      <Grid item xs={12} sm={12}>
         <Autocomplete
           freeSolo
           options={stepSuggestions || []}
