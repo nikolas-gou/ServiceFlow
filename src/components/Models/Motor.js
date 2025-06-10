@@ -21,6 +21,7 @@ export class Motor {
     this.connectionism = data.connectionism || 'simple';
     this.volt = data.volt || '380VY';
     this.poles = data.poles || '6';
+    this.howManyCoilsWith = data.howManyCoilsWith || '1';
     this.typeOfStep = data.typeOfStep || 'standard';
     this.typeOfMotor = data.typeOfMotor || 'el_motor';
     this.typeOfVolt = data.typeOfVolt || '3-phase';
@@ -56,6 +57,7 @@ export class Motor {
       connectionism: apiData.connectionism,
       volt: apiData.volt,
       poles: apiData.poles,
+      howManyCoilsWith: apiData.how_many_coils_with,
       typeOfStep: apiData.type_of_step,
       typeOfMotor: apiData.type_of_motor,
       typeOfVolt: apiData.type_of_volt,
@@ -88,6 +90,7 @@ export class Motor {
       connectionism: this.connectionism,
       volt: this.volt,
       poles: this.poles,
+      howManyCoilsWith: this.howManyCoilsWith,
       typeOfStep: this.typeOfStep,
       typeOfMotor: this.typeOfMotor,
       typeOfVolt: this.typeOfVolt,
@@ -118,6 +121,7 @@ export class Motor {
       connectionism: this.connectionism,
       volt: this.volt,
       poles: this.poles,
+      how_many_coils_with: this.howManyCoilsWith,
       type_of_step: this.typeOfStep,
       type_of_motor: this.typeOfMotor,
       type_of_volt: this.typeOfVolt,
