@@ -1,10 +1,10 @@
-import React, { useState } from "react";
-import { Box, Fab, Typography, Modal, Paper, IconButton } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import CloseIcon from "@mui/icons-material/Close";
-import SideBar from "./SideBar";
-import TopAppBar from "./TopAppBar";
-import CreateRepairForm from "./form/CreateRepairForm";
+import React, { useState } from 'react';
+import { Box, Fab, Typography, Modal, Paper, IconButton } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import CloseIcon from '@mui/icons-material/Close';
+import SideBar from './SideBar';
+import TopAppBar from './TopAppBar';
+import CreateRepairForm from './form/CreateRepairForm';
 
 const drawerWidth = 250;
 
@@ -20,9 +20,15 @@ const Layout = (props) => {
   };
 
   return (
-    <Box sx={{ display: "flex", height: "100vh" }}>
+    <Box sx={{ display: 'flex', height: '100vh' }}>
       {/* Sidebar */}
-      <Box sx={{ width: drawerWidth, minWidth: drawerWidth, flexShrink: 0 }}>
+      <Box
+        sx={{
+          width: drawerWidth,
+          minWidth: drawerWidth,
+          flexShrink: 0,
+        }}
+      >
         <SideBar />
       </Box>
 
@@ -30,17 +36,15 @@ const Layout = (props) => {
       <Box
         sx={{
           flexGrow: 1,
-          display: "flex",
-          flexDirection: "column",
-          overflow: "hidden",
-          position: "relative", // To position the FAB
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+          position: 'relative', // To position the FAB
         }}
       >
         <TopAppBar />
         {/* Scrollable Content */}
-        <Box sx={{ flexGrow: 1, p: 3, overflowY: "auto" }}>
-          {props.children}
-        </Box>
+        <Box sx={{ flexGrow: 1, p: 3, overflowY: 'auto' }}>{props.children}</Box>
 
         {/* Floating Action Button (FAB) */}
         <Fab
@@ -48,7 +52,7 @@ const Layout = (props) => {
           aria-label="add"
           onClick={handleOpenModal}
           sx={{
-            position: "absolute",
+            position: 'absolute',
             bottom: 24,
             right: 24,
             zIndex: 1000,
@@ -64,18 +68,18 @@ const Layout = (props) => {
           aria-labelledby="create-repair-modal"
           aria-describedby="create-repair-form-modal"
           sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}
         >
           <Paper
             sx={{
-              width: "90%",
-              maxWidth: "1200px",
-              maxHeight: "90vh",
-              overflow: "auto",
-              position: "relative",
+              width: '90%',
+              maxWidth: '1200px',
+              maxHeight: '90vh',
+              overflow: 'auto',
+              position: 'relative',
               p: 1,
             }}
           >
@@ -83,7 +87,7 @@ const Layout = (props) => {
               aria-label="close"
               onClick={handleCloseModal}
               sx={{
-                position: "absolute",
+                position: 'absolute',
                 right: 8,
                 top: 8,
                 zIndex: 2000,
