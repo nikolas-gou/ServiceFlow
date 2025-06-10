@@ -1,3 +1,4 @@
+import { MotorCrossSectionLinks } from './MotorCrossSectionLinks';
 export class Motor {
   constructor(data = {}) {
     this.id = data.id || null;
@@ -27,6 +28,9 @@ export class Motor {
     this.typeOfVolt = data.typeOfVolt || '3-phase';
     this.createdAt = data.createdAt || new Date();
     this.customerID = data.customerID || null;
+    this.motorCrossSectionLinks = data.motorCrossSectionLinks
+      ? new MotorCrossSectionLinks(data.motorCrossSectionLinks)
+      : new MotorCrossSectionLinks();
   }
 
   isValid() {
@@ -63,6 +67,9 @@ export class Motor {
       typeOfVolt: apiData.type_of_volt,
       createdAt: apiData.created_at,
       customerID: apiData.customer_id,
+      motorCrossSectionLinks: apiData.motor_cross_section_links
+        ? MotorCrossSectionLinks.fromApiFormat(apiData.motor_cross_section_links)
+        : null,
     };
     return new Motor(transformedData);
   }
@@ -96,6 +103,9 @@ export class Motor {
       typeOfVolt: this.typeOfVolt,
       createdAt: this.createdAt,
       customerID: this.customerID,
+      motorCrossSectionLinks: this.motor_cross_section_links
+        ? MotorCrossSectionLinks.fromApiFormat(this.motor_cross_section_links)
+        : null,
     };
   }
   toApiFormat() {
@@ -127,6 +137,9 @@ export class Motor {
       type_of_volt: this.typeOfVolt,
       created_at: this.createdAt,
       customer_id: this.customerID,
+      motorCrossSectionLinks: this.motor_cross_section_links
+        ? MotorCrossSectionLinks.fromApiFormat(this.motor_cross_section_links)
+        : null,
     };
   }
 }
