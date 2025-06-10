@@ -1,20 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { TextField, Grid, Autocomplete } from '@mui/material';
+import HowManyCoilsWith from './howManyCoilsWith';
 
 function StepField(props) {
   const [stepError, setStepError] = useState('');
 
-  // Προτεινόμενα βήματα για autocomplete
+  // v1 - πρωτη φαση το ξαναβλεπω να παιρνω ολα τα βηματα που υπαρχουν #func
   const stepSuggestions = [
-    '8-10',
     '8-10-12',
     '10-12',
-    '10-12-14',
-    '12-14',
-    '12-14-16',
-    '14-16',
     '14-16-18',
-    '16-18',
     '16-18-20',
     '6-8-10',
     '8-12-16',
@@ -30,14 +25,6 @@ function StepField(props) {
 
   // Custom handler για το step field με validation
   const handleStepChange = (event, newValue) => {
-    // Έλεγχος validation
-    if (newValue && !validateStepPattern(newValue)) {
-      setStepError('Μη έγκυρη μορφή. Χρησιμοποιήστε μόνο αριθμούς με παύλες (π.χ. 8-10-12)');
-    } else {
-      setStepError('');
-    }
-
-    // Κλήση του γονικού onChange
     // Δημιουργία "εικονικού" event με name και value
     const fakeEvent = {
       target: {
