@@ -1,5 +1,5 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Drawer,
   List,
@@ -9,39 +9,39 @@ import {
   Box,
   Typography,
   Divider,
-} from "@mui/material";
-import HomeIcon from "@mui/icons-material/Home";
-import AssessmentIcon from "@mui/icons-material/Assessment";
-import GroupIcon from "@mui/icons-material/Group";
-import BuildIcon from "@mui/icons-material/Build";
-import SettingsIcon from "@mui/icons-material/Settings";
-import InfoIcon from "@mui/icons-material/Info";
-import FeedbackIcon from "@mui/icons-material/Feedback";
-import { styled } from "@mui/material/styles";
-import logo from "../../assets/OIP-removebg-preview-2.png";
+} from '@mui/material';
+import HomeIcon from '@mui/icons-material/Home';
+import AssessmentIcon from '@mui/icons-material/Assessment';
+import GroupIcon from '@mui/icons-material/Group';
+import BuildIcon from '@mui/icons-material/Build';
+import SettingsIcon from '@mui/icons-material/Settings';
+import InfoIcon from '@mui/icons-material/Info';
+import FeedbackIcon from '@mui/icons-material/Feedback';
+import { styled } from '@mui/material/styles';
+import logo from '../../assets/OIP-removebg-preview-2.png';
 
 const drawerWidth = 250;
 
 // **Ανοιχτό Sidebar**
 const StyledDrawer = styled(Drawer)({
-  "& .MuiDrawer-paper": {
+  '& .MuiDrawer-paper': {
     width: drawerWidth,
-    backgroundColor: "#EFF1F4", // Ανοιχτό γκρι
-    borderRight: "1px solid #D1D4DA", // Λεπτό περίγραμμα
+    backgroundColor: '#EFF1F4', // Ανοιχτό γκρι
+    borderRight: '1px solid #D1D4DA', // Λεπτό περίγραμμα
   },
 });
 
 // **Στυλ επιλεγμένου και hover item**
 const StyledListItem = styled(ListItemButton)(({ theme }) => ({
-  borderRadius: "8px",
-  margin: "5px 10px",
-  "&:hover": {
-    backgroundColor: "#E4E7EB", // Πιο ανοιχτό hover
+  borderRadius: '8px',
+  margin: '5px 10px',
+  '&:hover': {
+    backgroundColor: '#E4E7EB', // Πιο ανοιχτό hover
   },
-  "&.Mui-selected": {
-    backgroundColor: "#DADDE2", // Ανοιχτό active state
-    fontWeight: "bold",
-    color: "black",
+  '&.Mui-selected': {
+    backgroundColor: '#DADDE2', // Ανοιχτό active state
+    fontWeight: 'bold',
+    color: 'black',
   },
 }));
 
@@ -57,35 +57,35 @@ export default function SideBar() {
 
   const menuItems = [
     {
-      text: "Αρχική",
-      route: "/dashboard/overview",
+      text: 'Αρχική',
+      route: '/dashboard/overview',
       icon: <HomeIcon />,
       index: 0,
     },
     {
-      text: "Στατιστικά",
-      route: "/dashboard/analytics",
+      text: 'Στατιστικά',
+      route: '/dashboard/analytics',
       icon: <AssessmentIcon />,
       index: 1,
     },
     {
-      text: "Πελάτες",
-      route: "/dashboard/customers",
+      text: 'Πελάτες',
+      route: '/dashboard/customers',
       icon: <GroupIcon />,
       index: 2,
     },
     {
-      text: "Επισκευές",
-      route: "/dashboard/services",
+      text: 'Επισκευές',
+      route: '/dashboard/services',
       icon: <BuildIcon />,
       index: 3,
     },
   ];
 
   const settingsItems = [
-    { text: "Ρυθμίσες", icon: <SettingsIcon />, index: 4 },
-    { text: "Σχετικά", icon: <InfoIcon />, index: 5 },
-    { text: "Feedback", icon: <FeedbackIcon />, index: 6 },
+    { text: 'Ρυθμίσες', icon: <SettingsIcon />, index: 4 },
+    { text: 'Σχετικά', icon: <InfoIcon />, index: 5 },
+    { text: 'Feedback', icon: <FeedbackIcon />, index: 6 },
   ];
 
   return (
@@ -94,10 +94,10 @@ export default function SideBar() {
       <Box
         sx={{
           p: 2,
-          textAlign: "center",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
+          textAlign: 'center',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
         }}
       >
         <img src={logo} alt="logo" style={{ width: 60, marginBottom: 8 }} />
@@ -117,13 +117,9 @@ export default function SideBar() {
           <StyledListItem
             key={item.index}
             selected={selectedIndex === item.index}
-            onClick={(event) =>
-              handleListItemClick(event, item.index, item.route)
-            }
+            onClick={(event) => handleListItemClick(event, item.index, item.route)}
           >
-            <ListItemIcon
-              sx={{ color: selectedIndex === item.index ? "black" : "gray" }}
-            >
+            <ListItemIcon sx={{ color: selectedIndex === item.index ? 'black' : 'gray' }}>
               {item.icon}
             </ListItemIcon>
             <ListItemText primary={item.text} />
@@ -141,9 +137,7 @@ export default function SideBar() {
             selected={selectedIndex === item.index}
             onClick={(event) => handleListItemClick(event, item.index)}
           >
-            <ListItemIcon
-              sx={{ color: selectedIndex === item.index ? "black" : "gray" }}
-            >
+            <ListItemIcon sx={{ color: selectedIndex === item.index ? 'black' : 'gray' }}>
               {item.icon}
             </ListItemIcon>
             <ListItemText primary={item.text} />
@@ -152,7 +146,7 @@ export default function SideBar() {
       </List>
       <Typography
         variant="caption"
-        sx={{ position: "absolute", bottom: 10, left: 20, color: "gray" }}
+        sx={{ position: 'absolute', bottom: 10, left: 20, color: 'gray' }}
       >
         © 2025 Nikolaos Gkouziotis. All rights reserved.
       </Typography>
