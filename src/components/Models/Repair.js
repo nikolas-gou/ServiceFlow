@@ -48,20 +48,4 @@ export class Repair {
       motor: this.motor ? this.motor.toJSON() : null,
     };
   }
-
-  toApiFormat() {
-    return {
-      id: this.id,
-      motor_id: this.motor.id,
-      customer_id: this.customer.id,
-      description: this.description,
-      repair_status: this.repairStatus,
-      created_at: this.createdAt,
-      is_arrived: this.isArrived,
-      estimated_is_complete: this.estimatedIsComplete,
-      cost: this.cost,
-      customer: this.customer ? this.customer.toApiFormat() : null,
-      motor: this.motor ? this.motor.toApiFormat() : null,
-    };
-  }
 }
