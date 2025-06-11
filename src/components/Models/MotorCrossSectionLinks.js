@@ -24,13 +24,4 @@ export class MotorCrossSectionLinks {
       type: this.type,
     };
   }
-
-  toApiFormat() {
-    return {
-      id: this.id,
-      motor_id: this.motorID,
-      cross_section: this.crossSection,
-      type: this.type,
-    };
-  }
 }
