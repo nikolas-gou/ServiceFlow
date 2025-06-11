@@ -12,17 +12,6 @@ export class Customer {
     return this.name.trim() !== '' && this.phone.trim() !== '';
   }
 
-  static fromApiFormat() {
-    return {
-      id: this.id,
-      name: this.name,
-      email: this.email,
-      phone: this.phone,
-      type: this.type,
-      createdAt: this.created_at,
-    };
-  }
-
   toJSON() {
     return {
       id: this.id,
@@ -31,17 +20,6 @@ export class Customer {
       phone: this.phone,
       type: this.type,
       createdAt: this.createdAt,
-    };
-  }
-
-  toApiFormat() {
-    return {
-      id: this.id,
-      name: this.name,
-      email: this.email,
-      phone: this.phone,
-      type: this.type,
-      created_at: this.createdAt,
     };
   }
 }
