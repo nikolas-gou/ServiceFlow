@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Table,
@@ -13,17 +13,17 @@ import {
   Grid,
   Divider,
   Tooltip,
-} from "@mui/material";
-import { RepairRepository } from "../../Repositories/RepairRepository";
-import { useSearch } from "../../../context/SearchContext";
-import { volt_types_mapping } from "../../Models/Motor";
+} from '@mui/material';
+import { RepairRepository } from '../../Repositories/RepairRepository';
+import { useSearch } from '../../../context/SearchContext';
+import { volt_types_mapping } from '../../Models/Motor';
 
 const connectionismTranslated = {
-  simple: "Απλή",
-  "1-parallel": "1 φορά παράλληλη",
-  "2-parallel": "2 φορές παράλληλη",
-  "3-parallel": "3 φορές παράλληλη",
-  "4-parallel": "4 φορές παράλληλη",
+  simple: 'Απλή',
+  '1-parallel': '1 φορά παράλληλη',
+  '2-parallel': '2 φορές παράλληλη',
+  '3-parallel': '3 φορές παράλληλη',
+  '4-parallel': '4 φορές παράλληλη',
 };
 
 // Row component for collapsible functionality
@@ -38,44 +38,38 @@ function RepairRow(props) {
 
   return (
     <>
-      <Tooltip
-        title="Πατήστε για περισσότερες λεπτομέρειες"
-        arrow
-        placement="top-start"
-      >
+      <Tooltip title="Πατήστε για περισσότερες λεπτομέρειες" arrow placement="top-start">
         <TableRow
           className="main-row"
           onClick={handleRowClick}
           onMouseEnter={() => setHover(true)}
           onMouseLeave={() => setHover(false)}
           sx={{
-            "& > *": { borderBottom: open ? "none" : "inherit" },
-            backgroundColor: open ? "#e0e0e0" : hover ? "#f0f0f0" : "inherit",
-            transition: "background-color 0.3s",
-            cursor: "pointer",
-            "&:hover": {
-              boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
+            '& > *': { borderBottom: open ? 'none' : 'inherit' },
+            backgroundColor: open ? '#e0e0e0' : hover ? '#f0f0f0' : 'inherit',
+            transition: 'background-color 0.3s',
+            cursor: 'pointer',
+            '&:hover': {
+              boxShadow: '0px 2px 4px rgba(0,0,0,0.1)',
             },
           }}
         >
           {/* <TableCell><strong>{repair.id}</strong></TableCell> */}
-          <TableCell>{repair.motor.serialNumber || "-"}</TableCell>
-          <TableCell>{repair.customer.name || "-"}</TableCell>
-          <TableCell>{repair.customer.phone || "-"}</TableCell>
-          <TableCell>{repair.motor.manufacturer || "-"}</TableCell>
-          <TableCell>{repair.motor.step || "-"}</TableCell>
-          <TableCell>{repair.motor.spiral || "-"}</TableCell>
-          <TableCell>{repair.motor.crossSection || "-"}</TableCell>
-          <TableCell>
-            {connectionismTranslated[repair.motor.connectionism] || "-"}
-          </TableCell>
-          <TableCell>{repair.motor.kw ? `${repair.motor.kw}kw` : "-"}</TableCell>
-          <TableCell>{repair.motor.hp ? `${repair.motor.hp}hp` : "-"}</TableCell>
-          <TableCell>{volt_types_mapping[repair.motor.volt] || "-"}</TableCell>
-          <TableCell>{repair.isArrived || "-"}</TableCell>
+          <TableCell>{repair.motor.serialNumber || '-'}</TableCell>
+          <TableCell>{repair.customer.name || '-'}</TableCell>
+          <TableCell>{repair.customer.phone || '-'}</TableCell>
+          <TableCell>{repair.motor.manufacturer || '-'}</TableCell>
+          <TableCell>{repair.motor.step || '-'}</TableCell>
+          <TableCell>{repair.motor.spiral || '-'}</TableCell>
+          <TableCell>{repair.motor.crossSection || '-'}</TableCell>
+          <TableCell>{connectionismTranslated[repair.motor.connectionism] || '-'}</TableCell>
+          <TableCell>{repair.motor.kw ? `${repair.motor.kw}kw` : '-'}</TableCell>
+          <TableCell>{repair.motor.hp ? `${repair.motor.hp}hp` : '-'}</TableCell>
+          <TableCell>{volt_types_mapping[repair.motor.volt] || '-'}</TableCell>
+          <TableCell>{repair.isArrived || '-'}</TableCell>
         </TableRow>
       </Tooltip>
-      <TableRow sx={{ backgroundColor: open ? "#f5f5f5" : "inherit" }}>
+      <TableRow sx={{ backgroundColor: open ? '#f5f5f5' : 'inherit' }}>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={12}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 2 }}>
@@ -84,34 +78,26 @@ function RepairRow(props) {
               </Typography>
               <Grid container spacing={2}>
                 <Grid item xs={12} md={6}>
-                  <Typography variant="subtitle1">
-                    Τεχνικά Χαρακτηριστικά
-                  </Typography>
+                  <Typography variant="subtitle1">Τεχνικά Χαρακτηριστικά</Typography>
                   <Divider sx={{ my: 1 }} />
                   <Grid container spacing={1}>
                     <Grid item xs={6}>
                       <Typography variant="body2" color="text.secondary">
                         Βήμα:
                       </Typography>
-                      <Typography variant="body1">
-                        {repair.motor.step}
-                      </Typography>
+                      <Typography variant="body1">{repair.motor.step}</Typography>
                     </Grid>
                     <Grid item xs={6}>
                       <Typography variant="body2" color="text.secondary">
                         Σπείρες:
                       </Typography>
-                      <Typography variant="body1">
-                        {repair.motor.spiral}
-                      </Typography>
+                      <Typography variant="body1">{repair.motor.spiral}</Typography>
                     </Grid>
                     <Grid item xs={6}>
                       <Typography variant="body2" color="text.secondary">
                         Διατομή:
                       </Typography>
-                      <Typography variant="body1">
-                        {repair.motor.crossSection}
-                      </Typography>
+                      <Typography variant="body1">{repair.motor.crossSection}</Typography>
                     </Grid>
                     <Grid item xs={6}>
                       <Typography variant="body2" color="text.secondary">
@@ -136,14 +122,10 @@ function RepairRow(props) {
                   </Grid>
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <Typography variant="subtitle1">
-                    Στοιχεία Επισκευής
-                  </Typography>
+                  <Typography variant="subtitle1">Στοιχεία Επισκευής</Typography>
                   <Divider sx={{ my: 1 }} />
                   {repair.description && (
-                    <Typography variant="body1">
-                      {repair.description}
-                    </Typography>
+                    <Typography variant="body1">{repair.description}</Typography>
                   )}
                   {!repair.description && (
                     <Typography variant="body2" color="text.secondary">
@@ -181,14 +163,10 @@ export default function Repairs() {
   const filteredRepairs = searchQuery
     ? repairs.filter(
         (repair) =>
-          repair.motor.manufacturer
-            ?.toLowerCase()
-            .includes(searchQuery.toLowerCase()) ||
+          repair.motor.manufacturer?.toLowerCase().includes(searchQuery.toLowerCase()) ||
           repair.motor.kw?.toString().includes(searchQuery) ||
           repair.motor.hp?.toString().includes(searchQuery) ||
-          repair.customer.name
-            ?.toLowerCase()
-            .includes(searchQuery.toLowerCase())
+          repair.customer.name?.toLowerCase().includes(searchQuery.toLowerCase()),
       )
     : repairs;
 
@@ -207,13 +185,13 @@ export default function Repairs() {
         Λεπτομέρειες Επισκευών
       </Typography>
       <TableContainer component={Paper} sx={{ maxHeight: 'calc(100vh - 200px)' }}>
-        <Table 
-          stickyHeader  
-           sx={{
+        <Table
+          stickyHeader
+          sx={{
             // Κεντράρισμα για headers και main rows μόνο
             '& .MuiTableHead-root .MuiTableCell-root, & .main-row .MuiTableCell-root': {
-              textAlign: 'center'
-            }
+              textAlign: 'center',
+            },
           }}
         >
           <TableHead>
