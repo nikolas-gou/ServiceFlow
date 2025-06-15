@@ -28,50 +28,13 @@ export class Motor {
     this.typeOfVolt = data.typeOfVolt || '3-phase';
     this.createdAt = data.createdAt || new Date();
     this.customerID = data.customerID || null;
-    this.motorCrossSectionLinks = data.motorCrossSectionLinks
-      ? new MotorCrossSectionLinks(data.motorCrossSectionLinks)
-      : new MotorCrossSectionLinks();
+    this.motorCrossSectionLinks = Array.isArray(data.motorCrossSectionLinks)
+      ? data.motorCrossSectionLinks.map((item) => new MotorCrossSectionLinks(item))
+      : [];
   }
 
   isValid() {
     return this.manufacturer.trim() !== '' && this.manufacturer.trim() !== '';
-  }
-
-  static fromApiFormat(apiData) {
-    // console.log(apiData)
-    const transformedData = {
-      id: apiData.id,
-      serialNumber: apiData.serial_number,
-      manufacturer: apiData.manufacturer,
-      kw: apiData.kw,
-      hp: apiData.hp,
-      rpm: apiData.rpm,
-      step: apiData.step,
-      halfStep: apiData.half_step,
-      helperStep: apiData.helper_step,
-      helperHalfStep: apiData.helper_half_step,
-      spiral: apiData.spiral,
-      halfSpiral: apiData.half_spiral,
-      helperSpiral: apiData.helper_spiral,
-      helperHalfSpiral: apiData.helper_half_spiral,
-      crossSection: apiData.cross_section,
-      halfCrossSection: apiData.half_cross_section,
-      helperCrossSection: apiData.helper_cross_section,
-      helperHalfCrossSection: apiData.helper_half_cross_section,
-      connectionism: apiData.connectionism,
-      volt: apiData.volt,
-      poles: apiData.poles,
-      howManyCoilsWith: apiData.how_many_coils_with,
-      typeOfStep: apiData.type_of_step,
-      typeOfMotor: apiData.type_of_motor,
-      typeOfVolt: apiData.type_of_volt,
-      createdAt: apiData.created_at,
-      customerID: apiData.customer_id,
-      motorCrossSectionLinks: apiData.motor_cross_section_links
-        ? MotorCrossSectionLinks.fromApiFormat(apiData.motor_cross_section_links)
-        : null,
-    };
-    return new Motor(transformedData);
   }
 
   toJSON() {
@@ -103,43 +66,9 @@ export class Motor {
       typeOfVolt: this.typeOfVolt,
       createdAt: this.createdAt,
       customerID: this.customerID,
-      motorCrossSectionLinks: this.motor_cross_section_links
-        ? MotorCrossSectionLinks.fromApiFormat(this.motor_cross_section_links)
-        : null,
-    };
-  }
-  toApiFormat() {
-    return {
-      id: this.id,
-      serial_number: this.serialNumber,
-      manufacturer: this.manufacturer,
-      kw: this.kw,
-      hp: this.hp,
-      rpm: this.rpm,
-      step: this.step,
-      half_step: this.halfStep,
-      helper_step: this.helperStep,
-      helper_half_step: this.helperHalfStep,
-      spiral: this.spiral,
-      half_spiral: this.halfSpiral,
-      helper_spiral: this.helperSpiral,
-      helper_half_spiral: this.helperHalfSpiral,
-      cross_section: this.crossSection,
-      half_cross_section: this.halfCrossSection,
-      helper_cross_section: this.helperCrossSection,
-      helper_half_cross_section: this.helperHalfCrossSection,
-      connectionism: this.connectionism,
-      volt: this.volt,
-      poles: this.poles,
-      how_many_coils_with: this.howManyCoilsWith,
-      type_of_step: this.typeOfStep,
-      type_of_motor: this.typeOfMotor,
-      type_of_volt: this.typeOfVolt,
-      created_at: this.createdAt,
-      customer_id: this.customerID,
-      motorCrossSectionLinks: this.motor_cross_section_links
-        ? MotorCrossSectionLinks.fromApiFormat(this.motor_cross_section_links)
-        : null,
+      motorCrossSectionLinks: this.motorCrossSectionLinks
+        ? this.motorCrossSectionLinks.map((item) => item.toJSON())
+        : [],
     };
   }
 }
