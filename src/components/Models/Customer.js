@@ -5,7 +5,7 @@ export class Customer {
     this.name = data.name || '';
     this.email = data.email || '';
     this.phone = data.phone || '';
-    this.createdAt = data.createdAt || new Date();
+    this.createdAt = data.createdAt || new Date().toISOString().split('T')[0];
   }
 
   isValid() {
