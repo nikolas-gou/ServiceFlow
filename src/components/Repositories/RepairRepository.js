@@ -6,11 +6,7 @@ import apiCall from '../../utils/apiCall';
 export class RepairRepository {
   static async getAll() {
     const data = await apiCall(config.server, '/api/repairs', 'GET');
-
-    return data.map((apiData) => {
-      const transformedData = Repair.fromApiFormat(apiData);
-      return new Repair(transformedData);
-    });
+    return data.map((repair) => new Repair(repair));
   }
 
   static async getStats() {
