@@ -6,16 +6,6 @@ export class MotorCrossSectionLinks {
     this.type = data.type || 'standard';
   }
 
-  static fromApiFormat(apiData) {
-    const transformedData = {
-      id: apiData.id,
-      motorID: apiData.motor_id,
-      crossSection: apiData.cross_section,
-      type: apiData.type,
-    };
-    return new MotorCrossSectionLinks(transformedData);
-  }
-
   toJSON() {
     return {
       id: this.id,
