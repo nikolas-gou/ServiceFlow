@@ -1,5 +1,5 @@
-import React from "react";
-import { useEffect, useState } from "react";
+import React from 'react';
+import { useEffect, useState } from 'react';
 import {
   Box,
   Table,
@@ -10,8 +10,8 @@ import {
   TableRow,
   Paper,
   Typography,
-} from "@mui/material";
-import { CustomerRepository } from "../../Repositories/CustomerRepository";
+} from '@mui/material';
+import { CustomerRepository } from '../../Repositories/CustomerRepository';
 
 export default function Customers() {
   const [customers, setCustomers] = useState([]);
