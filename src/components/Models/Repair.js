@@ -1,5 +1,6 @@
 import { Customer } from './Customer';
 import { Motor } from './Motor';
+import { RepairFaultLinks } from './RepairFaultLinks';
 
 export class Repair {
   constructor(data = {}) {
@@ -14,23 +15,9 @@ export class Repair {
     this.estimatedIsComplete = data.estimatedIsComplete || new Date().toISOString().split('T')[0];
     this.customer = data.customer ? new Customer(data.customer) : new Customer();
     this.motor = data.motor ? new Motor(data.motor) : new Motor();
-  }
-
-  static fromApiFormat(apiData) {
-    const transformedData = {
-      id: apiData.id,
-      motorID: apiData.motor_id,
-      customerID: apiData.customer_id,
-      repairStatus: apiData.repair_status,
-      createdAt: apiData.created_at,
-      isArrived: apiData.is_arrived,
-      estimatedIsComplete: apiData.estimated_is_complete,
-      description: apiData.description,
-      cost: apiData.cost,
-      customer: apiData.customer ? apiData.customer : null,
-      motor: apiData.motor ? Motor.fromApiFormat(apiData.motor) : null,
-    };
-    return new Repair(transformedData);
+    this.repairFaultLinks = Array.isArray(data.repairFaultLinks)
+      ? data.repairFaultLinks.map((link) => new RepairFaultLinks(link))
+      : [];
   }
 
   toJSON() {
@@ -46,6 +33,9 @@ export class Repair {
       cost: this.cost,
       customer: this.customer ? this.customer.toJSON() : null,
       motor: this.motor ? this.motor.toJSON() : null,
+      repairFaultLinks: this.repairFaultLinks
+        ? this.repairFaultLinks.map((link) => link.toJSON())
+        : [],
     };
   }
 }
