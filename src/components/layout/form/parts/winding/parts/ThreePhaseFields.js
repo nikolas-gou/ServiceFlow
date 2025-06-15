@@ -1,23 +1,30 @@
-import React from "react";
-import { TextField, Grid } from "@mui/material";
+import React, { useState, useEffect } from 'react';
+import { TextField, Grid, Autocomplete } from '@mui/material';
+import { CrossSectionField } from './CrossSectionField';
+import StepField from './StepField';
+import HowManyCoilsWith from './howManyCoilsWith';
 
 function ThreePhaseFields(props) {
   return (
     // sx pb  3 mono se sundiasmo
     <Grid container spacing={2} sx={props.sx && props.sx}>
-      <Grid item xs={12} sm={4}>
-        {/* step */}
-        <TextField
-          fullWidth
-          label={props.step_label}
-          name={props.step_name}
-          variant="outlined"
-          value={props.step_value}
-          onChange={props.onChange}
-          placeholder="π.χ. 8-10-12"
+      <Grid item xs={12} sm={6}>
+        <StepField
+          step_label={props.step_label}
+          step_name={props.step_name}
+          step_value={props.repair?.motor?.step || ''}
+          handleInputChange={props.handleInputChange}
         />
       </Grid>
-      <Grid item xs={12} sm={4}>
+      <Grid item xs={12} sm={6}>
+        <HowManyCoilsWith
+          how_many_coils_with_label={props.how_many_coils_with_label}
+          how_many_coils_with_name={props.how_many_coils_with_name}
+          how_many_coils_with_value={props.how_many_coils_with_value}
+          handleInputChange={props.handleInputChange}
+        />
+      </Grid>
+      <Grid item xs={12} sm={6}>
         {/* spiral */}
         <TextField
           fullWidth
@@ -25,20 +32,19 @@ function ThreePhaseFields(props) {
           name={props.spiral_name}
           variant="outlined"
           value={props.spiral_value}
-          onChange={props.onChange}
+          onChange={props.handleInputChange}
           placeholder="π.χ. 66"
         />
       </Grid>
-      <Grid item xs={12} sm={4}>
-        {/* cross_section */}
-        <TextField
-          fullWidth
-          label={props.cross_section_label}
-          name={props.cross_section_name}
-          variant="outlined"
-          value={props.cross_section_value}
-          onChange={props.onChange}
-          placeholder="π.χ. 6/10 + 7/10 + 2X8/10"
+      <Grid item xs={12} sm={6}>
+        <CrossSectionField
+          cross_section_label={props.cross_section_label}
+          cross_section_name={props.cross_section_name}
+          cross_section_value={props.cross_section_value}
+          cross_section_type={props.cross_section_type}
+          repair={props.repair}
+          setRepair={props.setRepair}
+          handleInputChange={props.handleInputChange}
         />
       </Grid>
     </Grid>
