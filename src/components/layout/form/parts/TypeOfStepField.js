@@ -1,15 +1,6 @@
-import React from "react";
-import {
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-} from "@mui/material";
-import {
-  typeOfStep,
-  typeOfStep_translated,
-} from "../../../Models/Motor";
-
+import React from 'react';
+import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { typeOfStep, typeOfStep_translated } from '../../../Models/Motor';
 
 function TypeOfStepField(props) {
   return (
@@ -19,7 +10,7 @@ function TypeOfStepField(props) {
         labelId="type-select-label"
         id="type-select"
         name="motor.typeOfStep"
-        value={props.repair.motor?.typeOfStep || ""}
+        value={props.repair.motor?.typeOfStep || ''}
         label="Τύπος Βήματος"
         onChange={props.handleInputChange}
       >
