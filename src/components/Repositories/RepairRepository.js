@@ -6,7 +6,7 @@ import apiCall from '../../utils/apiCall';
 export class RepairRepository {
   static async getAll() {
     const data = await apiCall(config.server, '/api/repairs', 'GET');
-    return data.map((repair) => new Repair(repair));
+    return new Repair(data);
   }
 
   static async getStats() {
