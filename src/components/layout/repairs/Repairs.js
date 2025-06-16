@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Table,
@@ -14,9 +14,9 @@ import {
   Divider,
   Tooltip,
 } from '@mui/material';
-import { RepairRepository } from '../../Repositories/RepairRepository';
 import { useSearch } from '../../../context/SearchContext';
 import { volt_types_mapping } from '../../Models/Motor';
+import { useRepairs } from '../../../context/RepairsContext';
 
 const connectionismTranslated = {
   simple: 'Απλή',
@@ -151,13 +151,10 @@ function RepairRow(props) {
 }
 
 export default function Repairs() {
-  const [repairs, setRepairs] = useState([]);
   // context search
   const { searchQuery } = useSearch();
-
-  useEffect(() => {
-    getRepairs();
-  }, []);
+  // context Repairs
+  const { repairs, loading } = useRepairs();
 
   // Αναζήτηση - Φιλτράρισμα
   const filteredRepairs = searchQuery
@@ -169,15 +166,6 @@ export default function Repairs() {
           repair.customer.name?.toLowerCase().includes(searchQuery.toLowerCase()),
       )
     : repairs;
-
-  const getRepairs = async () => {
-    try {
-      const data = await RepairRepository.getAll();
-      setRepairs(data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
   return (
     <Box sx={{ mt: 4 }}>

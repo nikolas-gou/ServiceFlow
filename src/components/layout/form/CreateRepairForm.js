@@ -15,6 +15,7 @@ import { TechnicalCharacteristics } from './parts/TechnicalCharacteristics';
 import { DetailsWinding } from './parts/DetailsWinding';
 import { Issues } from './parts/Issues';
 import { CostAndDelivery } from './parts/CostAndDelivery';
+import { useRepairs } from '../../../context/RepairsContext';
 
 function CreateRepairForm(props) {
   const [tabValue, setTabValue] = useState(0);
@@ -23,6 +24,9 @@ function CreateRepairForm(props) {
   const [errorAlert, setErrorAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [errors, setErrors] = useState({});
+
+  // context
+  const { addRepair } = useRepairs();
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
@@ -225,6 +229,7 @@ function CreateRepairForm(props) {
       });
 
       setRepair(response.data || []);
+      addRepair(response.data || {});
     } catch (err) {
       console.error('Σφάλμα Δημιουργίας Επισκευής:', err);
       setRepair([]);
