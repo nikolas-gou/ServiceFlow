@@ -103,9 +103,15 @@ export const volt_types_mapping = {
 
 export const typeOfVolt = ['1-phase', '3-phase'];
 export const typeOfVolt_translated = ['Μονοφασικός', 'Τριφασικός'];
+export const typeOfVolt_mapping = { '1-phase': 'Μονοφασικός', '3-phase': 'Τριφασικός' };
 
 export const typeOfMotor = ['el_motor', 'pump', 'generator'];
 export const typeOfMotor_translated = ['Μοτέρ', 'Αντλία', 'Γεννήτρια'];
+export const typeOfMotor_mapping = {
+  el_motor: 'Μοτέρ',
+  pump: 'Αντλία',
+  generator: 'Γεννήτρια',
+};
 
 export const typeOfStep = ['standard', 'half', 'combined'];
 export const typeOfStep_translated = ['Ολόκληρο', 'Μισό-Μισό', 'Μισό-Μισό και Ολόκληρο'];
