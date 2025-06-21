@@ -17,6 +17,7 @@ import {
 import { useSearch } from '../../../context/SearchContext';
 import { volt_types_mapping } from '../../Models/Motor';
 import { useRepairs } from '../../../context/RepairsContext';
+import EnhancedMotorRepairDisplay from '../parts/EnhancedMotorRepairDisplay';
 
 const connectionismTranslated = {
   simple: 'Απλή',
@@ -72,77 +73,7 @@ function RepairRow(props) {
       <TableRow sx={{ backgroundColor: open ? '#f5f5f5' : 'inherit' }}>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={12}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: 2 }}>
-              <Typography variant="h6" gutterBottom component="div">
-                Λεπτομέρειες Κινητήρα
-              </Typography>
-              <Grid container spacing={2}>
-                <Grid item xs={12} md={6}>
-                  <Typography variant="subtitle1">Τεχνικά Χαρακτηριστικά</Typography>
-                  <Divider sx={{ my: 1 }} />
-                  <Grid container spacing={1}>
-                    <Grid item xs={6}>
-                      <Typography variant="body2" color="text.secondary">
-                        Βήμα:
-                      </Typography>
-                      <Typography variant="body1">{repair.motor.step}</Typography>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Typography variant="body2" color="text.secondary">
-                        Σπείρες:
-                      </Typography>
-                      <Typography variant="body1">{repair.motor.spiral}</Typography>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Typography variant="body2" color="text.secondary">
-                        Διατομή:
-                      </Typography>
-                      <Typography variant="body1">{repair.motor.crossSection}</Typography>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Typography variant="body2" color="text.secondary">
-                        Σύνδεση:
-                      </Typography>
-                      <Typography variant="body1">
-                        {connectionismTranslated[repair.motor.connectionism]}
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Typography variant="body2" color="text.secondary">
-                        kw:
-                      </Typography>
-                      <Typography variant="body1">{repair.motor.kw}</Typography>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Typography variant="body2" color="text.secondary">
-                        hp:
-                      </Typography>
-                      <Typography variant="body1">{repair.motor.hp}</Typography>
-                    </Grid>
-                  </Grid>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <Typography variant="subtitle1">Στοιχεία Επισκευής</Typography>
-                  <Divider sx={{ my: 1 }} />
-                  {repair.description && (
-                    <Typography variant="body1">{repair.description}</Typography>
-                  )}
-                  {!repair.description && (
-                    <Typography variant="body2" color="text.secondary">
-                      Δεν υπάρχει περιγραφή.
-                    </Typography>
-                  )}
-                  {repair.notes && (
-                    <>
-                      <Typography variant="subtitle2" sx={{ mt: 2 }}>
-                        Σημειώσεις:
-                      </Typography>
-                      <Typography variant="body2">{repair.notes}</Typography>
-                    </>
-                  )}
-                </Grid>
-              </Grid>
-            </Box>
+            <EnhancedMotorRepairDisplay repair={repair} />
           </Collapse>
         </TableCell>
       </TableRow>
