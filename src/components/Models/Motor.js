@@ -83,6 +83,14 @@ export const connectionism_types_translated = [
   'Άλλο',
 ];
 
+export const connectionism_types_mapping = {
+  simple: 'Απλή',
+  '1-parallel': '1 φορά παράλληλη',
+  '2-parallel': '2 φορές παράλληλη',
+  '3-parallel': '3 φορές παράλληλη',
+  '4-parallel': '4 φορές παράλληλη',
+};
+
 export const rpm_types = ['900', '1490', '2900', 'other'];
 export const rpm_types_translated = ['900', '1490', '2900', 'Αλλο'];
 
@@ -115,3 +123,9 @@ export const typeOfMotor_mapping = {
 
 export const typeOfStep = ['standard', 'half', 'combined'];
 export const typeOfStep_translated = ['Ολόκληρο', 'Μισό-Μισό', 'Μισό-Μισό και Ολόκληρο'];
+export const repairStatus_mapping = {
+  'In-progress': 'Σε εξέλιξη',
+  completed: 'Ολοκληρώθηκε',
+  waiting: 'Αναμονή',
+  pending: 'Εκκρεμεί',
+};
