@@ -10,14 +10,17 @@ import {
   Paper,
   Typography,
   Collapse,
-  Grid,
-  Divider,
   Tooltip,
+  Chip,
+  IconButton,
+  styled,
 } from '@mui/material';
+import { ExpandMore as ExpandMoreIcon } from '@mui/icons-material';
 import { useSearch } from '../../../context/SearchContext';
 import { volt_types_mapping } from '../../Models/Motor';
 import { useRepairs } from '../../../context/RepairsContext';
 import EnhancedMotorRepairDisplay from '../parts/EnhancedMotorRepairDisplay';
+import Search from '../Search'; // Import του Search component
 
 const connectionismTranslated = {
   simple: 'Απλή',
@@ -27,120 +30,246 @@ const connectionismTranslated = {
   '4-parallel': '4 φορές παράλληλη',
 };
 
-// Row component for collapsible functionality
-function RepairRow(props) {
-  const { repair, index } = props;
-  const [open, setOpen] = useState(false);
-  const [hover, setHover] = useState(false);
+const statusColors = {
+  Pending: '#ff9800',
+  'In-progress': '#2196f3',
+  Completed: '#4caf50',
+  Cancelled: '#f44336',
+};
 
-  const handleRowClick = () => {
-    setOpen(!open);
+// Styled components για compact εμφάνιση
+const CompactTableCell = styled(TableCell)(({ theme }) => ({
+  padding: '6px 8px',
+  fontSize: '0.8rem',
+  '&.MuiTableCell-head': {
+    fontWeight: 600,
+    backgroundColor: '#f8f9fa',
+    borderBottom: '2px solid #e9ecef',
+    fontSize: '0.75rem',
+    padding: '8px',
+  },
+}));
+
+const CompactTableRow = styled(TableRow)(({ theme }) => ({
+  '&:hover': {
+    backgroundColor: '#f8f9fa',
+    cursor: 'pointer',
+    '& .expand-icon': {
+      color: '#1976d2',
+    },
+  },
+  transition: 'all 0.2s ease',
+}));
+
+// Compact Row Component
+function CompactRepairRow({ repair, index }) {
+  const [open, setOpen] = useState(false);
+
+  const getStatusChip = (status) => {
+    const color = statusColors[status] || '#757575';
+    return (
+      <Chip
+        label={status}
+        size="small"
+        sx={{
+          backgroundColor: color,
+          color: 'white',
+          fontSize: '0.65rem',
+          height: '20px',
+          '& .MuiChip-label': {
+            px: 1,
+          },
+        }}
+      />
+    );
   };
 
   return (
     <>
-      <Tooltip title="Πατήστε για περισσότερες λεπτομέρειες" arrow placement="top-start">
-        <TableRow
-          className="main-row"
-          onClick={handleRowClick}
-          onMouseEnter={() => setHover(true)}
-          onMouseLeave={() => setHover(false)}
-          sx={{
-            '& > *': { borderBottom: open ? 'none' : 'inherit' },
-            backgroundColor: open ? '#e0e0e0' : hover ? '#f0f0f0' : 'inherit',
-            transition: 'background-color 0.3s',
-            cursor: 'pointer',
-            '&:hover': {
-              boxShadow: '0px 2px 4px rgba(0,0,0,0.1)',
-            },
-          }}
-        >
-          {/* <TableCell><strong>{repair.id}</strong></TableCell> */}
-          <TableCell>{repair.motor.serialNumber || '-'}</TableCell>
-          <TableCell>{repair.customer.name || '-'}</TableCell>
-          <TableCell>{repair.customer.phone || '-'}</TableCell>
-          <TableCell>{repair.motor.manufacturer || '-'}</TableCell>
-          <TableCell>{repair.motor.step || '-'}</TableCell>
-          <TableCell>{repair.motor.spiral || '-'}</TableCell>
-          <TableCell>{repair.motor.crossSection || '-'}</TableCell>
-          <TableCell>{connectionismTranslated[repair.motor.connectionism] || '-'}</TableCell>
-          <TableCell>{repair.motor.kw ? `${repair.motor.kw}kw` : '-'}</TableCell>
-          <TableCell>{repair.motor.hp ? `${repair.motor.hp}hp` : '-'}</TableCell>
-          <TableCell>{volt_types_mapping[repair.motor.volt] || '-'}</TableCell>
-          <TableCell>{repair.isArrived || '-'}</TableCell>
-        </TableRow>
-      </Tooltip>
-      <TableRow sx={{ backgroundColor: open ? '#f5f5f5' : 'inherit' }}>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={12}>
+      <CompactTableRow onClick={() => setOpen(!open)}>
+        <CompactTableCell>
+          <Typography variant="body2" fontWeight={600} fontSize="0.8rem">
+            {repair.motor.serialNumber || '-'}
+          </Typography>
+        </CompactTableCell>
+
+        <CompactTableCell>
+          <Typography variant="body2" fontSize="0.8rem" noWrap sx={{ maxWidth: '120px' }}>
+            {repair.customer.name || '-'}
+          </Typography>
+        </CompactTableCell>
+
+        <CompactTableCell>
+          <Typography variant="body2" fontSize="0.8rem">
+            {repair.motor.manufacturer || '-'}
+          </Typography>
+        </CompactTableCell>
+
+        <CompactTableCell>
+          <Typography variant="caption" fontSize="0.75rem">
+            {repair.motor.kw ? `${repair.motor.kw}kW` : '-'}
+          </Typography>
+        </CompactTableCell>
+
+        <CompactTableCell>
+          <Typography variant="caption" fontSize="0.75rem">
+            {repair.motor.hp ? `${repair.motor.hp}hp` : '-'}
+          </Typography>
+        </CompactTableCell>
+
+        <CompactTableCell>
+          <Typography variant="caption" fontSize="0.75rem">
+            {volt_types_mapping[repair.motor.volt] || '-'}
+          </Typography>
+        </CompactTableCell>
+
+        <CompactTableCell>{getStatusChip(repair.repairStatus)}</CompactTableCell>
+
+        <CompactTableCell>
+          <Typography variant="caption" color="text.secondary" fontSize="0.7rem">
+            {repair.isArrived || '-'}
+          </Typography>
+        </CompactTableCell>
+
+        <CompactTableCell sx={{ width: '30px' }}>
+          <IconButton size="small" className="expand-icon">
+            <ExpandMoreIcon
+              fontSize="small"
+              sx={{
+                transform: open ? 'rotate(180deg)' : 'rotate(0deg)',
+                transition: 'transform 0.3s',
+              }}
+            />
+          </IconButton>
+        </CompactTableCell>
+      </CompactTableRow>
+
+      <TableRow>
+        <CompactTableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <EnhancedMotorRepairDisplay repair={repair} />
+            <Box sx={{ py: 1 }}>
+              <EnhancedMotorRepairDisplay repair={repair} />
+            </Box>
           </Collapse>
-        </TableCell>
+        </CompactTableCell>
       </TableRow>
     </>
   );
 }
 
-export default function Repairs() {
-  // context search
+// Main Compact Repairs Component
+export default function CompactRepairs() {
   const { searchQuery } = useSearch();
-  // context Repairs
   const { repairs, loading } = useRepairs();
 
-  // Αναζήτηση - Φιλτράρισμα
-  const filteredRepairs = searchQuery
-    ? repairs.filter(
-        (repair) =>
-          repair.motor.manufacturer?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          repair.motor.kw?.toString().includes(searchQuery) ||
-          repair.motor.hp?.toString().includes(searchQuery) ||
-          repair.customer.name?.toLowerCase().includes(searchQuery.toLowerCase()),
-      )
-    : repairs;
+  // State για τα filters
+  const [filters, setFilters] = useState({
+    manufacturer: '',
+    status: '',
+    voltType: '',
+    kwMin: '',
+    kwMax: '',
+  });
+
+  // Συνάρτηση για να χειριστεί τις αλλαγές στα φίλτρα
+  const handleFiltersChange = (newFilters) => {
+    setFilters(newFilters);
+  };
+
+  // Φιλτράρισμα με βάση το search και τα filters
+  const filteredRepairs = repairs.filter((repair) => {
+    // Search query filter
+    const matchesSearch =
+      !searchQuery ||
+      repair.motor.manufacturer?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      repair.motor.kw?.toString().includes(searchQuery) ||
+      repair.motor.hp?.toString().includes(searchQuery) ||
+      repair.customer.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      repair.motor.serialNumber?.toLowerCase().includes(searchQuery.toLowerCase());
+
+    // Manufacturer filter
+    const matchesManufacturer =
+      !filters.manufacturer || repair.motor.manufacturer === filters.manufacturer;
+
+    // Status filter
+    const matchesStatus = !filters.status || repair.repairStatus === filters.status;
+
+    // Volt type filter
+    const matchesVoltType =
+      !filters.voltType || volt_types_mapping[repair.motor.volt] === filters.voltType;
+
+    // kW range filter
+    const matchesKwMin =
+      !filters.kwMin || (repair.motor.kw && repair.motor.kw >= parseFloat(filters.kwMin));
+
+    const matchesKwMax =
+      !filters.kwMax || (repair.motor.kw && repair.motor.kw <= parseFloat(filters.kwMax));
+
+    return (
+      matchesSearch &&
+      matchesManufacturer &&
+      matchesStatus &&
+      matchesVoltType &&
+      matchesKwMin &&
+      matchesKwMax
+    );
+  });
 
   return (
-    <Box sx={{ mt: 4 }}>
-      <Typography variant="h6" sx={{ mb: 2 }}>
-        Λεπτομέρειες Επισκευών
-      </Typography>
-      <TableContainer component={Paper} sx={{ maxHeight: 'calc(100vh - 200px)' }}>
-        <Table
-          stickyHeader
-          sx={{
-            // Κεντράρισμα για headers και main rows μόνο
-            '& .MuiTableHead-root .MuiTableCell-root, & .main-row .MuiTableCell-root': {
-              textAlign: 'center',
-            },
-          }}
-        >
+    <Box sx={{ mt: 2 }}>
+      {/* Header με τίτλο και Search/Filter components */}
+      <Box
+        sx={{
+          mb: 2,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: 2,
+        }}
+      >
+        <Typography variant="h6" sx={{ fontSize: '1rem', fontWeight: 600 }}>
+          Επισκευές ({filteredRepairs.length})
+        </Typography>
+
+        {/* Search και Filter components */}
+        <Search repairs={repairs} onFiltersChange={handleFiltersChange} />
+      </Box>
+
+      <TableContainer
+        component={Paper}
+        sx={{
+          maxHeight: 'calc(100vh - 280px)',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+          borderRadius: '8px',
+        }}
+      >
+        <Table stickyHeader size="small">
           <TableHead>
-            <TableRow className="main-row">
-              {/* <TableCell>A/A</TableCell> */}
-              <TableCell>S/N</TableCell>
-              <TableCell>Πελάτης</TableCell>
-              <TableCell>Τηλέφωνο</TableCell>
-              <TableCell>Μάρκα</TableCell>
-              <TableCell>Βήμα</TableCell>
-              <TableCell>Σπείρες</TableCell>
-              <TableCell>Διατομή</TableCell>
-              <TableCell>Σύνδεση</TableCell>
-              <TableCell>kw</TableCell>
-              <TableCell>hp</TableCell>
-              <TableCell>volt</TableCell>
-              <TableCell>Ημ/νία Παραλαβής</TableCell>
+            <TableRow>
+              <CompactTableCell>S/N</CompactTableCell>
+              <CompactTableCell>Πελάτης</CompactTableCell>
+              <CompactTableCell>Μάρκα</CompactTableCell>
+              <CompactTableCell>kW</CompactTableCell>
+              <CompactTableCell>hp</CompactTableCell>
+              <CompactTableCell>Τάση</CompactTableCell>
+              <CompactTableCell>Κατάσταση</CompactTableCell>
+              <CompactTableCell>Παραλαβή</CompactTableCell>
+              <CompactTableCell width="40px"></CompactTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {filteredRepairs.map((repair, index) => (
-              <RepairRow key={repair.id} repair={repair} index={index} />
+              <CompactRepairRow key={repair.id} repair={repair} index={index} />
             ))}
             {filteredRepairs.length === 0 && (
               <TableRow>
-                <TableCell colSpan={12} align="center">
-                  <Typography variant="body1" sx={{ py: 2 }}>
-                    Δεν βρέθηκαν αποτελέσματα για "{searchQuery}"
+                <CompactTableCell colSpan={9} align="center">
+                  <Typography variant="body2" sx={{ py: 3, color: 'text.secondary' }}>
+                    {searchQuery || Object.values(filters).some((f) => f !== '')
+                      ? `Δεν βρέθηκαν αποτελέσματα`
+                      : 'Δεν υπάρχουν επισκευές'}
                   </Typography>
-                </TableCell>
+                </CompactTableCell>
               </TableRow>
             )}
           </TableBody>

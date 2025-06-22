@@ -195,7 +195,12 @@ function EnhancedMotorRepairDisplay({ repair }) {
           {[
             { label: 'Βήμα:', value: repair.motor.step },
             { label: 'Σπείρες:', value: repair.motor.spiral },
-            { label: 'Διατομή:', value: repair.motor.crossSection },
+            {
+              label: 'Διατομή:',
+              value: repair.motor.motorCrossSectionLinks
+                .filter((item) => item.type == 'standard')
+                .map((item) => item.crossSection + ' + '),
+            },
           ].map(({ label, value }) => (
             <Box key={label} sx={commonStyles.flexBetween}>
               <Typography variant="body2" sx={commonStyles.whiteTextSemi}>
