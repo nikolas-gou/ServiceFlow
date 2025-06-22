@@ -12,19 +12,19 @@
 //   );
 // }
 
-import React from "react";
-import { AppBar, Toolbar, Typography, Box } from "@mui/material";
-import Breadcrumbs from "./Breadcrumbs";
-import Search from "./Search";
+import React from 'react';
+import { AppBar, Toolbar, Typography, Box } from '@mui/material';
+import Breadcrumbs from './Breadcrumbs';
+import Search from './Search';
 
 export default function TopAppBar() {
   return (
     <AppBar
       position="static"
       sx={{
-        bgcolor: "background.default",
-        color: "text.primary",
-        boxShadow: "none",
+        bgcolor: 'background.default',
+        color: 'text.primary',
+        boxShadow: 'none',
       }}
     >
       <Toolbar>
