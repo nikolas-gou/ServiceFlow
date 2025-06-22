@@ -30,7 +30,7 @@ function App() {
                   path="/dashboard/overview"
                   element={
                     <>
-                      <Typography variant="h6">Αρχική</Typography>
+                      {/* <Typography variant="h6">Αρχική</Typography> */}
                       {/* <StatisticsCards /> */}
                       <StatisticsCards2 />
                       <Repairs />

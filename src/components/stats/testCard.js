@@ -21,37 +21,45 @@ const chartOptions = {
 const StatCard = ({ title, value, trend, color, icon, data }) => {
   return (
     <Card
-      elevation={6}
+      elevation={5}
       sx={{
-        p: 2,
+        p: 2, // Επαναφορά padding
         borderRadius: 4,
         background: 'linear-gradient(135deg, #e0e7ff, #c7d2fe)',
         position: 'relative',
         overflow: 'visible',
         transition: 'transform 0.2s, box-shadow 0.2s',
+        minHeight: 130, // Λίγο μεγαλύτερο ύψος
         '&:hover': {
-          transform: 'translateY(-4px)',
-          boxShadow: 10,
+          transform: 'translateY(-3px)', // Μέτριο hover effect
+          boxShadow: 8,
         },
       }}
     >
       <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-        <Avatar sx={{ bgcolor: color + '.main', mr: 2 }}>{icon}</Avatar>
-        <Box>
-          <Typography variant="subtitle2" color="text.secondary">
+        <Avatar sx={{ bgcolor: color + '.main', mr: 2, width: 36, height: 36 }}>{icon}</Avatar>
+        <Box sx={{ flex: 1 }}>
+          <Typography variant="subtitle2" color="text.secondary" sx={{ fontSize: '0.8rem' }}>
             {title}
           </Typography>
-          <Typography variant="h5" fontWeight="bold">
+          <Typography variant="h5" fontWeight="bold" sx={{ lineHeight: 1.2 }}>
             {value}
           </Typography>
         </Box>
         <Chip
           label={trend}
           size="small"
-          sx={{ ml: 'auto', color: color + '.main', fontWeight: 'bold' }}
+          sx={{
+            color: color + '.main',
+            fontWeight: 'bold',
+            height: 24,
+            fontSize: '0.7rem',
+          }}
         />
       </Box>
-      <Box sx={{ height: 40 }}>
+      <Box sx={{ height: 35 }}>
+        {' '}
+        {/* Λίγο μεγαλύτερο ύψος chart */}
         <Line
           data={{
             labels: data.map((_, i) => i),
@@ -61,6 +69,7 @@ const StatCard = ({ title, value, trend, color, icon, data }) => {
                 borderColor: color,
                 backgroundColor: `${color}20`,
                 fill: true,
+                borderWidth: 2,
               },
             ],
           }}
@@ -136,8 +145,12 @@ export default function StatisticsCards2() {
   };
 
   return (
-    <Box sx={{ p: 2 }}>
-      <Grid container spacing={3}>
+    <Box sx={{ p: 1.5, mb: 1.5 }}>
+      {' '}
+      {/* Μέτριο padding και margin */}
+      <Grid container spacing={2.5}>
+        {' '}
+        {/* Μέτριο spacing */}
         {stats.map((stat, index) => (
           <Grid item xs={12} sm={6} md={3} key={index}>
             <StatCard {...stat} />
