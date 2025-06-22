@@ -1,5 +1,5 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Drawer,
   List,
@@ -48,11 +48,10 @@ const StyledListItem = styled(ListItemButton)(({ theme }) => ({
 
 export default function SideBar() {
   const navigate = useNavigate();
-  const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const location = useLocation();
 
-  const handleListItemClick = (event, index, route) => {
+  const handleListItemClick = (event, route) => {
     navigate(route);
-    setSelectedIndex(index);
   };
 
   const menuItems = [
@@ -60,32 +59,40 @@ export default function SideBar() {
       text: 'Αρχική',
       route: '/dashboard/overview',
       icon: <HomeIcon sx={{ color: '#1976d2' }} />,
-      index: 0,
     },
     {
       text: 'Στατιστικά',
       route: '/dashboard/analytics',
       icon: <AssessmentIcon sx={{ color: '#0288d1' }} />,
-      index: 1,
     },
     {
       text: 'Πελάτες',
       route: '/dashboard/customers',
       icon: <GroupIcon sx={{ color: '#009688' }} />,
-      index: 2,
     },
     {
       text: 'Επισκευές',
       route: '/dashboard/services',
       icon: <BuildIcon sx={{ color: '#f57c00' }} />,
-      index: 3,
     },
   ];
 
   const settingsItems = [
-    { text: 'Ρυθμίσεις', icon: <SettingsIcon sx={{ color: '#607d8b' }} />, index: 4 },
-    { text: 'Σχετικά', icon: <InfoIcon sx={{ color: '#5c6bc0' }} />, index: 5 },
-    { text: 'Feedback', icon: <FeedbackIcon sx={{ color: '#c2185b' }} />, index: 6 },
+    {
+      text: 'Ρυθμίσεις',
+      route: '/dashboard/settings',
+      icon: <SettingsIcon sx={{ color: '#607d8b' }} />,
+    },
+    {
+      text: 'Σχετικά',
+      route: '/dashboard/about',
+      icon: <InfoIcon sx={{ color: '#5c6bc0' }} />,
+    },
+    {
+      text: 'Feedback',
+      route: '/dashboard/feedback',
+      icon: <FeedbackIcon sx={{ color: '#c2185b' }} />,
+    },
   ];
 
   return (
@@ -113,9 +120,9 @@ export default function SideBar() {
       <List>
         {menuItems.map((item) => (
           <StyledListItem
-            key={item.index}
-            selected={selectedIndex === item.index}
-            onClick={(event) => handleListItemClick(event, item.index, item.route)}
+            key={item.route}
+            selected={location.pathname === item.route}
+            onClick={(event) => handleListItemClick(event, item.route)}
           >
             <ListItemIcon>{item.icon}</ListItemIcon>
             <ListItemText primary={item.text} />
@@ -128,9 +135,9 @@ export default function SideBar() {
       <List>
         {settingsItems.map((item) => (
           <StyledListItem
-            key={item.index}
-            selected={selectedIndex === item.index}
-            onClick={(event) => handleListItemClick(event, item.index)}
+            key={item.route}
+            selected={location.pathname === item.route}
+            onClick={(event) => handleListItemClick(event, item.route)}
           >
             <ListItemIcon>{item.icon}</ListItemIcon>
             <ListItemText primary={item.text} />
