@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Grid, Card, CardContent, Typography, Chip, Avatar } from '@mui/material';
-import { TrendingUp, TrendingDown, ShowChart } from '@mui/icons-material';
+import { TrendingUp, TrendingDown, ShowChart, People, Build, Euro } from '@mui/icons-material';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, LineElement, PointElement, LinearScale, CategoryScale } from 'chart.js';
-import { RepairRepository } from '../Repositories/RepairRepository';
 import { CustomerRepository } from '../Repositories/CustomerRepository';
+import { useLocation } from 'react-router-dom';
+import LoadingCard from '../common/LoadingCard';
 
 ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale);
 
@@ -23,15 +24,15 @@ const StatCard = ({ title, value, trend, color, icon, data }) => {
     <Card
       elevation={5}
       sx={{
-        p: 2, // Επαναφορά padding
+        p: 2,
         borderRadius: 4,
         background: 'linear-gradient(135deg, #e0e7ff, #c7d2fe)',
         position: 'relative',
         overflow: 'visible',
         transition: 'transform 0.2s, box-shadow 0.2s',
-        minHeight: 130, // Λίγο μεγαλύτερο ύψος
+        minHeight: 130,
         '&:hover': {
-          transform: 'translateY(-3px)', // Μέτριο hover effect
+          transform: 'translateY(-3px)',
           boxShadow: 8,
         },
       }}
@@ -58,8 +59,6 @@ const StatCard = ({ title, value, trend, color, icon, data }) => {
         />
       </Box>
       <Box sx={{ height: 35 }}>
-        {' '}
-        {/* Λίγο μεγαλύτερο ύψος chart */}
         <Line
           data={{
             labels: data.map((_, i) => i),
@@ -81,76 +80,176 @@ const StatCard = ({ title, value, trend, color, icon, data }) => {
 };
 
 export default function StatisticsCards2() {
-  const [countRepairs, setCountRepairs] = useState('');
-  const [countCustomers, setCountCustomers] = useState('');
+  const location = useLocation();
+  const [statistics, setStatistics] = useState({});
+  const [loading, setLoading] = useState(true);
 
-  const stats = [
-    {
-      title: 'Συνολικές Επισκευές',
-      value: countRepairs,
-      trend: '+25%',
-      color: 'info',
-      icon: <ShowChart fontSize="small" />,
-      data: [5, 6, 7, 8, 7, 8, 10],
-    },
-    {
-      title: 'Πελάτες',
-      value: countCustomers,
-      trend: '-25%',
-      color: 'error',
-      icon: <TrendingDown fontSize="small" />,
-      data: [8, 7, 6, 5, 4, 3, 2],
-    },
-    {
-      title: 'Αντικαταστάσεις',
-      value: '200k',
-      trend: '+5%',
-      color: 'primary',
-      icon: <ShowChart fontSize="small" />,
-      data: [20, 19, 18, 18, 19, 20, 21],
-    },
-    {
-      title: 'Πωλήσεις',
-      value: '€50k',
-      trend: '+10%',
-      color: 'success',
-      icon: <TrendingUp fontSize="small" />,
-      data: [10, 11, 12, 13, 14, 15, 16],
-    },
-  ];
+  // Helper functions for calculations
+  const calculateTrend = (data) => {
+    if (!data || !Array.isArray(data) || data.length < 2) return '+0%';
+
+    const current = data[data.length - 1] || 0;
+    const previous = data[data.length - 2] || 0;
+
+    if (previous === 0) return current > 0 ? '+100%' : '+0%';
+
+    const change = ((current - previous) / previous) * 100;
+    const sign = change >= 0 ? '+' : '';
+    return `${sign}${change.toFixed(0)}%`;
+  };
+
+  const getTrendColor = (trend) => {
+    if (!trend) return 'primary';
+    return trend.startsWith('+') ? 'success' : 'error';
+  };
+
+  const getTrendIcon = (trend) => {
+    if (!trend) return <ShowChart fontSize="small" />;
+    return trend.startsWith('+') ? (
+      <TrendingUp fontSize="small" />
+    ) : (
+      <TrendingDown fontSize="small" />
+    );
+  };
+
+  const formatValue = (value, type = 'number') => {
+    if (value === undefined || value === null) return '0';
+
+    switch (type) {
+      case 'currency':
+        return `€${Number(value).toLocaleString()}`;
+      case 'number':
+        if (value >= 1000) {
+          return `${(value / 1000).toFixed(1)}k`;
+        }
+        return value.toString();
+      default:
+        return value.toString();
+    }
+  };
+
+  // Ensure data arrays have proper fallbacks
+  const getSafeDataArray = (data, fallback = [0, 0, 0, 0, 0]) => {
+    if (!data || !Array.isArray(data) || data.length === 0) {
+      return fallback;
+    }
+    return data;
+  };
+
+  // Dynamic stats configuration based on location and data
+  const getStatsConfig = () => {
+    if (location.pathname === '/dashboard/overview') {
+      const repairTrend = calculateTrend(statistics.monthlyRepairTrends);
+      const customerTrend = calculateTrend(statistics.monthlyCustomerTrends);
+      const motorTrend = calculateTrend(statistics.monthlyMotorTrends);
+      const revenueTrend = calculateTrend(statistics.monthlyRevenueTrends);
+
+      return [
+        {
+          title: 'Συνολικές Επισκευές',
+          value: formatValue(statistics.totalRepairs),
+          trend: repairTrend,
+          color: getTrendColor(repairTrend),
+          icon: <Build fontSize="small" />,
+          data: getSafeDataArray(statistics.monthlyRepairTrends),
+        },
+        {
+          title: 'Συνολικοί Πελάτες',
+          value: formatValue(statistics.totalCustomers),
+          trend: customerTrend,
+          color: getTrendColor(customerTrend),
+          icon: <People fontSize="small" />,
+          data: getSafeDataArray(statistics.monthlyCustomerTrends),
+        },
+        {
+          title: 'Συνολικά Μοτέρ',
+          value: formatValue(statistics.totalMotors),
+          trend: motorTrend,
+          color: getTrendColor(motorTrend),
+          icon: <ShowChart fontSize="small" />,
+          data: getSafeDataArray(statistics.monthlyMotorTrends),
+        },
+        {
+          title: 'Ετήσια Έσοδα',
+          value: formatValue(statistics.yearlyRevenue, 'currency'),
+          trend: revenueTrend,
+          color: getTrendColor(revenueTrend),
+          icon: <Euro fontSize="small" />,
+          data: getSafeDataArray(statistics.monthlyRevenueTrends),
+        },
+      ];
+    }
+
+    // Default fallback for other pages
+    return [
+      {
+        title: 'Δεδομένα',
+        value: '0',
+        trend: '+0%',
+        color: 'primary',
+        icon: <ShowChart fontSize="small" />,
+        data: [0, 0, 0, 0, 0],
+      },
+    ];
+  };
 
   useEffect(() => {
-    loadStatsRepair();
-    loadStatsCustomer();
-  }, []);
+    loadStatistics();
+  }, [location]);
 
-  const loadStatsRepair = async () => {
+  const loadStatistics = async () => {
+    console.log(location);
+    setLoading(true);
     try {
-      const data = await RepairRepository.getStats();
-      setCountRepairs(data || []);
+      switch (location.pathname) {
+        case '/dashboard/overview':
+          try {
+            const response = await CustomerRepository.getStatisticsOverview();
+            setStatistics(response.data);
+          } catch (err) {
+            console.error('Σφάλμα φόρτωσης πελατών:', err);
+          }
+          break;
+        case '/dashboard/analytics':
+          // endpoint = '/api/statistics/monthly';
+          break;
+        case '/dashboard/customers':
+          // endpoint = '/api/statistics/customer-types';
+          break;
+        case '/dashboard/services':
+          // endpoint = '/api/statistics/repair-status';
+          break;
+        default:
+          // endpoint = '/api/statistics/overview';
+          break;
+      }
     } catch (err) {
-      console.error('Σφάλμα φόρτωσης επισκευών:', err);
-      setCountRepairs([]);
+      console.error('Σφάλμα φόρτωσης στατιστικών:', err);
+      setStatistics({});
+    } finally {
+      setLoading(false);
     }
   };
 
-  const loadStatsCustomer = async () => {
-    try {
-      const data = await CustomerRepository.getStats();
-      setCountCustomers(data || []);
-    } catch (err) {
-      console.error('Σφάλμα φόρτωσης πελατών:', err);
-      setCountCustomers([]);
-    }
-  };
+  if (loading) {
+    return (
+      <Box sx={{ p: 1.5, mb: 1.5 }}>
+        <Grid container spacing={2.5}>
+          {[1, 2, 3, 4].map((item) => (
+            <Grid item xs={12} sm={6} md={3} key={item}>
+              <LoadingCard />
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
+    );
+  }
+
+  const stats = getStatsConfig();
 
   return (
     <Box sx={{ p: 1.5, mb: 1.5 }}>
-      {' '}
-      {/* Μέτριο padding και margin */}
       <Grid container spacing={2.5}>
-        {' '}
-        {/* Μέτριο spacing */}
         {stats.map((stat, index) => (
           <Grid item xs={12} sm={6} md={3} key={index}>
             <StatCard {...stat} />
