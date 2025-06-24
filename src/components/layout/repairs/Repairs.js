@@ -17,18 +17,10 @@ import {
 } from '@mui/material';
 import { ExpandMore as ExpandMoreIcon } from '@mui/icons-material';
 import { useSearch } from '../../../context/SearchContext';
-import { volt_types_mapping } from '../../Models/Motor';
+import { volt_types_mapping, repairStatus_mapping } from '../../Models/Motor';
 import { useRepairs } from '../../../context/RepairsContext';
 import EnhancedMotorRepairDisplay from '../parts/EnhancedMotorRepairDisplay';
 import Search from '../Search'; // Import του Search component
-
-const connectionismTranslated = {
-  simple: 'Απλή',
-  '1-parallel': '1 φορά παράλληλη',
-  '2-parallel': '2 φορές παράλληλη',
-  '3-parallel': '3 φορές παράλληλη',
-  '4-parallel': '4 φορές παράλληλη',
-};
 
 const statusColors = {
   Pending: '#ff9800',
@@ -69,7 +61,7 @@ function CompactRepairRow({ repair, index }) {
     const color = statusColors[status] || '#757575';
     return (
       <Chip
-        label={status}
+        label={repairStatus_mapping[status]}
         size="small"
         sx={{
           backgroundColor: color,
