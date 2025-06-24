@@ -19,6 +19,11 @@ export class CustomerRepository {
     return data.map((customer) => customer.name);
   }
 
+  static async getStatisticsOverview() {
+    const data = await apiCall(config.server, '/api/statistics/overview', 'GET');
+    return data;
+  }
+
   //   static async getById(id) {
   //     const data = await apiCall(config.server, `/customers/${id}`, "GET");
   //     return new Customer(data);
