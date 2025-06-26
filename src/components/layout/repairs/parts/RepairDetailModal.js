@@ -1,8 +1,8 @@
-import React from 'react';
-import { Box, Typography, Chip, IconButton, styled, Modal, Backdrop, Fade } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, Typography, Chip, IconButton, Modal, Backdrop, Fade, styled } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
-import { repairStatus_mapping } from '../../Models/Motor';
-import EnhancedMotorRepairDisplay from '../parts/EnhancedMotorRepairDisplay';
+import EnhancedMotorRepairDisplay from '../../parts/EnhancedMotorRepairDisplay';
+import { repairStatus_mapping } from '../../../Models/Motor';
 
 // Modal styling
 const ModalStyle = {
@@ -37,31 +37,8 @@ const ModalContent = styled(Box)({
   padding: '0',
 });
 
-/**
- * Modal component για εμφάνιση λεπτομερειών επισκευής
- * @param {boolean} open - Κατάσταση ανοίγματος του modal
- * @param {Object} repair - Αντικείμενο επισκευής
- * @param {Function} onClose - Function για κλείσιμο του modal
- */
-export default function ModalRepairs({ open, repair, onClose }) {
-  // Early return αν δεν υπάρχει repair
+export const RepairDetailModal = ({ open, repair, onClose }) => {
   if (!repair) return null;
-
-  // Συνάρτηση για να πάρουμε το σωστό χρώμα του status chip
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'Completed':
-        return 'success';
-      case 'In-progress':
-        return 'info';
-      case 'Pending':
-        return 'warning';
-      case 'Cancelled':
-        return 'error';
-      default:
-        return 'default';
-    }
-  };
 
   return (
     <Modal
@@ -76,30 +53,22 @@ export default function ModalRepairs({ open, repair, onClose }) {
     >
       <Fade in={open} timeout={300}>
         <Box sx={ModalStyle}>
-          {/* Modal Header */}
           <ModalHeader>
             <Box>
               <Typography variant="h6" component="h2" sx={{ fontWeight: 600 }}>
                 Λεπτομέρειες Επισκευής
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {repair.motor?.manufacturer || 'Άγνωστη μάρκα'} -{' '}
-                {repair.motor?.serialNumber || 'Χωρίς S/N'}
+                {repair.motor.manufacturer} - {repair.motor.serialNumber}
               </Typography>
             </Box>
-
             <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-              {/* Status Chip */}
               <Chip
-                label={
-                  repairStatus_mapping[repair.repairStatus] || repair.repairStatus || 'Άγνωστο'
-                }
-                color={getStatusColor(repair.repairStatus)}
+                label={repairStatus_mapping[repair.repairStatus] || repair.repairStatus}
+                color={repair.repairStatus === 'Completed' ? 'success' : 'warning'}
                 size="small"
                 sx={{ fontWeight: 'bold' }}
               />
-
-              {/* Close Button */}
               <IconButton
                 onClick={onClose}
                 sx={{
@@ -108,14 +77,12 @@ export default function ModalRepairs({ open, repair, onClose }) {
                     backgroundColor: 'action.hover',
                   },
                 }}
-                aria-label="κλείσιμο modal"
               >
                 <CloseIcon />
               </IconButton>
             </Box>
           </ModalHeader>
 
-          {/* Modal Content */}
           <ModalContent>
             <EnhancedMotorRepairDisplay repair={repair} />
           </ModalContent>
@@ -123,4 +90,4 @@ export default function ModalRepairs({ open, repair, onClose }) {
       </Fade>
     </Modal>
   );
-}
+};
