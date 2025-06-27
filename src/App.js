@@ -12,6 +12,7 @@ import Customers from './components/layout/customers/Customers';
 import { SearchProvider } from './context/SearchContext';
 import { RepairsProvider } from './context/RepairsContext';
 import StatisticsCards2 from './components/stats/testCard';
+import AnalyticsDashboard from './components/stats/AnalyticsDashboard';
 
 function App() {
   return (
@@ -30,18 +31,12 @@ function App() {
                   path="/dashboard/overview"
                   element={
                     <>
-                      {/* <Typography variant="h6">Αρχική</Typography> */}
-                      {/* <StatisticsCards /> */}
                       <StatisticsCards2 />
                       <Repairs />
                     </>
                   }
                 />
-                <Route
-                  exact
-                  path="/dashboard/analytics"
-                  element={<Typography>analytics</Typography>}
-                />
+                <Route exact path="/dashboard/analytics" element={<AnalyticsDashboard />} />
                 <Route
                   exact
                   path="/dashboard/customers"
