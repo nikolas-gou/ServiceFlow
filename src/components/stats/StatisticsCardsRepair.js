@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Grid } from '@mui/material';
-import { People, Business, Person, Euro } from '@mui/icons-material';
+import { TrendingUp, TrendingDown, ShowChart, People, Build, Euro } from '@mui/icons-material';
 import { Chart as ChartJS, LineElement, PointElement, LinearScale, CategoryScale } from 'chart.js';
 import { useLocation } from 'react-router-dom';
 import LoadingCard from '../common/LoadingCard';
@@ -15,52 +15,49 @@ import {
 
 ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale);
 
-export default function StatisticsCardsCustomer() {
+export default function StatisticsCardsRepair() {
   const location = useLocation();
   const [statistics, setStatistics] = useState({});
   const [loading, setLoading] = useState(true);
 
   const getStatsConfig = () => {
-    const customerTrend = calculateTrend(statistics.monthlyTrends);
-    const individualTrend = calculateTrend(statistics.customersByTypeAndMonth?.individual);
-    const factoryTrend = calculateTrend(statistics.customersByTypeAndMonth?.factory);
-
-    // Παίρνουμε τον καλύτερο πελάτη
-    const topCustomer = statistics.topCustomersByRevenue?.[0];
+    const repairTrend = calculateTrend(statistics.monthlyRepairTrends);
+    const customerTrend = calculateTrend(statistics.monthlyCustomerTrends);
+    const motorTrend = calculateTrend(statistics.monthlyMotorTrends);
+    const revenueTrend = calculateTrend(statistics.monthlyRevenueTrends);
 
     return [
+      {
+        title: 'Συνολικές Επισκευές',
+        value: formatValue(statistics.totalRepairs),
+        trend: repairTrend,
+        color: getTrendColor(repairTrend),
+        icon: <Build fontSize="small" />,
+        data: getSafeDataArray(statistics.monthlyRepairTrends),
+      },
       {
         title: 'Συνολικοί Πελάτες',
         value: formatValue(statistics.totalCustomers),
         trend: customerTrend,
         color: getTrendColor(customerTrend),
         icon: <People fontSize="small" />,
-        data: getSafeDataArray(statistics.monthlyTrends),
+        data: getSafeDataArray(statistics.monthlyCustomerTrends),
       },
       {
-        title: 'Ιδιώτες Πελάτες',
-        value: formatValue(statistics.customerTypes?.individual),
-        trend: individualTrend,
-        color: getTrendColor(individualTrend),
-        icon: <Person fontSize="small" />,
-        data: getSafeDataArray(statistics.customersByTypeAndMonth?.individual),
+        title: 'Συνολικά Μοτέρ',
+        value: formatValue(statistics.totalMotors),
+        trend: motorTrend,
+        color: getTrendColor(motorTrend),
+        icon: <ShowChart fontSize="small" />,
+        data: getSafeDataArray(statistics.monthlyMotorTrends),
       },
       {
-        title: 'Εργοστάσια',
-        value: formatValue(statistics.customerTypes?.factory),
-        trend: factoryTrend,
-        color: getTrendColor(factoryTrend),
-        icon: <Business fontSize="small" />,
-        data: getSafeDataArray(statistics.customersByTypeAndMonth?.factory),
-      },
-      {
-        title: 'Καλύτερος Πελάτης',
-        value: topCustomer ? formatValue(topCustomer.totalRevenue, 'currency') : '€0',
-        trend: null,
-        color: 'primary',
+        title: 'Ετήσια Έσοδα',
+        value: formatValue(statistics.yearlyRevenue, 'currency'),
+        trend: revenueTrend,
+        color: getTrendColor(revenueTrend),
         icon: <Euro fontSize="small" />,
-        data: [topCustomer?.totalRevenue || 0],
-        customTitle: topCustomer ? `${topCustomer.name}` : 'Δεν υπάρχουν δεδομένα',
+        data: getSafeDataArray(statistics.monthlyRevenueTrends),
       },
     ];
   };
@@ -72,12 +69,11 @@ export default function StatisticsCardsCustomer() {
   const loadStatistics = async () => {
     setLoading(true);
     try {
-      const response = await StatisticRepository.getCustomerStatistics();
+      const response = await StatisticRepository.getStatisticsOverview();
 
-      // Διόρθωση: το StatisticRepository επιστρέφει ήδη τα δεδομένα, όχι response.data
       setStatistics(response || {});
     } catch (err) {
-      console.error('Σφάλμα φόρτωσης στατιστικών πελατών:', err);
+      console.error('Σφάλμα φόρτωσης στατιστικών:', err);
       setStatistics({});
     } finally {
       setLoading(false);

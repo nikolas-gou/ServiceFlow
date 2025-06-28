@@ -9,212 +9,170 @@ import {
   TableRow,
   Paper,
   Typography,
-  Collapse,
-  Grid,
-  Divider,
-  Tooltip,
+  styled,
 } from '@mui/material';
 import { useSearch } from '../../../context/SearchContext';
 import { volt_types_mapping } from '../../Models/Motor';
 import { useRepairs } from '../../../context/RepairsContext';
+import Search from '../Search';
+import { RepairDetailModal } from './parts/RepairDetailModal';
+import { RepairRow } from './parts/RepairRow';
 
-const connectionismTranslated = {
-  simple: 'Απλή',
-  '1-parallel': '1 φορά παράλληλη',
-  '2-parallel': '2 φορές παράλληλη',
-  '3-parallel': '3 φορές παράλληλη',
-  '4-parallel': '4 φορές παράλληλη',
-};
+// Styled components για compact εμφάνιση
+const CompactTableCell = styled(TableCell)(({ theme }) => ({
+  padding: '6px 8px',
+  fontSize: '0.8rem',
+  '&.MuiTableCell-head': {
+    fontWeight: 600,
+    backgroundColor: '#f8f9fa',
+    borderBottom: '2px solid #e9ecef',
+    fontSize: '0.75rem',
+    padding: '8px',
+  },
+}));
 
-// Row component for collapsible functionality
-function RepairRow(props) {
-  const { repair, index } = props;
-  const [open, setOpen] = useState(false);
-  const [hover, setHover] = useState(false);
-
-  const handleRowClick = () => {
-    setOpen(!open);
-  };
-
-  return (
-    <>
-      <Tooltip title="Πατήστε για περισσότερες λεπτομέρειες" arrow placement="top-start">
-        <TableRow
-          className="main-row"
-          onClick={handleRowClick}
-          onMouseEnter={() => setHover(true)}
-          onMouseLeave={() => setHover(false)}
-          sx={{
-            '& > *': { borderBottom: open ? 'none' : 'inherit' },
-            backgroundColor: open ? '#e0e0e0' : hover ? '#f0f0f0' : 'inherit',
-            transition: 'background-color 0.3s',
-            cursor: 'pointer',
-            '&:hover': {
-              boxShadow: '0px 2px 4px rgba(0,0,0,0.1)',
-            },
-          }}
-        >
-          {/* <TableCell><strong>{repair.id}</strong></TableCell> */}
-          <TableCell>{repair.motor.serialNumber || '-'}</TableCell>
-          <TableCell>{repair.customer.name || '-'}</TableCell>
-          <TableCell>{repair.customer.phone || '-'}</TableCell>
-          <TableCell>{repair.motor.manufacturer || '-'}</TableCell>
-          <TableCell>{repair.motor.step || '-'}</TableCell>
-          <TableCell>{repair.motor.spiral || '-'}</TableCell>
-          <TableCell>{repair.motor.crossSection || '-'}</TableCell>
-          <TableCell>{connectionismTranslated[repair.motor.connectionism] || '-'}</TableCell>
-          <TableCell>{repair.motor.kw ? `${repair.motor.kw}kw` : '-'}</TableCell>
-          <TableCell>{repair.motor.hp ? `${repair.motor.hp}hp` : '-'}</TableCell>
-          <TableCell>{volt_types_mapping[repair.motor.volt] || '-'}</TableCell>
-          <TableCell>{repair.isArrived || '-'}</TableCell>
-        </TableRow>
-      </Tooltip>
-      <TableRow sx={{ backgroundColor: open ? '#f5f5f5' : 'inherit' }}>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={12}>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: 2 }}>
-              <Typography variant="h6" gutterBottom component="div">
-                Λεπτομέρειες Κινητήρα
-              </Typography>
-              <Grid container spacing={2}>
-                <Grid item xs={12} md={6}>
-                  <Typography variant="subtitle1">Τεχνικά Χαρακτηριστικά</Typography>
-                  <Divider sx={{ my: 1 }} />
-                  <Grid container spacing={1}>
-                    <Grid item xs={6}>
-                      <Typography variant="body2" color="text.secondary">
-                        Βήμα:
-                      </Typography>
-                      <Typography variant="body1">{repair.motor.step}</Typography>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Typography variant="body2" color="text.secondary">
-                        Σπείρες:
-                      </Typography>
-                      <Typography variant="body1">{repair.motor.spiral}</Typography>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Typography variant="body2" color="text.secondary">
-                        Διατομή:
-                      </Typography>
-                      <Typography variant="body1">{repair.motor.crossSection}</Typography>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Typography variant="body2" color="text.secondary">
-                        Σύνδεση:
-                      </Typography>
-                      <Typography variant="body1">
-                        {connectionismTranslated[repair.motor.connectionism]}
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Typography variant="body2" color="text.secondary">
-                        kw:
-                      </Typography>
-                      <Typography variant="body1">{repair.motor.kw}</Typography>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Typography variant="body2" color="text.secondary">
-                        hp:
-                      </Typography>
-                      <Typography variant="body1">{repair.motor.hp}</Typography>
-                    </Grid>
-                  </Grid>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <Typography variant="subtitle1">Στοιχεία Επισκευής</Typography>
-                  <Divider sx={{ my: 1 }} />
-                  {repair.description && (
-                    <Typography variant="body1">{repair.description}</Typography>
-                  )}
-                  {!repair.description && (
-                    <Typography variant="body2" color="text.secondary">
-                      Δεν υπάρχει περιγραφή.
-                    </Typography>
-                  )}
-                  {repair.notes && (
-                    <>
-                      <Typography variant="subtitle2" sx={{ mt: 2 }}>
-                        Σημειώσεις:
-                      </Typography>
-                      <Typography variant="body2">{repair.notes}</Typography>
-                    </>
-                  )}
-                </Grid>
-              </Grid>
-            </Box>
-          </Collapse>
-        </TableCell>
-      </TableRow>
-    </>
-  );
-}
-
+// Main Modal Repairs Component
 export default function Repairs() {
-  // context search
   const { searchQuery } = useSearch();
-  // context Repairs
   const { repairs, loading } = useRepairs();
 
-  // Αναζήτηση - Φιλτράρισμα
-  const filteredRepairs = searchQuery
-    ? repairs.filter(
-        (repair) =>
-          repair.motor.manufacturer?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          repair.motor.kw?.toString().includes(searchQuery) ||
-          repair.motor.hp?.toString().includes(searchQuery) ||
-          repair.customer.name?.toLowerCase().includes(searchQuery.toLowerCase()),
-      )
-    : repairs;
+  // Modal state
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedRepair, setSelectedRepair] = useState(null);
+
+  // State για τα filters
+  const [filters, setFilters] = useState({
+    manufacturer: '',
+    status: '',
+    voltType: '',
+    kwMin: '',
+    kwMax: '',
+  });
+
+  // Συνάρτηση για να χειριστεί τις αλλαγές στα φίλτρα
+  const handleFiltersChange = (newFilters) => {
+    setFilters(newFilters);
+  };
+
+  // Handle modal open
+  const handleOpenModal = (repair) => {
+    setSelectedRepair(repair);
+    setModalOpen(true);
+  };
+
+  // Handle modal close
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setSelectedRepair(null);
+  };
+
+  // Φιλτράρισμα με βάση το search και τα filters
+  const filteredRepairs = repairs.filter((repair) => {
+    // Search query filter
+    const matchesSearch =
+      !searchQuery ||
+      repair.motor.manufacturer?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      repair.motor.kw?.toString().includes(searchQuery) ||
+      repair.motor.hp?.toString().includes(searchQuery) ||
+      repair.customer.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      repair.motor.serialNumber?.toLowerCase().includes(searchQuery.toLowerCase());
+
+    // Manufacturer filter
+    const matchesManufacturer =
+      !filters.manufacturer || repair.motor.manufacturer === filters.manufacturer;
+
+    // Status filter
+    const matchesStatus = !filters.status || repair.repairStatus === filters.status;
+
+    // Volt type filter
+    const matchesVoltType =
+      !filters.voltType || volt_types_mapping[repair.motor.volt] === filters.voltType;
+
+    // kW range filter
+    const matchesKwMin =
+      !filters.kwMin || (repair.motor.kw && repair.motor.kw >= parseFloat(filters.kwMin));
+
+    const matchesKwMax =
+      !filters.kwMax || (repair.motor.kw && repair.motor.kw <= parseFloat(filters.kwMax));
+
+    return (
+      matchesSearch &&
+      matchesManufacturer &&
+      matchesStatus &&
+      matchesVoltType &&
+      matchesKwMin &&
+      matchesKwMax
+    );
+  });
 
   return (
-    <Box sx={{ mt: 4 }}>
-      <Typography variant="h6" sx={{ mb: 2 }}>
-        Λεπτομέρειες Επισκευών
-      </Typography>
-      <TableContainer component={Paper} sx={{ maxHeight: 'calc(100vh - 200px)' }}>
-        <Table
-          stickyHeader
-          sx={{
-            // Κεντράρισμα για headers και main rows μόνο
-            '& .MuiTableHead-root .MuiTableCell-root, & .main-row .MuiTableCell-root': {
-              textAlign: 'center',
-            },
-          }}
-        >
+    <Box sx={{ mt: 2 }}>
+      {/* Header με τίτλο και Search/Filter components */}
+      <Box
+        sx={{
+          mb: 2,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: 2,
+        }}
+      >
+        <Typography variant="h6" sx={{ fontSize: '1rem', fontWeight: 600 }}>
+          Επισκευές ({filteredRepairs.length})
+        </Typography>
+
+        {/* Search και Filter components */}
+        <Search repairs={repairs} onFiltersChange={handleFiltersChange} />
+      </Box>
+
+      <TableContainer
+        component={Paper}
+        sx={{
+          maxHeight: 'calc(100vh - 280px)',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+          borderRadius: '8px',
+        }}
+      >
+        <Table stickyHeader size="small">
           <TableHead>
-            <TableRow className="main-row">
-              {/* <TableCell>A/A</TableCell> */}
-              <TableCell>S/N</TableCell>
-              <TableCell>Πελάτης</TableCell>
-              <TableCell>Τηλέφωνο</TableCell>
-              <TableCell>Μάρκα</TableCell>
-              <TableCell>Βήμα</TableCell>
-              <TableCell>Σπείρες</TableCell>
-              <TableCell>Διατομή</TableCell>
-              <TableCell>Σύνδεση</TableCell>
-              <TableCell>kw</TableCell>
-              <TableCell>hp</TableCell>
-              <TableCell>volt</TableCell>
-              <TableCell>Ημ/νία Παραλαβής</TableCell>
+            <TableRow>
+              <CompactTableCell>S/N</CompactTableCell>
+              <CompactTableCell>Πελάτης</CompactTableCell>
+              <CompactTableCell>Μάρκα</CompactTableCell>
+              <CompactTableCell>kW</CompactTableCell>
+              <CompactTableCell>hp</CompactTableCell>
+              <CompactTableCell>Τάση</CompactTableCell>
+              <CompactTableCell>Κατάσταση</CompactTableCell>
+              <CompactTableCell>Παραλαβή</CompactTableCell>
+              <CompactTableCell width="50px">Προβολή</CompactTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {filteredRepairs.map((repair, index) => (
-              <RepairRow key={repair.id} repair={repair} index={index} />
+              <RepairRow
+                key={repair.id}
+                repair={repair}
+                index={index}
+                onOpenModal={handleOpenModal}
+              />
             ))}
             {filteredRepairs.length === 0 && (
               <TableRow>
-                <TableCell colSpan={12} align="center">
-                  <Typography variant="body1" sx={{ py: 2 }}>
-                    Δεν βρέθηκαν αποτελέσματα για "{searchQuery}"
+                <CompactTableCell colSpan={9} align="center">
+                  <Typography variant="body2" sx={{ py: 3, color: 'text.secondary' }}>
+                    {searchQuery || Object.values(filters).some((f) => f !== '')
+                      ? `Δεν βρέθηκαν αποτελέσματα`
+                      : 'Δεν υπάρχουν επισκευές'}
                   </Typography>
-                </TableCell>
+                </CompactTableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
       </TableContainer>
+
+      {/* Repair Detail Modal */}
+      <RepairDetailModal open={modalOpen} repair={selectedRepair} onClose={handleCloseModal} />
     </Box>
   );
 }

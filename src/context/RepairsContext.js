@@ -12,7 +12,7 @@ export const RepairsProvider = ({ children }) => {
       const data = await RepairRepository.getAll();
       setRepairs(data);
     } catch (err) {
-      console.error(err);
+      console.error('Error fetching repairs:', err);
     }
   };
 
@@ -21,7 +21,12 @@ export const RepairsProvider = ({ children }) => {
   }, []);
 
   const addRepair = (repair) => {
-    setRepairs((prev) => [repair, ...prev]);
+    // Βεβαιώνουμε ότι το repair είναι object και όχι array
+    if (Array.isArray(repair)) {
+      setRepairs((prev) => [...repair, ...prev]);
+    } else {
+      setRepairs((prev) => [repair, ...prev]);
+    }
   };
 
   return (

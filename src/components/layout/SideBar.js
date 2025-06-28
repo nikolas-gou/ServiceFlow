@@ -1,5 +1,5 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Drawer,
   List,
@@ -22,134 +22,138 @@ import logo from '../../assets/OIP-removebg-preview-2.png';
 
 const drawerWidth = 250;
 
-// **Ανοιχτό Sidebar**
-const StyledDrawer = styled(Drawer)({
+const StyledDrawer = styled(Drawer)(() => ({
   '& .MuiDrawer-paper': {
     width: drawerWidth,
-    backgroundColor: '#EFF1F4', // Ανοιχτό γκρι
-    borderRight: '1px solid #D1D4DA', // Λεπτό περίγραμμα
+    backgroundColor: '#f9fafb', // Πολύ ανοιχτό γκρι
+    borderRight: '1px solid #e0e0e0',
   },
-});
+}));
 
-// **Στυλ επιλεγμένου και hover item**
 const StyledListItem = styled(ListItemButton)(({ theme }) => ({
-  borderRadius: '8px',
-  margin: '5px 10px',
+  borderRadius: 8,
+  margin: '4px 8px',
   '&:hover': {
-    backgroundColor: '#E4E7EB', // Πιο ανοιχτό hover
+    backgroundColor: '#e3f2fd',
   },
   '&.Mui-selected': {
-    backgroundColor: '#DADDE2', // Ανοιχτό active state
+    backgroundColor: '#bbdefb',
     fontWeight: 'bold',
-    color: 'black',
+    color: '#0d47a1',
+    '& .MuiListItemIcon-root': {
+      color: '#0d47a1',
+    },
   },
 }));
 
 export default function SideBar() {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const [selectedIndex, setSelectedIndex] = React.useState(0);
-
-  const handleListItemClick = (event, index, route) => {
+  const handleListItemClick = (event, route) => {
     navigate(route);
-    setSelectedIndex(index);
   };
 
   const menuItems = [
     {
       text: 'Αρχική',
       route: '/dashboard/overview',
-      icon: <HomeIcon />,
-      index: 0,
+      icon: <HomeIcon sx={{ color: '#1976d2' }} />,
     },
     {
       text: 'Στατιστικά',
       route: '/dashboard/analytics',
-      icon: <AssessmentIcon />,
-      index: 1,
+      icon: <AssessmentIcon sx={{ color: '#0288d1' }} />,
     },
     {
       text: 'Πελάτες',
       route: '/dashboard/customers',
-      icon: <GroupIcon />,
-      index: 2,
+      icon: <GroupIcon sx={{ color: '#009688' }} />,
     },
     {
       text: 'Επισκευές',
       route: '/dashboard/services',
-      icon: <BuildIcon />,
-      index: 3,
+      icon: <BuildIcon sx={{ color: '#f57c00' }} />,
     },
   ];
 
   const settingsItems = [
-    { text: 'Ρυθμίσες', icon: <SettingsIcon />, index: 4 },
-    { text: 'Σχετικά', icon: <InfoIcon />, index: 5 },
-    { text: 'Feedback', icon: <FeedbackIcon />, index: 6 },
+    {
+      text: 'Ρυθμίσεις',
+      route: '/dashboard/settings',
+      icon: <SettingsIcon sx={{ color: '#607d8b' }} />,
+    },
+    {
+      text: 'Σχετικά',
+      route: '/dashboard/about',
+      icon: <InfoIcon sx={{ color: '#5c6bc0' }} />,
+    },
+    {
+      text: 'Feedback',
+      route: '/dashboard/feedback',
+      icon: <FeedbackIcon sx={{ color: '#c2185b' }} />,
+    },
   ];
 
   return (
     <StyledDrawer variant="permanent" anchor="left">
-      {/* LOGO SECTION */}
       <Box
         sx={{
-          p: 2,
           textAlign: 'center',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
+          mb: 2,
         }}
       >
-        <img src={logo} alt="logo" style={{ width: 60, marginBottom: 8 }} />
-        <Typography variant="subtitle1" fontWeight="bold">
+        <img src={logo} alt="logo" style={{ width: 60, marginBottom: 6 }} />
+        <Typography variant="subtitle1" fontWeight={600}>
           Επισκευές Μοτέρ
         </Typography>
-        <Typography variant="caption" color="gray">
+        <Typography variant="caption" color="text.secondary">
           Service Flow
         </Typography>
       </Box>
 
-      <Divider />
+      <Divider sx={{ mb: 1 }} />
 
-      {/* MENU ITEMS */}
       <List>
-        {menuItems.map((item, index) => (
+        {menuItems.map((item) => (
           <StyledListItem
-            key={item.index}
-            selected={selectedIndex === item.index}
-            onClick={(event) => handleListItemClick(event, item.index, item.route)}
+            key={item.route}
+            selected={location.pathname === item.route}
+            onClick={(event) => handleListItemClick(event, item.route)}
           >
-            <ListItemIcon sx={{ color: selectedIndex === item.index ? 'black' : 'gray' }}>
-              {item.icon}
-            </ListItemIcon>
+            <ListItemIcon>{item.icon}</ListItemIcon>
             <ListItemText primary={item.text} />
           </StyledListItem>
         ))}
       </List>
 
-      <Divider />
+      <Divider sx={{ my: 1 }} />
 
-      {/* SETTINGS SECTION */}
       <List>
         {settingsItems.map((item) => (
           <StyledListItem
-            key={item.index}
-            selected={selectedIndex === item.index}
-            onClick={(event) => handleListItemClick(event, item.index)}
+            key={item.route}
+            selected={location.pathname === item.route}
+            onClick={(event) => handleListItemClick(event, item.route)}
           >
-            <ListItemIcon sx={{ color: selectedIndex === item.index ? 'black' : 'gray' }}>
-              {item.icon}
-            </ListItemIcon>
+            <ListItemIcon>{item.icon}</ListItemIcon>
             <ListItemText primary={item.text} />
           </StyledListItem>
         ))}
       </List>
-      <Typography
-        variant="caption"
-        sx={{ position: 'absolute', bottom: 10, left: 20, color: 'gray' }}
-      >
-        © 2025 Nikolaos Gkouziotis. All rights reserved.
-      </Typography>
+
+      <Box sx={{ position: 'absolute', bottom: 10, left: 16, right: 16 }}>
+        <Typography
+          variant="caption"
+          color="text.secondary"
+          sx={{ textAlign: 'center', display: 'block' }}
+        >
+          © 2025 Nikolaos Gkouziotis. All rights reserved.
+        </Typography>
+      </Box>
     </StyledDrawer>
   );
 }
