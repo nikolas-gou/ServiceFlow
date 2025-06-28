@@ -10,29 +10,8 @@ export class StatisticRepository {
    * Γενικά στατιστικά για dashboard overview
    * @returns {Promise<Object>} Overview statistics data
    */
-  static async getOverview() {
+  static async getStatisticsOverview() {
     const data = await apiCall(config.server, '/api/statistics/overview', 'GET');
-    return data;
-  }
-
-  /**
-   * Μηνιαία στατιστικά για charts
-   * @param {string} year - Έτος (προαιρετικό, default: τρέχον έτος)
-   * @returns {Promise<Array>} Monthly statistics data
-   */
-  static async getMonthly(year = null) {
-    const url = year ? `/api/statistics/monthly?year=${year}` : '/api/statistics/monthly';
-
-    const data = await apiCall(config.server, url, 'GET');
-    return data;
-  }
-
-  /**
-   * Στατιστικά πελατών ανά τύπο
-   * @returns {Promise<Object>} Customer types statistics
-   */
-  static async getCustomerTypes() {
-    const data = await apiCall(config.server, '/api/statistics/customer-types', 'GET');
     return data;
   }
 
@@ -133,16 +112,18 @@ export class StatisticRepository {
    * @returns {Promise<Object>} All analytics data
    */
   static async loadAnalytics() {
-    const endpoints = [
-      'overview',
-      'monthly',
-      'customer-types',
-      'top-brands',
-      'revenue',
-      'repair-status',
-    ];
+    const endpoints = ['overview', 'dashboard'];
 
     return await this.loadMultiple(endpoints);
+  }
+
+  /**
+   * Στατιστικά πελατών - ολοκληρωμένα δεδομένα
+   * @returns {Promise<Object>} Customer statistics data
+   */
+  static async getCustomerStatistics() {
+    const data = await apiCall(config.server, '/api/statistics/customers', 'GET');
+    return data;
   }
 
   /**
