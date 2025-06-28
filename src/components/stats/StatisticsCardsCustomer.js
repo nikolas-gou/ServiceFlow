@@ -1,104 +1,109 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
-import { Box, Grid, Card, CardContent, Typography } from '@mui/material';
-import { Line } from 'react-chartjs-2';
+import React, { useEffect, useState } from 'react';
+import { Box, Grid } from '@mui/material';
+import { People, Business, Person, Euro } from '@mui/icons-material';
 import { Chart as ChartJS, LineElement, PointElement, LinearScale, CategoryScale } from 'chart.js';
-import { CustomerRepository } from '../Repositories/CustomerRepository';
+import { useLocation } from 'react-router-dom';
+import LoadingCard from '../common/LoadingCard';
+import { StatisticRepository } from '../Repositories/StatisticRepository';
+import { StatisticCard } from './parts/StatisticCard';
+import {
+  calculateTrend,
+  formatValue,
+  getSafeDataArray,
+  getTrendColor,
+} from '../../utils/statistics';
 
 ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale);
 
-const chartOptions = {
-  responsive: true,
-  maintainAspectRatio: false,
-  scales: {
-    x: { display: false },
-    y: { display: false },
-  },
-  elements: { point: { radius: 0 } },
-};
-
 export default function StatisticsCardsCustomer() {
-  const [statsOfCustomers, setStatsOfCustomers] = useState([]);
+  const location = useLocation();
+  const [statistics, setStatistics] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  const getStatsConfig = () => {
+    const customerTrend = calculateTrend(statistics.monthlyTrends);
+    const individualTrend = calculateTrend(statistics.customersByTypeAndMonth?.individual);
+    const factoryTrend = calculateTrend(statistics.customersByTypeAndMonth?.factory);
+
+    // Παίρνουμε τον καλύτερο πελάτη
+    const topCustomer = statistics.topCustomersByRevenue?.[0];
+
+    return [
+      {
+        title: 'Συνολικοί Πελάτες',
+        value: formatValue(statistics.totalCustomers),
+        trend: customerTrend,
+        color: getTrendColor(customerTrend),
+        icon: <People fontSize="small" />,
+        data: getSafeDataArray(statistics.monthlyTrends),
+      },
+      {
+        title: 'Ιδιώτες Πελάτες',
+        value: formatValue(statistics.customerTypes?.individual),
+        trend: individualTrend,
+        color: getTrendColor(individualTrend),
+        icon: <Person fontSize="small" />,
+        data: getSafeDataArray(statistics.customersByTypeAndMonth?.individual),
+      },
+      {
+        title: 'Εργοστάσια',
+        value: formatValue(statistics.customerTypes?.factory),
+        trend: factoryTrend,
+        color: getTrendColor(factoryTrend),
+        icon: <Business fontSize="small" />,
+        data: getSafeDataArray(statistics.customersByTypeAndMonth?.factory),
+      },
+      {
+        title: 'Καλύτερος Πελάτης',
+        value: topCustomer ? formatValue(topCustomer.totalRevenue, 'currency') : '€0',
+        trend: null,
+        color: 'primary',
+        icon: <Euro fontSize="small" />,
+        data: [topCustomer?.totalRevenue || 0],
+        customTitle: topCustomer ? `${topCustomer.name}` : 'Δεν υπάρχουν δεδομένα',
+      },
+    ];
+  };
 
   useEffect(() => {
-    getStats();
-  }, []);
+    loadStatistics();
+  }, [location]);
 
-  const getStats = async () => {
+  const loadStatistics = async () => {
+    setLoading(true);
     try {
-      const data = await CustomerRepository.getStats();
-      setStatsOfCustomers(data);
+      const response = await StatisticRepository.getCustomerStatistics();
+      setStatistics(response.data);
     } catch (err) {
-      console.error(err);
+      console.error('Σφάλμα φόρτωσης στατιστικών πελατών:', err);
+      setStatistics({});
+    } finally {
+      setLoading(false);
     }
   };
 
-  const stats = [
-    {
-      title: 'Συνολικοί πελάτες',
-      value: statsOfCustomers.totalCustomers,
-      trend: '+25%',
-      color: 'green',
-      data: [5, 6, 7, 8, 7, 8, 10],
-    },
-    {
-      title: 'Εργοστάσια',
-      value: statsOfCustomers.totalCustomersByType?.find((item) => item.type == 'factory')?.total,
-      trend: '-25%',
-      color: 'red',
-      data: [8, 7, 6, 5, 4, 3, 2],
-    },
-    {
-      title: 'Ιδιώτες',
-      value: statsOfCustomers.totalCustomersByType?.find((item) => item.type == 'individual')
-        ?.total,
-      trend: '+5%',
-      color: 'blue',
-      data: [20, 19, 18, 18, 19, 20, 21],
-    },
-    {
-      title: 'Πωλήσεις',
-      value: '€50k',
-      trend: '+10%',
-      color: 'purple',
-      data: [10, 11, 12, 13, 14, 15, 16],
-    },
-  ];
+  if (loading) {
+    return (
+      <Box sx={{ p: 1.5, mb: 1.5 }}>
+        <Grid container spacing={2.5}>
+          {[1, 2, 3, 4].map((item) => (
+            <Grid item xs={12} sm={6} md={3} key={item}>
+              <LoadingCard />
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
+    );
+  }
+
+  const stats = getStatsConfig();
 
   return (
-    <Box sx={{ p: 2 }}>
-      <Grid container spacing={2}>
+    <Box sx={{ p: 1.5, mb: 1.5 }}>
+      <Grid container spacing={2.5}>
         {stats.map((stat, index) => (
           <Grid item xs={12} sm={6} md={3} key={index}>
-            <Card sx={{ boxShadow: 3 }}>
-              <CardContent>
-                <Typography variant="subtitle2" color="textSecondary">
-                  {stat.title}
-                </Typography>
-                <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
-                  {stat.value}
-                </Typography>
-                <Typography variant="body2" sx={{ color: stat.color, fontWeight: 'bold' }}>
-                  {stat.trend}
-                </Typography>
-                <Box sx={{ height: 40, mt: 1 }}>
-                  <Line
-                    data={{
-                      labels: stat.data.map((_, i) => i),
-                      datasets: [
-                        {
-                          data: stat.data,
-                          borderColor: stat.color,
-                          fill: true,
-                          backgroundColor: `${stat.color}20`,
-                        },
-                      ],
-                    }}
-                    options={chartOptions}
-                  />
-                </Box>
-              </CardContent>
-            </Card>
+            <StatisticCard {...stat} />
           </Grid>
         ))}
       </Grid>
