@@ -1,17 +1,11 @@
-import logo from './logo.svg';
 import './App.css';
-import { ThemeProvider, CssBaseline, Typography } from '@mui/material';
-
+import { ThemeProvider, CssBaseline } from '@mui/material';
 import theme from './styles/Themes';
-import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './components/layout/Layout';
-import Repairs from './components/layout/repairs/Repairs';
-import StatisticsCardsCustomer from './components/stats/StatisticsCardsCustomer';
-import Customers from './components/layout/customers/Customers';
 import { SearchProvider } from './context/SearchContext';
 import { RepairsProvider } from './context/RepairsContext';
-import StatisticsCardsRepair from './components/stats/StatisticsCardsRepair';
-import AnalyticsDashboard from './components/stats/AnalyticsDashboard';
+import { routes } from './routes';
 
 function App() {
   return (
@@ -19,38 +13,12 @@ function App() {
       <RepairsProvider>
         <SearchProvider>
           <BrowserRouter>
-            <CssBaseline /> {/* Resets styles for consistency */}
+            <CssBaseline />
             <Layout>
               <Routes>
-                {/* default route */}
-                <Route path="/" element={<Navigate to="/dashboard/overview" />} />
-
-                <Route
-                  exact
-                  path="/dashboard/overview"
-                  element={
-                    <>
-                      <StatisticsCardsRepair />
-                      <Repairs />
-                    </>
-                  }
-                />
-                <Route exact path="/dashboard/analytics" element={<AnalyticsDashboard />} />
-                <Route
-                  exact
-                  path="/dashboard/customers"
-                  element={
-                    <>
-                      <StatisticsCardsCustomer />
-                      <Customers />
-                    </>
-                  }
-                />
-                <Route
-                  exact
-                  path="/dashboard/services"
-                  element={<Typography>services</Typography>}
-                />
+                {routes.map((route) => (
+                  <Route key={route.path} path={route.path} element={route.element} />
+                ))}
               </Routes>
             </Layout>
           </BrowserRouter>
