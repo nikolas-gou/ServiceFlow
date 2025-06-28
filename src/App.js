@@ -5,13 +5,12 @@ import { ThemeProvider, CssBaseline, Typography } from '@mui/material';
 import theme from './styles/Themes';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import Layout from './components/layout/Layout';
-import StatisticsCards from './components/stats/StatisticsCards';
 import Repairs from './components/layout/repairs/Repairs';
 import StatisticsCardsCustomer from './components/stats/StatisticsCardsCustomer';
 import Customers from './components/layout/customers/Customers';
 import { SearchProvider } from './context/SearchContext';
 import { RepairsProvider } from './context/RepairsContext';
-import StatisticsCards2 from './components/stats/testCard';
+import StatisticsCardsRepair from './components/stats/testCard';
 import AnalyticsDashboard from './components/stats/AnalyticsDashboard';
 
 function App() {
@@ -31,7 +30,7 @@ function App() {
                   path="/dashboard/overview"
                   element={
                     <>
-                      <StatisticsCards2 />
+                      <StatisticsCardsRepair />
                       <Repairs />
                     </>
                   }
