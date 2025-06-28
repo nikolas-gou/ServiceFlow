@@ -24,7 +24,7 @@ const Layout = (props) => {
       sx={{
         display: 'flex',
         height: '100vh',
-        background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
+        // background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
       }}
     >
       {/* Sidebar */}
@@ -46,10 +46,6 @@ const Layout = (props) => {
           flexDirection: 'column',
           overflow: 'hidden',
           position: 'relative',
-          background: 'linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%)',
-          borderRadius: '24px 0 0 24px',
-          boxShadow: '-4px 0 24px rgba(0, 0, 0, 0.1)',
-          margin: '16px 0 16px 0',
         }}
       >
         <TopAppBar />
@@ -60,16 +56,8 @@ const Layout = (props) => {
             p: 3,
             overflowY: 'auto',
             '& > *': {
-              background: 'linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%)',
-              borderRadius: '16px',
-              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.05)',
               padding: '24px',
-              transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-              border: '1px solid rgba(0,0,0,0.08)',
-              '&:hover': {
-                transform: 'translateY(-2px)',
-                boxShadow: '0 6px 24px rgba(0, 0, 0, 0.08)',
-              },
+              transition: 'transform 0.2s ease',
             },
             '&::-webkit-scrollbar': {
               width: '8px',

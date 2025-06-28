@@ -42,28 +42,34 @@ export default function Search({ repairs, customers, onFiltersChange }) {
         value={searchQuery}
         onChange={handleSearchChange}
         sx={{
-          backgroundColor: '#f8f9fa',
+          backgroundColor: '#ffffff',
           borderRadius: '8px',
           minWidth: 280,
           '& .MuiOutlinedInput-root': {
             fontSize: 14,
-            height: 36,
+            height: 40,
             '& fieldset': {
-              border: '1px solid #e5e7eb',
+              borderColor: '#e0e0e0',
             },
             '&:hover fieldset': {
-              borderColor: '#d1d5db',
+              borderColor: '#bdbdbd',
             },
             '&.Mui-focused fieldset': {
-              borderColor: '#2196f3',
-              borderWidth: '2px',
+              borderColor: '#1976d2',
+            },
+            '& input': {
+              color: '#333333',
+              '&::placeholder': {
+                color: '#757575',
+                opacity: 1,
+              },
             },
           },
         }}
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
-              <SearchIcon sx={{ color: '#9ca3af', fontSize: 18 }} />
+              <SearchIcon sx={{ color: '#757575', fontSize: 20 }} />
             </InputAdornment>
           ),
           endAdornment: searchQuery && (
@@ -72,8 +78,10 @@ export default function Search({ repairs, customers, onFiltersChange }) {
                 size="small"
                 onClick={clearSearch}
                 sx={{
-                  color: '#9ca3af',
-                  '&:hover': { color: '#ef4444' },
+                  color: '#757575',
+                  '&:hover': {
+                    color: '#1976d2',
+                  },
                 }}
               >
                 <ClearIcon fontSize="small" />
