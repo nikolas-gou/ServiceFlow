@@ -5,47 +5,58 @@ import apiCall from '../../utils/apiCall';
 
 export class CustomerRepository {
   static async getAll() {
-    const data = await apiCall(config.server, '/api/customers', 'GET');
-    return data.map((customer) => new Customer(customer));
-  }
-
-  static async getStats() {
-    const data = await apiCall(config.server, '/api/statsOfCustomers', 'GET');
+    const response = await apiCall(config.server, '/api/customers', 'GET');
+    // Το backend επιστρέφει ήδη formatted data
+    const data = response.data || [];
     return data;
   }
 
+  static async getStats() {
+    const response = await apiCall(config.server, '/api/statsOfCustomer', 'GET');
+    return response.data || {};
+  }
+
+  static async createNewCustomer(customer) {
+    const response = await apiCall(config.server, '/api/customers', 'POST', customer);
+    return response.data || {};
+  }
+
   static async listOfNames() {
-    const data = await apiCall(config.server, '/api/customers', 'GET');
+    const response = await apiCall(config.server, '/api/customers', 'GET');
+    const data = response.data || [];
     return data.map((customer) => customer.name);
   }
 
   static async getStatisticsOverview() {
-    const data = await apiCall(config.server, '/api/statistics/overview', 'GET');
-    return data;
+    const response = await apiCall(config.server, '/api/statistics/overview', 'GET');
+    return response.data || {};
   }
 
   //   static async getById(id) {
-  //     const data = await apiCall(config.server, `/customers/${id}`, "GET");
+  //     const response = await apiCall(config.server, `/customers/${id}`, "GET");
+  //     const data = response.data || {};
   //     return new Customer(data);
   //   }
 
   //   static async create(customer) {
-  //     const data = await apiCall(
+  //     const response = await apiCall(
   //       config.server,
   //       "/customers",
   //       "POST",
   //       customer.toJSON()
   //     );
+  //     const data = response.data || {};
   //     return new Customer(data);
   //   }
 
   //   static async update(customer) {
-  //     const data = await apiCall(
+  //     const response = await apiCall(
   //       config.server,
   //       `/customers/${customer.id}`,
   //       "PUT",
   //       customer.toJSON()
   //     );
+  //     const data = response.data || {};
   //     return new Customer(data);
   //   }
 
@@ -56,11 +67,12 @@ export class CustomerRepository {
 
   //   // Επιπλέον μέθοδοι
   //   static async search(query) {
-  //     const data = await apiCall(
+  //     const response = await apiCall(
   //       config.server,
   //       `/customers/search?q=${encodeURIComponent(query)}`,
   //       "GET"
   //     );
+  //     const data = response.data || [];
   //     return data.map((customer) => new Customer(customer));
   //   }
 }

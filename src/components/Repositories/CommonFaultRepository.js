@@ -4,7 +4,8 @@ import { CommonFault } from '../Models/CommonFault';
 
 export class CommonFaultRepository {
   static async getAll() {
-    const data = await apiCall(config.server, '/api/common_faults', 'GET');
-    return data.map((commonFault) => new CommonFault(commonFault));
+    const response = await apiCall(config.server, '/api/common_faults', 'GET');
+    const data = response.data || [];
+    return data;
   }
 }

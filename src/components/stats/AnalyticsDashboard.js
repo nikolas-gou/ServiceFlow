@@ -374,15 +374,14 @@ export default function AnalyticsDashboard() {
     setLoading(true);
     try {
       const analyticsData = await StatisticRepository.loadAnalytics();
-      console.log(analyticsData);
 
       setAnalyticsData({
-        overview: analyticsData.overview?.data || {},
-        monthly: analyticsData.dashboard?.data.monthlyTrends || [],
-        customerTypes: analyticsData?.dashboard.data.customerTypes || {},
-        topBrands: analyticsData?.dashboard.data.topBrands || [],
-        revenue: analyticsData?.overview.data.yearlyRevenue || {},
-        repairStatus: analyticsData?.dashboard.data.repairStatus || [],
+        overview: analyticsData.overview || {},
+        monthly: analyticsData.dashboard?.monthlyTrends || [],
+        customerTypes: analyticsData?.dashboard?.customerTypes || {},
+        topBrands: analyticsData?.dashboard?.topBrands || [],
+        revenue: analyticsData?.overview?.yearlyRevenue || {},
+        repairStatus: analyticsData?.dashboard?.repairStatus || [],
       });
     } catch (error) {
       console.error('Error loading analytics data:', error);

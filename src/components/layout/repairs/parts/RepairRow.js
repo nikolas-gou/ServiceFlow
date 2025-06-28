@@ -54,41 +54,45 @@ export const RepairRow = ({ repair, index, onOpenModal }) => {
     );
   };
 
+  // Safety checks για να αποφύγουμε undefined errors
+  const motor = repair?.motor || {};
+  const customer = repair?.customer || {};
+
   return (
     <CompactTableRow onClick={() => onOpenModal(repair)}>
       <CompactTableCell>
         <Typography variant="body2" fontWeight={600} fontSize="0.8rem">
-          {repair.motor.serialNumber || '-'}
+          {motor.serialNumber || '-'}
         </Typography>
       </CompactTableCell>
 
       <CompactTableCell>
         <Typography variant="body2" fontSize="0.8rem" noWrap sx={{ maxWidth: '120px' }}>
-          {repair.customer.name || '-'}
+          {customer.name || '-'}
         </Typography>
       </CompactTableCell>
 
       <CompactTableCell>
         <Typography variant="body2" fontSize="0.8rem">
-          {repair.motor.manufacturer || '-'}
+          {motor.manufacturer || '-'}
         </Typography>
       </CompactTableCell>
 
       <CompactTableCell>
         <Typography variant="caption" fontSize="0.75rem">
-          {repair.motor.kw ? `${repair.motor.kw}kW` : '-'}
+          {motor.kw ? `${motor.kw}kW` : '-'}
         </Typography>
       </CompactTableCell>
 
       <CompactTableCell>
         <Typography variant="caption" fontSize="0.75rem">
-          {repair.motor.hp ? `${repair.motor.hp}hp` : '-'}
+          {motor.hp ? `${motor.hp}hp` : '-'}
         </Typography>
       </CompactTableCell>
 
       <CompactTableCell>
         <Typography variant="caption" fontSize="0.75rem">
-          {volt_types_mapping[repair.motor.volt] || '-'}
+          {volt_types_mapping[motor.volt] || '-'}
         </Typography>
       </CompactTableCell>
 

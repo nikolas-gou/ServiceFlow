@@ -11,8 +11,8 @@ export class StatisticRepository {
    * @returns {Promise<Object>} Overview statistics data
    */
   static async getStatisticsOverview() {
-    const data = await apiCall(config.server, '/api/statistics/overview', 'GET');
-    return data;
+    const response = await apiCall(config.server, '/api/statistics/overview', 'GET');
+    return response.data || {};
   }
 
   /**
@@ -22,8 +22,8 @@ export class StatisticRepository {
    */
   static async getTopBrands(limit = 10) {
     const url = `/api/statistics/top-brands?limit=${limit}`;
-    const data = await apiCall(config.server, url, 'GET');
-    return data;
+    const response = await apiCall(config.server, url, 'GET');
+    return response.data || [];
   }
 
   /**
@@ -34,8 +34,8 @@ export class StatisticRepository {
   static async getRevenue(year = null) {
     const url = year ? `/api/statistics/revenue?year=${year}` : '/api/statistics/revenue';
 
-    const data = await apiCall(config.server, url, 'GET');
-    return data;
+    const response = await apiCall(config.server, url, 'GET');
+    return response.data || {};
   }
 
   /**
@@ -43,8 +43,8 @@ export class StatisticRepository {
    * @returns {Promise<Array>} Repair status statistics
    */
   static async getRepairStatus() {
-    const data = await apiCall(config.server, '/api/statistics/repair-status', 'GET');
-    return data;
+    const response = await apiCall(config.server, '/api/statistics/repair-status', 'GET');
+    return response.data || [];
   }
 
   /**
@@ -52,8 +52,8 @@ export class StatisticRepository {
    * @returns {Promise<Object>} Complete dashboard data
    */
   static async getDashboard() {
-    const data = await apiCall(config.server, '/api/statistics/dashboard', 'GET');
-    return data;
+    const response = await apiCall(config.server, '/api/statistics/dashboard', 'GET');
+    return response.data || {};
   }
 
   /**
@@ -61,8 +61,8 @@ export class StatisticRepository {
    * @returns {Promise<Object>} Customer statistics
    */
   static async getCustomerStats() {
-    const data = await apiCall(config.server, '/api/statsOfCustomers', 'GET');
-    return data;
+    const response = await apiCall(config.server, '/api/statsOfCustomers', 'GET');
+    return response.data || {};
   }
 
   /**
@@ -70,8 +70,8 @@ export class StatisticRepository {
    * @returns {Promise<Object>} Repair statistics
    */
   static async getRepairStats() {
-    const data = await apiCall(config.server, '/api/statsOfRepair', 'GET');
-    return data;
+    const response = await apiCall(config.server, '/api/statsOfRepair', 'GET');
+    return response.data || {};
   }
 
   /**
@@ -92,10 +92,10 @@ export class StatisticRepository {
       endpoints.forEach((endpoint, index) => {
         const result = results[index];
         if (result.status === 'fulfilled') {
-          data[endpoint] = result.value;
+          data[endpoint] = result.value.data || {};
         } else {
           console.error(`Failed to load ${endpoint}:`, result.reason);
-          data[endpoint] = null;
+          data[endpoint] = {};
         }
       });
 
@@ -122,8 +122,8 @@ export class StatisticRepository {
    * @returns {Promise<Object>} Customer statistics data
    */
   static async getCustomerStatistics() {
-    const data = await apiCall(config.server, '/api/statistics/customers', 'GET');
-    return data;
+    const response = await apiCall(config.server, '/api/statistics/customers', 'GET');
+    return response.data || {};
   }
 
   /**
@@ -138,7 +138,7 @@ export class StatisticRepository {
       ? `/api/statistics/${statKey}?${queryString}`
       : `/api/statistics/${statKey}`;
 
-    const data = await apiCall(config.server, url, 'GET');
-    return data;
+    const response = await apiCall(config.server, url, 'GET');
+    return response.data || {};
   }
 }

@@ -73,7 +73,9 @@ export default function StatisticsCardsCustomer() {
     setLoading(true);
     try {
       const response = await StatisticRepository.getCustomerStatistics();
-      setStatistics(response.data);
+
+      // Διόρθωση: το StatisticRepository επιστρέφει ήδη τα δεδομένα, όχι response.data
+      setStatistics(response || {});
     } catch (err) {
       console.error('Σφάλμα φόρτωσης στατιστικών πελατών:', err);
       setStatistics({});

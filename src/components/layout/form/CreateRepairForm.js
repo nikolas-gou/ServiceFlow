@@ -228,11 +228,17 @@ function CreateRepairForm(props) {
         motor: dataApi.motor,
       });
 
-      setRepair(response.data || []);
-      addRepair(response.data || {});
+      // Βεβαιώνουμε ότι το response είναι object και όχι array
+      if (Array.isArray(response)) {
+        setRepair(response[0] || {});
+        addRepair(response[0] || {});
+      } else {
+        setRepair(response || {});
+        addRepair(response || {});
+      }
     } catch (err) {
       console.error('Σφάλμα Δημιουργίας Επισκευής:', err);
-      setRepair([]);
+      setRepair({});
     }
   };
 

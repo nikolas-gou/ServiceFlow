@@ -70,7 +70,8 @@ export default function StatisticsCardsRepair() {
     setLoading(true);
     try {
       const response = await StatisticRepository.getStatisticsOverview();
-      setStatistics(response.data);
+
+      setStatistics(response || {});
     } catch (err) {
       console.error('Σφάλμα φόρτωσης στατιστικών:', err);
       setStatistics({});
