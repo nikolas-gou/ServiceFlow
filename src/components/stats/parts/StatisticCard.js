@@ -62,33 +62,60 @@ export const StatisticCard = (props) => {
             {props.value}
           </Typography>
         </Box>
-        <Chip
-          label={props.trend}
-          size="small"
-          sx={{
-            color: props.color + '.main',
-            fontWeight: 'bold',
-            height: 24,
-            fontSize: '0.7rem',
-          }}
-        />
+        {props.trend && (
+          <Chip
+            label={props.trend}
+            size="small"
+            sx={{
+              color: props.color + '.main',
+              fontWeight: 'bold',
+              height: 24,
+              fontSize: '0.7rem',
+            }}
+          />
+        )}
       </Box>
       <Box sx={{ height: 35 }}>
-        <Line
-          data={{
-            labels: props.data.map((_, i) => i),
-            datasets: [
-              {
-                data: props.data,
-                borderColor: chartColor,
-                backgroundColor: `${chartColor}33`,
-                fill: true,
-                borderWidth: 2,
-              },
-            ],
-          }}
-          options={chartOptions}
-        />
+        {props.customTitle ? (
+          <Box
+            sx={{
+              height: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              pt: 1,
+            }}
+          >
+            <Typography
+              variant="h6"
+              fontWeight="bold"
+              sx={{
+                color: 'text.primary',
+                fontSize: '1rem',
+                textAlign: 'center',
+                letterSpacing: '0.5px',
+              }}
+            >
+              {props.customTitle}
+            </Typography>
+          </Box>
+        ) : (
+          <Line
+            data={{
+              labels: props.data.map((_, i) => i),
+              datasets: [
+                {
+                  data: props.data,
+                  borderColor: chartColor,
+                  backgroundColor: `${chartColor}33`,
+                  fill: true,
+                  borderWidth: 2,
+                },
+              ],
+            }}
+            options={chartOptions}
+          />
+        )}
       </Box>
     </Card>
   );
