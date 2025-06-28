@@ -22,29 +22,115 @@ import logo from '../../assets/OIP-removebg-preview-2.png';
 
 const drawerWidth = 250;
 
-const StyledDrawer = styled(Drawer)(() => ({
+const StyledDrawer = styled(Drawer)(({ theme }) => ({
   '& .MuiDrawer-paper': {
     width: drawerWidth,
-    backgroundColor: '#f9fafb', // Πολύ ανοιχτό γκρι
-    borderRight: '1px solid #e0e0e0',
+    background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
+    borderRight: 'none',
+    boxShadow: '4px 0 24px rgba(0, 0, 0, 0.15)',
+    color: 'white',
   },
 }));
 
-const StyledListItem = styled(ListItemButton)(({ theme }) => ({
-  borderRadius: 8,
-  margin: '4px 8px',
+const LogoContainer = styled(Box)(({ theme }) => ({
+  textAlign: 'center',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  padding: theme.spacing(3, 2),
+  marginBottom: theme.spacing(1),
+  background:
+    'linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%)',
+  position: 'relative',
+  '&::after': {
+    content: '""',
+    position: 'absolute',
+    bottom: 0,
+    left: '20%',
+    right: '20%',
+    height: '2px',
+    background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent)',
+  },
+}));
+
+const StyledLogo = styled('img')({
+  width: 70,
+  height: 70,
+  marginBottom: 8,
+  filter: 'brightness(0) invert(1)',
+  transition: 'transform 0.2s ease',
   '&:hover': {
-    backgroundColor: '#e3f2fd',
+    transform: 'scale(1.05) rotate(5deg)',
+  },
+});
+
+const StyledListItem = styled(ListItemButton)(({ theme }) => ({
+  margin: '4px 12px',
+  borderRadius: '12px',
+  color: 'rgba(255, 255, 255, 0.8)',
+  transition: 'all 0.2s ease',
+  '&:hover': {
+    background:
+      'linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)',
+    color: 'white',
+    transform: 'translateX(4px)',
+    '& .MuiListItemIcon-root': {
+      transform: 'scale(1.1)',
+      color: 'white',
+    },
   },
   '&.Mui-selected': {
-    backgroundColor: '#bbdefb',
-    fontWeight: 'bold',
-    color: '#0d47a1',
+    background:
+      'linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.1) 100%)',
+    color: 'white',
+    '&:hover': {
+      background:
+        'linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.15) 100%)',
+    },
     '& .MuiListItemIcon-root': {
-      color: '#0d47a1',
+      transform: 'scale(1.1)',
+      color: 'white',
+    },
+    '& .MuiListItemText-primary': {
+      fontWeight: 600,
     },
   },
 }));
+
+const StyledListItemIcon = styled(ListItemIcon)({
+  minWidth: 40,
+  color: 'rgba(255, 255, 255, 0.8)',
+  transition: 'all 0.2s ease',
+});
+
+const StyledListItemText = styled(ListItemText)({
+  '& .MuiListItemText-primary': {
+    fontSize: '0.95rem',
+    fontWeight: 500,
+    transition: 'all 0.2s ease',
+  },
+});
+
+const FooterText = styled(Typography)(({ theme }) => ({
+  position: 'absolute',
+  bottom: theme.spacing(2),
+  left: theme.spacing(2),
+  right: theme.spacing(2),
+  textAlign: 'center',
+  fontSize: '0.75rem',
+  color: 'rgba(255, 255, 255, 0.6)',
+  opacity: 0.8,
+  transition: 'opacity 0.2s ease',
+  '&:hover': {
+    opacity: 1,
+  },
+}));
+
+const StyledDivider = styled(Divider)({
+  margin: '12px 24px',
+  background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent)',
+  height: '1px',
+});
 
 export default function SideBar() {
   const navigate = useNavigate();
@@ -58,22 +144,22 @@ export default function SideBar() {
     {
       text: 'Αρχική',
       route: '/dashboard/overview',
-      icon: <HomeIcon sx={{ color: '#1976d2' }} />,
+      icon: <HomeIcon sx={{ color: '#90caf9' }} />,
     },
     {
       text: 'Στατιστικά',
       route: '/dashboard/analytics',
-      icon: <AssessmentIcon sx={{ color: '#0288d1' }} />,
+      icon: <AssessmentIcon sx={{ color: '#81d4fa' }} />,
     },
     {
       text: 'Πελάτες',
       route: '/dashboard/customers',
-      icon: <GroupIcon sx={{ color: '#009688' }} />,
+      icon: <GroupIcon sx={{ color: '#80cbc4' }} />,
     },
     {
       text: 'Επισκευές',
       route: '/dashboard/services',
-      icon: <BuildIcon sx={{ color: '#f57c00' }} />,
+      icon: <BuildIcon sx={{ color: '#ffb74d' }} />,
     },
   ];
 
@@ -81,41 +167,48 @@ export default function SideBar() {
     {
       text: 'Ρυθμίσεις',
       route: '/dashboard/settings',
-      icon: <SettingsIcon sx={{ color: '#607d8b' }} />,
+      icon: <SettingsIcon sx={{ color: '#b39ddb' }} />,
     },
     {
       text: 'Σχετικά',
       route: '/dashboard/about',
-      icon: <InfoIcon sx={{ color: '#5c6bc0' }} />,
+      icon: <InfoIcon sx={{ color: '#9fa8da' }} />,
     },
     {
       text: 'Feedback',
       route: '/dashboard/feedback',
-      icon: <FeedbackIcon sx={{ color: '#c2185b' }} />,
+      icon: <FeedbackIcon sx={{ color: '#f48fb1' }} />,
     },
   ];
 
   return (
     <StyledDrawer variant="permanent" anchor="left">
-      <Box
-        sx={{
-          textAlign: 'center',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          mb: 2,
-        }}
-      >
-        <img src={logo} alt="logo" style={{ width: 60, marginBottom: 6 }} />
-        <Typography variant="subtitle1" fontWeight={600}>
+      <LogoContainer>
+        <StyledLogo src={logo} alt="logo" />
+        <Typography
+          variant="h6"
+          sx={{
+            fontWeight: 600,
+            fontSize: '1.1rem',
+            color: 'white',
+            textShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
+          }}
+        >
           Επισκευές Μοτέρ
         </Typography>
-        <Typography variant="caption" color="text.secondary">
+        <Typography
+          variant="caption"
+          sx={{
+            color: 'rgba(255, 255, 255, 0.7)',
+            letterSpacing: '1px',
+            mt: 0.5,
+            textTransform: 'uppercase',
+            fontSize: '0.7rem',
+          }}
+        >
           Service Flow
         </Typography>
-      </Box>
-
-      <Divider sx={{ mb: 1 }} />
+      </LogoContainer>
 
       <List>
         {menuItems.map((item) => (
@@ -124,13 +217,13 @@ export default function SideBar() {
             selected={location.pathname === item.route}
             onClick={(event) => handleListItemClick(event, item.route)}
           >
-            <ListItemIcon>{item.icon}</ListItemIcon>
-            <ListItemText primary={item.text} />
+            <StyledListItemIcon>{item.icon}</StyledListItemIcon>
+            <StyledListItemText primary={item.text} />
           </StyledListItem>
         ))}
       </List>
 
-      <Divider sx={{ my: 1 }} />
+      <StyledDivider />
 
       <List>
         {settingsItems.map((item) => (
@@ -139,21 +232,13 @@ export default function SideBar() {
             selected={location.pathname === item.route}
             onClick={(event) => handleListItemClick(event, item.route)}
           >
-            <ListItemIcon>{item.icon}</ListItemIcon>
-            <ListItemText primary={item.text} />
+            <StyledListItemIcon>{item.icon}</StyledListItemIcon>
+            <StyledListItemText primary={item.text} />
           </StyledListItem>
         ))}
       </List>
 
-      <Box sx={{ position: 'absolute', bottom: 10, left: 16, right: 16 }}>
-        <Typography
-          variant="caption"
-          color="text.secondary"
-          sx={{ textAlign: 'center', display: 'block' }}
-        >
-          © 2025 Nikolaos Gkouziotis. All rights reserved.
-        </Typography>
-      </Box>
+      <FooterText>© 2025 Nikolaos Gkouziotis. All rights reserved.</FooterText>
     </StyledDrawer>
   );
 }
