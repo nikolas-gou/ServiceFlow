@@ -565,7 +565,7 @@ export default function AnalyticsDashboard() {
   const cards = getAnalyticsCards();
 
   return (
-    <Box sx={{ p: 2 }}>
+    <Box sx={{ p: 2, bgcolor: '#F8FAFC' }}>
       <Box
         sx={{
           mb: 4,
@@ -583,10 +583,12 @@ export default function AnalyticsDashboard() {
         </Typography>
       </Box>
 
-      <Grid container spacing={2}>
+      <Grid container spacing={2.5}>
         {cards.map((card, index) => (
-          <Grid item xs={12} sm={6} lg={3} key={index}>
-            <AnalyticsCard {...card} />
+          <Grid item xs={12} sm={6} lg={3} key={index} sx={{ display: 'flex' }}>
+            <Box sx={{ width: '100%' }}>
+              <AnalyticsCard {...card} />
+            </Box>
           </Grid>
         ))}
       </Grid>

@@ -1,128 +1,134 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Breadcrumbs as MUIBreadcrumbs, Typography, Box, Chip, styled } from '@mui/material';
-import {
-  Home as HomeIcon,
-  Assessment as AssessmentIcon,
-  Group as GroupIcon,
-  Build as BuildIcon,
-  NavigateNext as NavigateNextIcon,
-} from '@mui/icons-material';
+import { useLocation, Link as RouterLink } from 'react-router-dom';
+import { Breadcrumbs as MuiBreadcrumbs, Link, Typography, Box } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import HomeIcon from '@mui/icons-material/Home';
+import AssessmentIcon from '@mui/icons-material/Assessment';
+import GroupIcon from '@mui/icons-material/Group';
+import BuildIcon from '@mui/icons-material/Build';
+import SettingsIcon from '@mui/icons-material/Settings';
+import InfoIcon from '@mui/icons-material/Info';
+import FeedbackIcon from '@mui/icons-material/Feedback';
 
-// Styled components για καλύτερη εμφάνιση
-const StyledBreadcrumbsContainer = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  padding: '8px 0',
-  minHeight: '40px',
+const StyledBreadcrumbs = styled(MuiBreadcrumbs)(({ theme }) => ({
+  '& .MuiBreadcrumbs-separator': {
+    color: 'rgba(255, 255, 255, 0.5)',
+    margin: '0 8px',
+  },
 }));
 
-const StyledLink = styled(Link)(({ theme }) => ({
+const StyledLink = styled(Link)({
+  display: 'flex',
+  alignItems: 'center',
+  color: 'rgba(255, 255, 255, 0.7)',
   textDecoration: 'none',
-  color: '#6b7280',
+  transition: 'all 0.2s ease',
+  padding: '4px 8px',
+  borderRadius: '8px',
+  '&:hover': {
+    color: 'white',
+    background: 'rgba(255, 255, 255, 0.1)',
+    transform: 'translateY(-1px)',
+  },
+  '& .MuiSvgIcon-root': {
+    fontSize: '1.2rem',
+    marginRight: '4px',
+    transition: 'transform 0.2s ease',
+  },
+  '&:hover .MuiSvgIcon-root': {
+    transform: 'scale(1.1)',
+  },
+});
+
+const CurrentPageText = styled(Typography)({
   display: 'flex',
   alignItems: 'center',
-  gap: '4px',
-  padding: '4px 8px',
-  borderRadius: '6px',
-  transition: 'all 0.2s ease',
-  fontSize: '14px',
-  fontWeight: 500,
-  '&:hover': {
-    backgroundColor: '#f3f4f6',
-    color: '#374151',
-  },
-}));
-
-const CurrentPageChip = styled(Chip)(({ theme }) => ({
-  backgroundColor: '#e3f2fd',
-  color: '#1976d2',
+  color: 'white',
   fontWeight: 600,
-  fontSize: '14px',
-  height: '28px',
-  '& .MuiChip-label': {
-    padding: '0 8px',
+  '& .MuiSvgIcon-root': {
+    fontSize: '1.2rem',
+    marginRight: '4px',
   },
-}));
+});
+
+const BreadcrumbContainer = styled(Box)({
+  display: 'flex',
+  alignItems: 'center',
+  padding: '4px 12px',
+  borderRadius: '12px',
+  background: 'rgba(255, 255, 255, 0.05)',
+  backdropFilter: 'blur(4px)',
+  border: '1px solid rgba(255, 255, 255, 0.1)',
+  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+  transition: 'all 0.2s ease',
+  '&:hover': {
+    background: 'rgba(255, 255, 255, 0.08)',
+    transform: 'translateY(-1px)',
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+  },
+});
+
+const pathMap = {
+  overview: {
+    label: 'Αρχική',
+    icon: <HomeIcon sx={{ color: '#90caf9' }} />,
+  },
+  analytics: {
+    label: 'Στατιστικά',
+    icon: <AssessmentIcon sx={{ color: '#81d4fa' }} />,
+  },
+  customers: {
+    label: 'Πελάτες',
+    icon: <GroupIcon sx={{ color: '#80cbc4' }} />,
+  },
+  services: {
+    label: 'Επισκευές',
+    icon: <BuildIcon sx={{ color: '#ffb74d' }} />,
+  },
+  settings: {
+    label: 'Ρυθμίσεις',
+    icon: <SettingsIcon sx={{ color: '#b39ddb' }} />,
+  },
+  about: {
+    label: 'Σχετικά',
+    icon: <InfoIcon sx={{ color: '#9fa8da' }} />,
+  },
+  feedback: {
+    label: 'Feedback',
+    icon: <FeedbackIcon sx={{ color: '#f48fb1' }} />,
+  },
+};
 
 export default function Breadcrumbs() {
   const location = useLocation();
   const pathnames = location.pathname.split('/').filter((x) => x);
 
-  // Mapping για paths με icons
-  const pathConfig = {
-    dashboard: {
-      label: 'Πίνακας ελέγχου',
-      icon: <HomeIcon sx={{ fontSize: 16 }} />,
-      route: '/dashboard/overview',
-    },
-    overview: {
-      label: 'Αρχική',
-      icon: <HomeIcon sx={{ fontSize: 16 }} />,
-      route: '/dashboard/overview',
-    },
-    analytics: {
-      label: 'Στατιστικά',
-      icon: <AssessmentIcon sx={{ fontSize: 16 }} />,
-      route: '/dashboard/analytics',
-    },
-    customers: {
-      label: 'Πελάτες',
-      icon: <GroupIcon sx={{ fontSize: 16 }} />,
-      route: '/dashboard/customers',
-    },
-    services: {
-      label: 'Επισκευές',
-      icon: <BuildIcon sx={{ fontSize: 16 }} />,
-      route: '/dashboard/services',
-    },
-  };
-
-  // Build route για κάθε breadcrumb
-  const buildRoute = (index) => {
-    const currentPath = pathnames[index];
-    const config = pathConfig[currentPath];
-
-    // Αν υπάρχει predefined route στο config, χρησιμοποίησε αυτό
-    if (config && config.route) {
-      return config.route;
-    }
-
-    // Αλλιώς χτίσε το route δυναμικά
-    return '/' + pathnames.slice(0, index + 1).join('/');
-  };
-
   return (
-    <StyledBreadcrumbsContainer>
-      <MUIBreadcrumbs
-        separator={<NavigateNextIcon sx={{ fontSize: 16, color: '#d1d5db' }} />}
-        sx={{
-          '& .MuiBreadcrumbs-ol': {
-            alignItems: 'center',
-          },
-        }}
-      >
-        {pathnames.map((name, index) => {
-          const isLast = index === pathnames.length - 1;
-          const config = pathConfig[name];
-          const route = buildRoute(index);
+    <BreadcrumbContainer>
+      <StyledBreadcrumbs separator={<NavigateNextIcon fontSize="small" />}>
+        {pathnames.map((value, index) => {
+          const last = index === pathnames.length - 1;
+          const to = `/${pathnames.slice(0, index + 1).join('/')}`;
+          const pathInfo = pathMap[value] || { label: value, icon: null };
 
-          if (!config) return null;
+          if (last) {
+            return (
+              <CurrentPageText key={to}>
+                {pathInfo.icon}
+                {pathInfo.label}
+              </CurrentPageText>
+            );
+          }
 
-          return isLast ? (
-            // Τελευταίο στοιχείο (current page) - εμφανίζεται ως Chip
-            <CurrentPageChip key={name} icon={config.icon} label={config.label} size="small" />
-          ) : (
-            // Προηγούμενα στοιχεία - εμφανίζονται ως links
-            <StyledLink key={name} to={route}>
-              {config.icon}
-              <Typography component="span" sx={{ fontSize: 'inherit' }}>
-                {config.label}
-              </Typography>
+          return (
+            <StyledLink key={to} component={RouterLink} to={to} underline="none">
+              {pathInfo.icon}
+              {pathInfo.label}
             </StyledLink>
           );
         })}
-      </MUIBreadcrumbs>
-    </StyledBreadcrumbsContainer>
+      </StyledBreadcrumbs>
+    </BreadcrumbContainer>
   );
 }
