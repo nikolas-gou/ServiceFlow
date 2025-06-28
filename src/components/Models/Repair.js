@@ -9,7 +9,7 @@ export class Repair {
     this.customerID = data.customerID || null;
     this.repairStatus = data.repairStatus || 'In-progress';
     this.description = data.description || '';
-    this.cost = data.cost || '';
+    this.cost = data.cost || null;
     this.createdAt = data.createdAt || new Date();
     this.isArrived = data.isArrived || new Date().toISOString().split('T')[0];
     this.estimatedIsComplete = data.estimatedIsComplete || new Date().toISOString().split('T')[0];
