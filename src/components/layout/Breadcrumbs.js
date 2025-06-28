@@ -122,7 +122,7 @@ export default function Breadcrumbs() {
           }
 
           return (
-            <StyledLink key={to} component={RouterLink} to={to} underline="none">
+            <StyledLink key={to} component={RouterLink} to="/dashboard/overview" underline="none">
               {pathInfo.icon}
               {pathInfo.label}
             </StyledLink>
