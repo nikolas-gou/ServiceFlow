@@ -4,8 +4,9 @@ import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useSearch } from '../../context/SearchContext';
 import Filter from './parts/tools/Filter';
+import CustomerFilter from './parts/tools/CustomerFilter';
 
-export default function Search({ repairs, onFiltersChange }) {
+export default function Search({ repairs, customers, onFiltersChange }) {
   const { searchQuery, setSearchQuery } = useSearch();
 
   const today = new Date().toLocaleDateString('el-GR', {
@@ -22,6 +23,11 @@ export default function Search({ repairs, onFiltersChange }) {
     setSearchQuery('');
   };
 
+  // Determine which filter to show based on available data
+  const showCustomerFilter = customers && !repairs;
+  const showRepairFilter = repairs && !customers;
+  const showRepairFilterByDefault = repairs && customers; // Default to repair filter if both are provided
+
   return (
     <Box display="flex" alignItems="center" gap={1.5} justifyContent="space-between" width="100%">
       <Box flexGrow={1} />
@@ -29,7 +35,9 @@ export default function Search({ repairs, onFiltersChange }) {
       {/* Search Field */}
       <TextField
         variant="outlined"
-        placeholder="Μάρκα, kw, hp, πελάτης, S/N..."
+        placeholder={
+          showCustomerFilter ? 'Όνομα, email, τηλέφωνο...' : 'Μάρκα, kw, hp, πελάτης, S/N...'
+        }
         size="small"
         value={searchQuery}
         onChange={handleSearchChange}
@@ -76,7 +84,12 @@ export default function Search({ repairs, onFiltersChange }) {
       />
 
       {/* Filter Component */}
-      <Filter repairs={repairs} onFiltersChange={onFiltersChange} />
+      {showCustomerFilter && (
+        <CustomerFilter customers={customers} onFiltersChange={onFiltersChange} />
+      )}
+      {(showRepairFilter || showRepairFilterByDefault) && (
+        <Filter repairs={repairs} onFiltersChange={onFiltersChange} />
+      )}
     </Box>
   );
 }
