@@ -10,7 +10,7 @@ import StatisticsCardsCustomer from './components/stats/StatisticsCardsCustomer'
 import Customers from './components/layout/customers/Customers';
 import { SearchProvider } from './context/SearchContext';
 import { RepairsProvider } from './context/RepairsContext';
-import StatisticsCardsRepair from './components/stats/testCard';
+import StatisticsCardsRepair from './components/stats/StatisticsCardsRepair';
 import AnalyticsDashboard from './components/stats/AnalyticsDashboard';
 
 function App() {
@@ -41,7 +41,6 @@ function App() {
                   path="/dashboard/customers"
                   element={
                     <>
-                      <Typography variant="h6">Πελάτες</Typography>
                       <StatisticsCardsCustomer />
                       <Customers />
                     </>
