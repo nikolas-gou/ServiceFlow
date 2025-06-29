@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
 import { Typography, Chip, IconButton, styled, TableCell, TableRow } from '@mui/material';
 import { Visibility as VisibilityIcon } from '@mui/icons-material';
-import { volt_types_mapping, repairStatus_mapping } from '../../../Models/Motor';
+import {
+  volt_types_mapping,
+  repairStatus_mapping,
+  typeOfMotor_mapping,
+  typeOfVolt_mapping,
+  typeOfStep_mapping,
+} from '../../../Models/Motor';
 
 const statusColors = {
   Pending: '#ff9800',
@@ -93,6 +99,24 @@ export const RepairRow = ({ repair, index, onOpenModal }) => {
       <CompactTableCell>
         <Typography variant="caption" fontSize="0.75rem">
           {volt_types_mapping[motor.volt] || '-'}
+        </Typography>
+      </CompactTableCell>
+      <CompactTableCell>
+        <Typography variant="caption" fontSize="0.75rem">
+          {typeOfVolt_mapping[motor.typeOfVolt] && typeOfStep_mapping[motor.typeOfStep] ? (
+            <>
+              {typeOfVolt_mapping[motor.typeOfVolt]} (
+              <strong>{typeOfStep_mapping[motor.typeOfStep]}</strong>)
+            </>
+          ) : (
+            '-'
+          )}
+        </Typography>
+      </CompactTableCell>
+
+      <CompactTableCell>
+        <Typography variant="caption" fontSize="0.75rem">
+          {typeOfMotor_mapping[motor.typeOfMotor] || '-'}
         </Typography>
       </CompactTableCell>
 
