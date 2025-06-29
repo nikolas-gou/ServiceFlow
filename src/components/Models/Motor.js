@@ -123,6 +123,11 @@ export const typeOfMotor_mapping = {
 
 export const typeOfStep = ['standard', 'half', 'combined'];
 export const typeOfStep_translated = ['Ολόκληρο', 'Μισό-Μισό', 'Μισό-Μισό και Ολόκληρο'];
+export const typeOfStep_mapping = {
+  standard: 'Ολόκληρο',
+  half: 'Μισό-Μισό',
+  combined: 'Μισό/Ολόκληρο',
+};
 export const repairStatus_mapping = {
   'In-progress': 'Σε εξέλιξη',
   completed: 'Ολοκληρώθηκε',
