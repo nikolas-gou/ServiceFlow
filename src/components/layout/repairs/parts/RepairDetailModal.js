@@ -47,7 +47,10 @@ export const RepairDetailModal = ({ open, repair, onClose }) => {
       BackdropComponent={Backdrop}
       BackdropProps={{
         timeout: 300,
-        sx: { backgroundColor: 'rgba(0, 0, 0, 0.7)' },
+        sx: {
+          backdropFilter: 'blur(3px)',
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        },
       }}
     >
       <Fade in={open} timeout={300}>
