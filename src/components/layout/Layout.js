@@ -94,6 +94,12 @@ const Layout = (props) => {
               transform: 'scale(1.05)',
               boxShadow: '0 6px 16px rgba(30, 60, 114, 0.4)',
             },
+            '& .MuiSvgIcon-root': {
+              transition: 'transform 0.2s',
+            },
+            '&:hover .MuiSvgIcon-root': {
+              transform: 'rotate(90deg)',
+            },
           }}
         >
           <AddIcon />

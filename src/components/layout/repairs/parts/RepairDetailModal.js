@@ -66,8 +66,10 @@ export const RepairDetailModal = ({ open, repair, onClose }) => {
                 onClick={onClose}
                 sx={{
                   color: 'text.secondary',
+                  transition: 'all 0.2s ease',
                   '&:hover': {
                     backgroundColor: 'action.hover',
+                    transform: 'rotate(90deg)',
                   },
                 }}
               >
