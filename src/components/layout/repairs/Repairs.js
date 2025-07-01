@@ -10,6 +10,7 @@ import {
   Paper,
   Typography,
   styled,
+  Divider,
 } from '@mui/material';
 import { useSearch } from '../../../context/SearchContext';
 import { volt_types_mapping } from '../../Models/Motor';
@@ -18,6 +19,7 @@ import Search from '../Search';
 import { RepairDetailModal } from './parts/RepairDetailModal';
 import { RepairRow } from './parts/RepairRow';
 import InboxIcon from '@mui/icons-material/Inbox';
+import BuildIcon from '@mui/icons-material/Build';
 
 // Styled components για compact εμφάνιση
 const CompactTableCell = styled(TableCell)(({ theme }) => ({
@@ -122,9 +124,42 @@ export default function Repairs() {
           gap: 2,
         }}
       >
-        <Typography variant="h6" sx={{ fontSize: '1rem', fontWeight: 600 }}>
-          Επισκευές ({filteredRepairs.length})
-        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Box
+            sx={{
+              width: 4,
+              height: 24,
+              backgroundColor: 'primary.main',
+              borderRadius: 4,
+            }}
+          />
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <BuildIcon sx={{ color: 'primary.main', fontSize: 20 }} />
+            <Typography variant="h6" sx={{ fontSize: '1rem', fontWeight: 600 }}>
+              Επισκευές
+            </Typography>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+                color: 'text.secondary',
+              }}
+            >
+              <Divider orientation="vertical" flexItem sx={{ mx: 1, height: 16 }} />
+              <Typography
+                variant="body2"
+                sx={{
+                  color: 'text.secondary',
+                  fontSize: '0.875rem',
+                  fontWeight: 500,
+                }}
+              >
+                {filteredRepairs.length}
+              </Typography>
+            </Box>
+          </Box>
+        </Box>
 
         {/* Search και Filter components */}
         <Search repairs={repairs} onFiltersChange={handleFiltersChange} />
