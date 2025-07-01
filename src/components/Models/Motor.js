@@ -134,3 +134,12 @@ export const repairStatus_mapping = {
   waiting: 'Αναμονή',
   pending: 'Εκκρεμεί',
 };
+
+// Returns a string like '1-phase-standard', '3-phase-half', etc. based on the motor object
+export function getMotorTypeString(motor) {
+  if (!motor) return '';
+  const volt = motor.typeOfVolt || '';
+  const step = motor.typeOfStep || '';
+  if (!volt || !step) return '';
+  return `${volt}-${step}`;
+}
