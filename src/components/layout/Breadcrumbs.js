@@ -10,6 +10,7 @@ import BuildIcon from '@mui/icons-material/Build';
 import SettingsIcon from '@mui/icons-material/Settings';
 import InfoIcon from '@mui/icons-material/Info';
 import FeedbackIcon from '@mui/icons-material/Feedback';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 
 const StyledBreadcrumbs = styled(MuiBreadcrumbs)(({ theme }) => ({
   '& .MuiBreadcrumbs-separator': {
@@ -110,7 +111,7 @@ export default function Breadcrumbs() {
         {pathnames.map((value, index) => {
           const last = index === pathnames.length - 1;
           const to = `/${pathnames.slice(0, index + 1).join('/')}`;
-          const pathInfo = pathMap[value] || { label: value, icon: null };
+          const pathInfo = pathMap[value] || { icon: <DashboardIcon /> };
 
           if (last) {
             return (
