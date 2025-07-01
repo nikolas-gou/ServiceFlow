@@ -4,10 +4,18 @@ import { Autocomplete, TextField, Chip, Box, Typography, Grid } from '@mui/mater
 export const CrossSectionField = (props) => {
   const crossSections = [
     '5/10',
+    '5.3/10',
+    '5.6/10',
     '6/10',
+    '6.3/10',
+    '6.5/10',
+    '6.7/10',
     '7/10',
+    '7.5/10',
     '8/10',
     '8.5/10',
+    '9/10',
+    '9.5/10',
     '10/10',
     '12/10',
     '12.5/10',
@@ -69,8 +77,10 @@ export const CrossSectionField = (props) => {
         ? prev.motor.motorCrossSectionLinks
         : [];
 
-      // Βρίσκουμε το index της πρώτης εμφάνισης
-      const indexToRemove = currentLinks.findIndex((link) => link.crossSection === sectionToDelete);
+      // Βρίσκουμε το index της πρώτης εμφάνισης με τον σωστό τύπο
+      const indexToRemove = currentLinks.findIndex(
+        (link) => link.crossSection === sectionToDelete && link.type === props.cross_section_type,
+      );
 
       // Αν δεν υπάρχει, επιστρέφουμε όπως είναι
       if (indexToRemove === -1) return prev;
@@ -93,7 +103,12 @@ export const CrossSectionField = (props) => {
     const links = props.repair?.motor?.motorCrossSectionLinks || [];
     if (links.length === 0) return '';
 
-    const grouped = links.reduce((acc, link) => {
+    // Φιλτράρουμε μόνο τα links που ανήκουν στον συγκεκριμένο τύπο
+    const filteredLinks = links.filter((link) => link.type === props.cross_section_type);
+
+    if (filteredLinks.length === 0) return '';
+
+    const grouped = filteredLinks.reduce((acc, link) => {
       const section = link.crossSection;
       acc[section] = (acc[section] || 0) + 1;
       return acc;
@@ -104,7 +119,11 @@ export const CrossSectionField = (props) => {
       .join(' + ');
   };
 
-  const selectedLinks = props.repair?.motor?.motorCrossSectionLinks || [];
+  // Φιλτράρουμε τα links ανάλογα με τον τύπο
+  const selectedLinks = (props.repair?.motor?.motorCrossSectionLinks || []).filter(
+    (link) => link.type === props.cross_section_type,
+  );
+
   return (
     <Grid container spacing={2} sx={props.sx && props.sx}>
       <Grid item xs={12} sm={12}>
