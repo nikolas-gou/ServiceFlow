@@ -112,6 +112,8 @@ function WindingsContentFields(props) {
                 cross_section_name="motor.motorCrossSectionLinks.crossSection"
                 cross_section_value={props.repair.motor?.motorCrossSectionLinks?.crossSection || []}
                 cross_section_type="main_standard"
+                repair={props.repair}
+                setRepair={props.setRepair}
                 handleInputChange={props.handleInputChange}
               />
               {/* ολόκληρο - Βοηθητικό */}
@@ -126,6 +128,8 @@ function WindingsContentFields(props) {
                 cross_section_name="motor.motorCrossSectionLinks.crossSection"
                 cross_section_value={props.repair.motor?.motorCrossSectionLinks?.crossSection || []}
                 cross_section_type="helper_standard"
+                repair={props.repair}
+                setRepair={props.setRepair}
                 handleInputChange={props.handleInputChange}
               />
             </>
@@ -145,6 +149,8 @@ function WindingsContentFields(props) {
                 cross_section_name="motor.motorCrossSectionLinks.crossSection"
                 cross_section_value={props.repair.motor?.motorCrossSectionLinks?.crossSection || []}
                 cross_section_type="main_half"
+                repair={props.repair}
+                setRepair={props.setRepair}
                 handleInputChange={props.handleInputChange}
               />
               {/* Μισό - Μισό - Βοηθητικό */}
@@ -159,6 +165,8 @@ function WindingsContentFields(props) {
                 cross_section_name="motor.motorCrossSectionLinks.crossSection"
                 cross_section_value={props.repair.motor?.motorCrossSectionLinks?.crossSection || []}
                 cross_section_type="helper_half"
+                repair={props.repair}
+                setRepair={props.setRepair}
                 handleInputChange={props.handleInputChange}
               />
             </>
@@ -178,6 +186,8 @@ function WindingsContentFields(props) {
                 cross_section_name="motor.motorCrossSectionLinks.crossSection"
                 cross_section_value={props.repair.motor?.motorCrossSectionLinks?.crossSection || []}
                 cross_section_type="main_half"
+                repair={props.repair}
+                setRepair={props.setRepair}
                 handleInputChange={props.handleInputChange}
               />
               {/* ολόκληρο - Κυρίως */}
@@ -193,6 +203,8 @@ function WindingsContentFields(props) {
                 cross_section_name="motor.motorCrossSectionLinks.crossSection"
                 cross_section_value={props.repair.motor?.motorCrossSectionLinks?.crossSection || []}
                 cross_section_type="main_standard"
+                repair={props.repair}
+                setRepair={props.setRepair}
                 handleInputChange={props.handleInputChange}
               />
               {/* Μισό - Μισό - Βοηθητικό */}
@@ -208,6 +220,8 @@ function WindingsContentFields(props) {
                 cross_section_name="motor.motorCrossSectionLinks.crossSection"
                 cross_section_value={props.repair.motor?.motorCrossSectionLinks?.crossSection || []}
                 cross_section_type="helper_half"
+                repair={props.repair}
+                setRepair={props.setRepair}
                 handleInputChange={props.handleInputChange}
               />
               {/* ολόκληρο - Βοηθητικό */}
@@ -222,6 +236,8 @@ function WindingsContentFields(props) {
                 cross_section_name="motor.motorCrossSectionLinks.crossSection"
                 cross_section_value={props.repair.motor?.motorCrossSectionLinks?.crossSection || []}
                 cross_section_type="helper_standard"
+                repair={props.repair}
+                setRepair={props.setRepair}
                 handleInputChange={props.handleInputChange}
               />
             </>
