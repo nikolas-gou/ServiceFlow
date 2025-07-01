@@ -1,20 +1,18 @@
 import React from 'react';
 import { TextField, Grid } from '@mui/material';
+import StepField from './StepField';
+import { CrossSectionField } from './CrossSectionField';
 
 export const OnePhaseFields = (props) => {
   return (
     // sx pb  3 mono se sundiasmo
     <Grid container spacing={2} sx={props.sx && props.sx}>
       <Grid item xs={12} sm={4}>
-        {/* step */}
-        <TextField
-          fullWidth
-          label={props.step_label}
-          name={props.step_name}
-          variant="outlined"
-          value={props.step_value}
+        <StepField
+          step_label={props.step_label}
+          step_name={props.step_name}
+          step_value={props.step_value}
           handleInputChange={props.handleInputChange}
-          placeholder="π.χ. 8-10-12"
         />
       </Grid>
       <Grid item xs={12} sm={4}>
@@ -25,20 +23,19 @@ export const OnePhaseFields = (props) => {
           name={props.spiral_name}
           variant="outlined"
           value={props.spiral_value}
-          handleInputChange={props.handleInputChange}
+          onChange={props.handleInputChange}
           placeholder="π.χ. 66"
         />
       </Grid>
       <Grid item xs={12} sm={4}>
-        {/* cross_section */}
-        <TextField
-          fullWidth
-          label={props.cross_section_label}
-          name={props.cross_section_name}
-          variant="outlined"
-          value={props.cross_section_value}
+        <CrossSectionField
+          cross_section_label={props.cross_section_label}
+          cross_section_name={props.cross_section_name}
+          cross_section_value={props.cross_section_value}
+          cross_section_type={props.cross_section_type}
+          repair={props.repair}
+          setRepair={props.setRepair}
           handleInputChange={props.handleInputChange}
-          placeholder="π.χ. 6/10 + 7/10 + 2X8/10"
         />
       </Grid>
     </Grid>
