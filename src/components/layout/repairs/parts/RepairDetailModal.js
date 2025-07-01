@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
-import { Box, Typography, Chip, IconButton, Modal, Backdrop, Fade, styled } from '@mui/material';
+import React from 'react';
+import { Box, Typography, IconButton, Modal, Backdrop, Fade, styled } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
 import EnhancedMotorRepairDisplay from '../../parts/EnhancedMotorRepairDisplay';
-import { repairStatus_mapping } from '../../../Models/Motor';
 
 // Modal styling
 const ModalStyle = {
@@ -58,17 +57,8 @@ export const RepairDetailModal = ({ open, repair, onClose }) => {
               <Typography variant="h6" component="h2" sx={{ fontWeight: 600 }}>
                 Λεπτομέρειες Επισκευής
               </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {repair.motor.manufacturer} - {repair.motor.serialNumber}
-              </Typography>
             </Box>
             <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-              <Chip
-                label={repairStatus_mapping[repair.repairStatus] || repair.repairStatus}
-                color={repair.repairStatus === 'Completed' ? 'success' : 'warning'}
-                size="small"
-                sx={{ fontWeight: 'bold' }}
-              />
               <IconButton
                 onClick={onClose}
                 sx={{
