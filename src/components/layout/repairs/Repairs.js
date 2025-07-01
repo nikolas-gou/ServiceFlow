@@ -17,6 +17,7 @@ import { useRepairs } from '../../../context/RepairsContext';
 import Search from '../Search';
 import { RepairDetailModal } from './parts/RepairDetailModal';
 import { RepairRow } from './parts/RepairRow';
+import InboxIcon from '@mui/icons-material/Inbox';
 
 // Styled components για compact εμφάνιση
 const CompactTableCell = styled(TableCell)(({ theme }) => ({
@@ -28,6 +29,10 @@ const CompactTableCell = styled(TableCell)(({ theme }) => ({
     borderBottom: '2px solid #e9ecef',
     fontSize: '0.75rem',
     padding: '8px',
+    position: 'sticky',
+    top: 0,
+    zIndex: 1,
+    boxShadow: '0 2px 4px rgba(0,0,0,0.03)',
   },
 }));
 
@@ -129,8 +134,8 @@ export default function Repairs() {
         component={Paper}
         sx={{
           maxHeight: 'calc(100vh - 280px)',
-          boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-          borderRadius: '8px',
+          boxShadow: '0 2px 8px rgba(25,118,210,0.08)',
+          borderRadius: '16px',
         }}
       >
         <Table stickyHeader size="small">
@@ -156,16 +161,28 @@ export default function Repairs() {
                 repair={repair}
                 index={index}
                 onOpenModal={handleOpenModal}
+                zebra={index % 2 === 0}
               />
             ))}
             {filteredRepairs.length === 0 && (
               <TableRow>
-                <CompactTableCell colSpan={9} align="center">
-                  <Typography variant="body2" sx={{ py: 3, color: 'text.secondary' }}>
-                    {searchQuery || Object.values(filters).some((f) => f !== '')
-                      ? `Δεν βρέθηκαν αποτελέσματα`
-                      : 'Δεν υπάρχουν επισκευές'}
-                  </Typography>
+                <CompactTableCell colSpan={11} align="center">
+                  <Box
+                    sx={{
+                      py: 4,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      color: 'text.secondary',
+                    }}
+                  >
+                    <InboxIcon sx={{ fontSize: 48, mb: 1 }} />
+                    <Typography variant="body2">
+                      {searchQuery || Object.values(filters).some((f) => f !== '')
+                        ? `Δεν βρέθηκαν αποτελέσματα`
+                        : 'Δεν υπάρχουν επισκευές'}
+                    </Typography>
+                  </Box>
                 </CompactTableCell>
               </TableRow>
             )}
