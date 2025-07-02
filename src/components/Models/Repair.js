@@ -7,7 +7,7 @@ export class Repair {
     this.id = data.id || null;
     this.motorID = data.motorID || null;
     this.customerID = data.customerID || null;
-    this.repairStatus = data.repairStatus || 'In-progress';
+    this.repairStatus = data.repairStatus || 'in-progress';
     this.description = data.description || '';
     this.cost = data.cost || null;
     this.createdAt = data.createdAt || new Date();

@@ -46,10 +46,10 @@ export const RepairRow = ({ repair, index, onOpenModal, zebra }) => {
   // Status chip config
   let chipColor = 'default';
   let chipIcon = null;
-  if (repair.repairStatus === 'Completed') {
+  if (repair.repairStatus === 'completed') {
     chipColor = 'success';
     chipIcon = <CheckCircle sx={{ fontSize: 16 }} />;
-  } else if (repair.repairStatus === 'In-progress') {
+  } else if (repair.repairStatus === 'in-progress') {
     chipColor = 'warning';
     chipIcon = <HourglassEmpty sx={{ fontSize: 16 }} />;
   }

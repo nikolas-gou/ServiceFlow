@@ -97,6 +97,7 @@ export const rpm_types_translated = ['900', '1490', '2900', 'Αλλο'];
 
 export const poles_types = ['2', '4', '6', '8', '12', 'other'];
 export const poles_types_translated = ['2', '4', '6', '8', '12', 'Άλλο'];
+export const poles_types_mapping = { 2: '2', 4: '4', 6: '6', 8: '8', 12: '12', other: 'Άλλο' };
 
 export const volt_types = ['230VY', '230VYY', '380VY', '380VYY', 'other'];
 
@@ -130,10 +131,10 @@ export const typeOfStep_mapping = {
   combined: 'Μισό/Ολόκληρο',
 };
 export const repairStatus_mapping = {
-  'In-progress': 'Σε εξέλιξη',
+  'in-progress': 'Σε εξέλιξη',
   completed: 'Ολοκληρώθηκε',
-  waiting: 'Αναμονή',
-  pending: 'Εκκρεμεί',
+  delivered: 'Παραδώθηκε',
+  cancelled: 'Ακυρώθηκε',
 };
 
 // Returns a string like '1-phase-standard', '3-phase-half', etc. based on the motor object

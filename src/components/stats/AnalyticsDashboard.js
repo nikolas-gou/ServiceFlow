@@ -525,7 +525,7 @@ export default function AnalyticsDashboard() {
     {
       title: 'Εκκρεμείς',
       value:
-        analyticsData.repairStatus?.find((s) => s.repairStatus === 'In-progress')?.count || '0',
+        analyticsData.repairStatus?.find((s) => s.repairStatus === 'in-progress')?.count || '0',
       subtitle: 'Επισκευές',
       icon: <Schedule />,
       type: 'number',
