@@ -6,14 +6,8 @@ import { useSearch } from '../../context/SearchContext';
 import Filter from './parts/tools/Filter';
 import CustomerFilter from './parts/tools/CustomerFilter';
 
-export default function Search({ repairs, customers, onFiltersChange }) {
+export default function Search(props) {
   const { searchQuery, setSearchQuery } = useSearch();
-
-  const today = new Date().toLocaleDateString('el-GR', {
-    year: 'numeric',
-    month: 'short',
-    day: '2-digit',
-  });
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
@@ -24,12 +18,12 @@ export default function Search({ repairs, customers, onFiltersChange }) {
   };
 
   // Determine which filter to show based on available data
-  const showCustomerFilter = customers && !repairs;
-  const showRepairFilter = repairs && !customers;
-  const showRepairFilterByDefault = repairs && customers; // Default to repair filter if both are provided
+  const showCustomerFilter = props.customers && !props.repairs;
+  const showRepairFilter = props.repairs && !props.customers;
+  const showRepairFilterByDefault = props.repairs && props.customers; // Default to repair filter if both are provided
 
   return (
-    <Box display="flex" alignItems="center" gap={1.5} justifyContent="space-between" width="100%">
+    <Box display="flex" alignItems="center" gap={2.5} justifyContent="space-between" width="100%">
       <Box flexGrow={1} />
 
       {/* Search Field */}
@@ -42,26 +36,33 @@ export default function Search({ repairs, customers, onFiltersChange }) {
         value={searchQuery}
         onChange={handleSearchChange}
         sx={{
-          backgroundColor: '#ffffff',
-          borderRadius: '8px',
+          background: 'rgba(255,255,255,0.75)',
+          borderRadius: '12px',
           minWidth: 280,
+          boxShadow: '0 2px 12px rgba(30,60,114,0.08)',
+          backdropFilter: 'blur(6px)',
           '& .MuiOutlinedInput-root': {
-            fontSize: 14,
-            height: 40,
+            fontSize: 15,
+            height: 44,
             '& fieldset': {
               borderColor: '#e0e0e0',
+              transition: 'all 0.2s',
             },
             '&:hover fieldset': {
               borderColor: '#bdbdbd',
             },
             '&.Mui-focused fieldset': {
               borderColor: '#1976d2',
+              boxShadow: '0 0 0 3px rgba(25, 118, 210, 0.08)',
             },
             '& input': {
               color: '#333333',
+              fontWeight: 500,
               '&::placeholder': {
                 color: '#757575',
                 opacity: 1,
+                fontWeight: 400,
+                fontSize: 15,
               },
             },
           },
@@ -69,7 +70,16 @@ export default function Search({ repairs, customers, onFiltersChange }) {
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
-              <SearchIcon sx={{ color: '#757575', fontSize: 20 }} />
+              <SearchIcon
+                sx={{
+                  color: '#757575',
+                  fontSize: 18,
+                  transition: 'color 0.2s',
+                  '.MuiOutlinedInput-root.Mui-focused &': {
+                    color: '#1976d2',
+                  },
+                }}
+              />
             </InputAdornment>
           ),
           endAdornment: searchQuery && (
@@ -79,8 +89,10 @@ export default function Search({ repairs, customers, onFiltersChange }) {
                 onClick={clearSearch}
                 sx={{
                   color: '#757575',
+                  transition: 'all 0.2s',
                   '&:hover': {
-                    color: '#1976d2',
+                    color: '#d32f2f',
+                    background: 'rgba(211, 47, 47, 0.04)',
                   },
                 }}
               >
@@ -93,10 +105,14 @@ export default function Search({ repairs, customers, onFiltersChange }) {
 
       {/* Filter Component */}
       {showCustomerFilter && (
-        <CustomerFilter customers={customers} onFiltersChange={onFiltersChange} />
+        <CustomerFilter customers={props.customers} onFiltersChange={props.onFiltersChange} />
       )}
       {(showRepairFilter || showRepairFilterByDefault) && (
-        <Filter repairs={repairs} onFiltersChange={onFiltersChange} />
+        <Filter
+          repairs={props.repairs}
+          filteredRepairs={props.filteredRepairs}
+          onFiltersChange={props.onFiltersChange}
+        />
       )}
     </Box>
   );

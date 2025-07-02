@@ -162,7 +162,11 @@ export default function Repairs() {
         </Box>
 
         {/* Search και Filter components */}
-        <Search repairs={repairs} onFiltersChange={handleFiltersChange} />
+        <Search
+          repairs={repairs}
+          filteredRepairs={filteredRepairs}
+          onFiltersChange={handleFiltersChange}
+        />
       </Box>
 
       <TableContainer
