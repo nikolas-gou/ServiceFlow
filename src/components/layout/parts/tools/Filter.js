@@ -138,7 +138,6 @@ export default function Filter({ repairs, filteredRepairs, onFiltersChange }) {
       return acc;
     }, {}) || {};
 
-  console.log(repairs);
   // dummy θα το αλλαξω
   const statuses = [...new Set(repairs?.map((r) => r.repairStatus).filter(Boolean))] || [];
   const voltTypes = volt_types; // Από το volt_types_mapping
