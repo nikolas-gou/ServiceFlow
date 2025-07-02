@@ -89,6 +89,7 @@ export const connectionism_types_mapping = {
   '2-parallel': '2 φορές παράλληλη',
   '3-parallel': '3 φορές παράλληλη',
   '4-parallel': '4 φορές παράλληλη',
+  other: 'Άλλο',
 };
 
 export const rpm_types = ['900', '1490', '2900', 'other'];
