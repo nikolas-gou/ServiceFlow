@@ -1,15 +1,15 @@
 import React from 'react';
 import { TextField, Grid, Autocomplete } from '@mui/material';
 
-function HowManyCoilsWith(props) {
-  // default v1 - θα το αλλαξω μαζι με stepSuggestions
-  const howManyCoilsWith = [1, 2, 3, 4, 5, 6];
+function CoilsCount(props) {
+  // Προτεινόμενες τιμές για coils count
+  const coilsCountOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
-  const handleHowManyCoilsWithChange = (event, newValue) => {
+  const handleCoilsCountChange = (event, newValue) => {
     if (newValue && typeof newValue === 'number') {
       const fakeEvent = {
         target: {
-          name: props.how_many_coils_with_name,
+          name: props.name,
           value: newValue,
         },
       };
@@ -18,25 +18,23 @@ function HowManyCoilsWith(props) {
   };
 
   return (
-    // sx pb  3 mono se sundiasmo
     <Grid container spacing={2} sx={props.sx && props.sx}>
       <Grid item xs={12} sm={12}>
-        {/* step */}
         <Autocomplete
           freeSolo
-          options={howManyCoilsWith || []}
-          value={props.how_many_coils_with_value}
+          options={coilsCountOptions || []}
+          value={props.value}
           getOptionLabel={(option) => option.toString()}
-          onChange={handleHowManyCoilsWithChange}
+          onChange={handleCoilsCountChange}
           renderInput={(params) => (
             <TextField
               {...params}
               fullWidth
-              label={props.how_many_coils_with_label}
-              name={props.how_many_coils_with_name}
+              label={props.label}
+              name={props.name}
               type="number"
               variant="outlined"
-              placeholder="π.χ. 3 - Μαζί"
+              placeholder={props.placeholder || 'π.χ. 3'}
               onChange={props.handleInputChange}
             />
           )}
@@ -54,4 +52,4 @@ function HowManyCoilsWith(props) {
   );
 }
 
-export default HowManyCoilsWith;
+export default CoilsCount;

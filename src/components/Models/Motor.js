@@ -1,4 +1,5 @@
 import { MotorCrossSectionLinks } from './MotorCrossSectionLinks';
+
 export class Motor {
   constructor(data = {}) {
     this.id = data.id || null;
@@ -22,7 +23,10 @@ export class Motor {
     this.connectionism = data.connectionism || 'simple';
     this.volt = data.volt || '380VY';
     this.poles = data.poles || '6';
-    this.howManyCoilsWith = data.howManyCoilsWith || '1';
+    this.coilsCount = data.coilsCount || 1;
+    this.halfCoilsCount = data.halfCoilsCount || 1;
+    this.helperCoilsCount = data.helperCoilsCount || 1;
+    this.helperHalfCoilsCount = data.helperHalfCoilsCount || 1;
     this.typeOfStep = data.typeOfStep || 'standard';
     this.typeOfMotor = data.typeOfMotor || 'el_motor';
     this.typeOfVolt = data.typeOfVolt || '3-phase';
@@ -60,7 +64,10 @@ export class Motor {
       connectionism: this.connectionism,
       volt: this.volt,
       poles: this.poles,
-      howManyCoilsWith: this.howManyCoilsWith,
+      coilsCount: this.coilsCount,
+      halfCoilsCount: this.halfCoilsCount,
+      helperCoilsCount: this.helperCoilsCount,
+      helperHalfCoilsCount: this.helperHalfCoilsCount,
       typeOfStep: this.typeOfStep,
       typeOfMotor: this.typeOfMotor,
       typeOfVolt: this.typeOfVolt,
@@ -95,9 +102,17 @@ export const connectionism_types_mapping = {
 export const rpm_types = ['900', '1490', '2900', 'other'];
 export const rpm_types_translated = ['900', '1490', '2900', 'Αλλο'];
 
-export const poles_types = ['2', '4', '6', '8', '12', 'other'];
-export const poles_types_translated = ['2', '4', '6', '8', '12', 'Άλλο'];
-export const poles_types_mapping = { 2: '2', 4: '4', 6: '6', 8: '8', 12: '12', other: 'Άλλο' };
+export const poles_types = ['2', '4', '6', '8', '10', '12', 'other'];
+export const poles_types_translated = ['2', '4', '6', '8', '10', '12', 'Άλλο'];
+export const poles_types_mapping = {
+  2: '2',
+  4: '4',
+  6: '6',
+  8: '8',
+  10: '10',
+  12: '12',
+  other: 'Άλλο',
+};
 
 export const volt_types = ['230VY', '230VYY', '380VY', '380VYY', 'other'];
 
@@ -130,6 +145,7 @@ export const typeOfStep_mapping = {
   half: 'Μισό-Μισό',
   combined: 'Μισό/Ολόκληρο',
 };
+
 export const repairStatus_mapping = {
   'in-progress': 'Σε εξέλιξη',
   completed: 'Ολοκληρώθηκε',

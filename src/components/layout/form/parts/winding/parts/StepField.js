@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { TextField, Grid, Autocomplete } from '@mui/material';
-import HowManyCoilsWith from './howManyCoilsWith';
 
 function StepField(props) {
   const [stepError, setStepError] = useState('');

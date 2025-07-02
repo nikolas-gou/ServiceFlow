@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { TextField, Grid, Autocomplete } from '@mui/material';
 import { CrossSectionField } from './CrossSectionField';
 import StepField from './StepField';
-import HowManyCoilsWith from './howManyCoilsWith';
+import CoilsCount from './CoilsCount'; // Ενημερωμένο import
 
 function ThreePhaseFields(props) {
   return (
@@ -12,15 +12,16 @@ function ThreePhaseFields(props) {
         <StepField
           step_label={props.step_label}
           step_name={props.step_name}
-          step_value={props.repair?.motor?.step || ''}
+          step_value={props.step_value}
           handleInputChange={props.handleInputChange}
         />
       </Grid>
       <Grid item xs={12} sm={6}>
-        <HowManyCoilsWith
-          how_many_coils_with_label={props.how_many_coils_with_label}
-          how_many_coils_with_name={props.how_many_coils_with_name}
-          how_many_coils_with_value={props.how_many_coils_with_value}
+        <CoilsCount
+          label={props.coils_count_label}
+          name={props.coils_count_name}
+          value={props.coils_count_value}
+          placeholder="π.χ. 5"
           handleInputChange={props.handleInputChange}
         />
       </Grid>
