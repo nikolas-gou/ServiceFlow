@@ -101,6 +101,7 @@ export const connectionism_types_mapping = {
 
 export const rpm_types = ['900', '1490', '2900', 'other'];
 export const rpm_types_translated = ['900', '1490', '2900', 'Αλλο'];
+export const rpm_types_mapping = { 900: '900', 1490: '1490', 2900: '2900', other: 'Αλλο' };
 
 export const poles_types = ['2', '4', '6', '8', '10', '12', 'other'];
 export const poles_types_translated = ['2', '4', '6', '8', '10', '12', 'Άλλο'];
