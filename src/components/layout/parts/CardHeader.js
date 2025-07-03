@@ -8,6 +8,7 @@ import {
   typeOfVolt_mapping,
   repairStatus_mapping,
   poles_types_mapping,
+  rpm_types_mapping,
 } from '../../Models/Motor';
 
 // Styled Components
@@ -94,7 +95,7 @@ export const CardHeader = (props) => {
     const chipData = [
       { label: `${props.repair.motor.kw || 0}kW` },
       { label: `${props.repair.motor.hp || 0}HP` },
-      { label: `${props.repair.motor.rpm || 1490}RPM` },
+      { label: `${rpm_types_mapping[props.repair.motor.rpm] || 1490}RPM` },
       { label: `${poles_types_mapping[props.repair.motor.poles]}P` || 0 },
       { label: volt_types_mapping[props.repair.motor.volt] || props.repair.motor.volt || '-' },
       {
