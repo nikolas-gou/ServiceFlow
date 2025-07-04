@@ -19,4 +19,9 @@ export class RepairRepository {
     const response = await apiCall(config.server, '/api/repairs', 'POST', repair);
     return response.data || {};
   }
+
+  static async softDelete(repairId) {
+    const response = await apiCall(config.server, `/api/repairs/${repairId}/soft-delete`, 'PATCH');
+    return response.data || {};
+  }
 }

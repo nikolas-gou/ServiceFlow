@@ -41,7 +41,7 @@ const CompactTableCell = styled(TableCell)(({ theme }) => ({
 // Main Modal Repairs Component
 export default function Repairs() {
   const { searchQuery } = useSearch();
-  const { repairs, loading } = useRepairs();
+  const { repairs, loading, setRepairs } = useRepairs();
 
   // Modal state
   const [modalOpen, setModalOpen] = useState(false);
@@ -55,6 +55,11 @@ export default function Repairs() {
     kwMin: '',
     kwMax: '',
   });
+
+  // Handle repair deletion
+  const handleDelete = (repairId) => {
+    setRepairs(repairs.filter((repair) => repair.id !== repairId));
+  };
 
   // Συνάρτηση για να χειριστεί τις αλλαγές στα φίλτρα
   const handleFiltersChange = (newFilters) => {
@@ -200,6 +205,7 @@ export default function Repairs() {
                 repair={repair}
                 index={index}
                 onOpenModal={handleOpenModal}
+                onDelete={handleDelete}
                 zebra={index % 2 === 0}
               />
             ))}
