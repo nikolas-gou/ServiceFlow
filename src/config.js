@@ -4,7 +4,7 @@ const config = {
 };
 
 if (!process.env.NODE_ENV || process.env.NODE_ENV !== 'development') {
-  config.server = 'https://serviceflowback.infinityfreeapp.com/api';
+  config.server = 'https://serviceflowback.infinityfreeapp.com/';
 }
 
 export default config;
