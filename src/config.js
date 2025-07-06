@@ -4,7 +4,7 @@ const config = {
 };
 
 if (!process.env.NODE_ENV || process.env.NODE_ENV !== 'development') {
-  config.server = 'serviceflow.infinityfreeapp.com/ServiceFlow-Backend';
+  config.server = 'https://serviceflowback.infinityfreeapp.com/api';
 }
 
 export default config;
