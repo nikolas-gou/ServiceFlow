@@ -125,7 +125,7 @@ export default function Repairs() {
   });
 
   return (
-    <Box sx={{ mt: 2, position: 'relative' }}>
+    <Box sx={{ mt: 2 }}>
       {/* Header με τίτλο και Search/Filter components */}
       <Box
         sx={{
