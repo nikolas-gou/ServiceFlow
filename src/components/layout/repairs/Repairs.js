@@ -20,6 +20,7 @@ import { RepairDetailModal } from './parts/RepairDetailModal';
 import { RepairRow } from './parts/RepairRow';
 import InboxIcon from '@mui/icons-material/Inbox';
 import BuildIcon from '@mui/icons-material/Build';
+import { ModalRepairForm } from '../form/parts/ModalRepairForm';
 
 // Styled components για compact εμφάνιση
 const CompactTableCell = styled(TableCell)(({ theme }) => ({
@@ -44,8 +45,9 @@ export default function Repairs() {
   const { repairs, loading, setRepairs } = useRepairs();
 
   // Modal state
-  const [modalOpen, setModalOpen] = useState(false);
-  const [selectedRepair, setSelectedRepair] = useState(null);
+  const [viewModalOpen, setViewModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [selectedRepair, setSelectedRepair] = useState({});
 
   // State για τα filters
   const [filters, setFilters] = useState({
@@ -66,16 +68,21 @@ export default function Repairs() {
     setFilters(newFilters);
   };
 
-  // Handle modal open
-  const handleOpenModal = (repair) => {
-    setSelectedRepair(repair);
-    setModalOpen(true);
-  };
-
   // Handle modal close
   const handleCloseModal = () => {
-    setModalOpen(false);
-    setSelectedRepair(null);
+    setSelectedRepair({});
+    setViewModalOpen(false);
+    setEditModalOpen(false);
+  };
+
+  const handleViewRepair = (repair) => {
+    setSelectedRepair(repair);
+    setViewModalOpen(true);
+  };
+
+  const handleEditRepair = (repair) => {
+    setSelectedRepair(repair);
+    setEditModalOpen(true);
   };
 
   // Φιλτράρισμα με βάση το search και τα filters
@@ -118,7 +125,7 @@ export default function Repairs() {
   });
 
   return (
-    <Box sx={{ mt: 2 }}>
+    <Box sx={{ mt: 2, position: 'relative' }}>
       {/* Header με τίτλο και Search/Filter components */}
       <Box
         sx={{
@@ -204,7 +211,8 @@ export default function Repairs() {
                 key={repair.id}
                 repair={repair}
                 index={index}
-                onOpenModal={handleOpenModal}
+                onView={handleViewRepair}
+                onEdit={handleEditRepair}
                 onDelete={handleDelete}
                 zebra={index % 2 === 0}
               />
@@ -236,7 +244,13 @@ export default function Repairs() {
       </TableContainer>
 
       {/* Repair Detail Modal */}
-      <RepairDetailModal open={modalOpen} repair={selectedRepair} onClose={handleCloseModal} />
+      <RepairDetailModal open={viewModalOpen} repair={selectedRepair} onClose={handleCloseModal} />
+      <ModalRepairForm
+        open={editModalOpen}
+        onClose={handleCloseModal}
+        repair={selectedRepair}
+        isEdit={true}
+      />
     </Box>
   );
 }
