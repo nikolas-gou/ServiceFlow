@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { Box, Paper, Modal, IconButton, Fab } from '@mui/material';
+import { Box, Fab } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import CloseIcon from '@mui/icons-material/Close';
 import SideBar from './SideBar';
 import TopAppBar from './TopAppBar';
-import CreateRepairForm from './form/CreateRepairForm';
+import { ModalRepairForm } from './form/parts/ModalRepairForm';
 
 const drawerWidth = 250;
 
@@ -13,10 +12,6 @@ const Layout = (props) => {
 
   const handleOpenModal = () => {
     setOpenModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setOpenModal(false);
   };
 
   return (
@@ -106,69 +101,12 @@ const Layout = (props) => {
         </Fab>
 
         {/* Modal for the form */}
-        <Modal
+        <ModalRepairForm
           open={openModal}
-          onClose={handleCloseModal}
-          aria-labelledby="create-repair-modal"
-          aria-describedby="create-repair-form-modal"
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            '& .MuiBackdrop-root': {
-              backdropFilter: 'blur(3px)',
-              backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            },
-          }}
-        >
-          <Paper
-            sx={{
-              width: '90%',
-              maxWidth: '1200px',
-              maxHeight: '90vh',
-              overflow: 'auto',
-              position: 'relative',
-              borderRadius: '16px',
-              background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
-              boxShadow: '0 12px 24px rgba(0, 0, 0, 0.1)',
-              p: 3,
-              '&::-webkit-scrollbar': {
-                width: '8px',
-                background: 'transparent',
-              },
-              '&::-webkit-scrollbar-thumb': {
-                background: 'rgba(0, 0, 0, 0.1)',
-                borderRadius: '4px',
-                '&:hover': {
-                  background: 'rgba(0, 0, 0, 0.15)',
-                },
-              },
-            }}
-          >
-            <IconButton
-              aria-label="close"
-              onClick={handleCloseModal}
-              sx={{
-                position: 'absolute',
-                right: 16,
-                top: 16,
-                zIndex: 2000,
-                color: '#666',
-                background: 'rgba(255, 255, 255, 0.9)',
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-                '&:hover': {
-                  background: '#fff',
-                  color: '#1e3c72',
-                  transform: 'rotate(90deg)',
-                },
-                transition: 'all 0.2s ease',
-              }}
-            >
-              <CloseIcon />
-            </IconButton>
-            <CreateRepairForm onSubmitSuccess={handleCloseModal} />
-          </Paper>
-        </Modal>
+          onClose={() => setOpenModal(false)}
+          repair={null}
+          isEdit={false}
+        />
       </Box>
     </Box>
   );
