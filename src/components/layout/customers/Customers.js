@@ -10,12 +10,15 @@ import {
   Paper,
   Typography,
   styled,
+  Divider,
 } from '@mui/material';
 import { useSearch } from '../../../context/SearchContext';
 import { CustomerRepository } from '../../Repositories/CustomerRepository';
 import Search from '../Search';
 import { CustomerDetailModal } from './parts/CustomerDetailModal';
 import { CustomerRow } from './parts/CustomerRow';
+import PeopleIcon from '@mui/icons-material/People';
+import InboxIcon from '@mui/icons-material/Inbox';
 
 // Styled components για compact εμφάνιση
 const CompactTableCell = styled(TableCell)(({ theme }) => ({
@@ -27,6 +30,10 @@ const CompactTableCell = styled(TableCell)(({ theme }) => ({
     borderBottom: '2px solid #e9ecef',
     fontSize: '0.75rem',
     padding: '8px',
+    position: 'sticky',
+    top: 0,
+    zIndex: 1,
+    boxShadow: '0 2px 4px rgba(0,0,0,0.03)',
   },
 }));
 
@@ -122,9 +129,42 @@ export default function Customers() {
           gap: 2,
         }}
       >
-        <Typography variant="h6" sx={{ fontSize: '1rem', fontWeight: 600 }}>
-          Πελάτες ({filteredCustomers.length})
-        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Box
+            sx={{
+              width: 4,
+              height: 24,
+              backgroundColor: 'primary.main',
+              borderRadius: 4,
+            }}
+          />
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <PeopleIcon sx={{ color: 'primary.main', fontSize: 20 }} />
+            <Typography variant="h6" sx={{ fontSize: '1rem', fontWeight: 600 }}>
+              Πελάτες
+            </Typography>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+                color: 'text.secondary',
+              }}
+            >
+              <Divider orientation="vertical" flexItem sx={{ mx: 1, height: 16 }} />
+              <Typography
+                variant="body2"
+                sx={{
+                  color: 'text.secondary',
+                  fontSize: '0.875rem',
+                  fontWeight: 500,
+                }}
+              >
+                {filteredCustomers.length}
+              </Typography>
+            </Box>
+          </Box>
+        </Box>
 
         {/* Search και Filter components */}
         <Search customers={customers} onFiltersChange={handleFiltersChange} />
@@ -134,8 +174,8 @@ export default function Customers() {
         component={Paper}
         sx={{
           maxHeight: 'calc(100vh - 280px)',
-          boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-          borderRadius: '8px',
+          boxShadow: '0 2px 8px rgba(25,118,210,0.08)',
+          borderRadius: '16px',
         }}
       >
         <Table stickyHeader size="small">
@@ -146,7 +186,7 @@ export default function Customers() {
               <CompactTableCell>Email</CompactTableCell>
               <CompactTableCell>Τηλέφωνο</CompactTableCell>
               <CompactTableCell>Ημ/νία Δημιουργίας</CompactTableCell>
-              <CompactTableCell width="50px">Προβολή</CompactTableCell>
+              <CompactTableCell width="50px">Ενέργειες</CompactTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -156,16 +196,28 @@ export default function Customers() {
                 customer={customer}
                 index={index}
                 onOpenModal={handleOpenModal}
+                zebra={index % 2 === 0}
               />
             ))}
             {filteredCustomers.length === 0 && (
               <TableRow>
-                <CompactTableCell colSpan={7} align="center">
-                  <Typography variant="body2" sx={{ py: 3, color: 'text.secondary' }}>
-                    {searchQuery || Object.values(filters).some((f) => f !== '')
-                      ? `Δεν βρέθηκαν αποτελέσματα`
-                      : 'Δεν υπάρχουν πελάτες'}
-                  </Typography>
+                <CompactTableCell colSpan={6} align="center">
+                  <Box
+                    sx={{
+                      py: 4,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      color: 'text.secondary',
+                    }}
+                  >
+                    <InboxIcon sx={{ fontSize: 48, mb: 1 }} />
+                    <Typography variant="body2">
+                      {searchQuery || Object.values(filters).some((f) => f !== '')
+                        ? `Δεν βρέθηκαν αποτελέσματα`
+                        : 'Δεν υπάρχουν πελάτες'}
+                    </Typography>
+                  </Box>
                 </CompactTableCell>
               </TableRow>
             )}
