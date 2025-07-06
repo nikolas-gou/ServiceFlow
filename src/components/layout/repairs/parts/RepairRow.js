@@ -41,7 +41,7 @@ const CompactTableRow = styled(TableRow)(({ theme }) => ({
   transition: 'all 0.2s ease',
 }));
 
-export const RepairRow = ({ repair, index, onOpenModal, zebra, onDelete }) => {
+export const RepairRow = ({ repair, onView, onEdit, onDelete, zebra }) => {
   const motor = repair?.motor || {};
   const customer = repair?.customer || {};
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -49,6 +49,16 @@ export const RepairRow = ({ repair, index, onOpenModal, zebra, onDelete }) => {
   const handleDeleteClick = (e) => {
     e.stopPropagation();
     setDeleteModalOpen(true);
+  };
+
+  const handleEditClick = (e) => {
+    e.stopPropagation();
+    onEdit(repair);
+  };
+
+  const handleViewClick = (e) => {
+    e.stopPropagation();
+    onView(repair);
   };
 
   const handleDeleteConfirm = async () => {
@@ -84,7 +94,7 @@ export const RepairRow = ({ repair, index, onOpenModal, zebra, onDelete }) => {
           transition: 'background 0.2s',
           '&:hover': { backgroundColor: 'rgba(25, 118, 210, 0.08)' },
         }}
-        onClick={() => onOpenModal(repair)}
+        onClick={() => onView(repair)}
       >
         <CompactTableCell>
           <Typography variant="body2" fontWeight={600} fontSize="0.8rem">
@@ -154,10 +164,7 @@ export const RepairRow = ({ repair, index, onOpenModal, zebra, onDelete }) => {
               size="small"
               className="view-icon"
               sx={{ color: 'primary.main', p: 0.5 }}
-              onClick={(e) => {
-                e.stopPropagation();
-                onOpenModal(repair);
-              }}
+              onClick={handleViewClick}
             >
               <VisibilityIcon fontSize="small" />
             </IconButton>
@@ -166,10 +173,7 @@ export const RepairRow = ({ repair, index, onOpenModal, zebra, onDelete }) => {
             <IconButton
               size="small"
               sx={{ color: 'warning.main', p: 0.5 }}
-              onClick={(e) => {
-                e.stopPropagation();
-                // TODO: handle edit
-              }}
+              onClick={handleEditClick}
             >
               <EditIcon fontSize="small" />
             </IconButton>
