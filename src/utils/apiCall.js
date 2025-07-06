@@ -8,7 +8,6 @@ export default function apiCall(host, endpoint = '/', reqMethod = 'get', data = 
       Accept: 'application/json',
       'Content-Type': 'application/json',
     },
-    credentials: 'include',
     mode: 'cors',
   };
 
@@ -33,22 +32,21 @@ export default function apiCall(host, endpoint = '/', reqMethod = 'get', data = 
     reqData['body'] = data;
   }
 
-  const res = fetch(`${host}${endpoint}`, reqData)
-    .then((response) => {
+  return fetch(`${host}${endpoint}`, reqData)
+    .then(async (response) => {
       if (!response.ok) {
         if (response.status === 403) {
           window.alert('UNAUTHORIZED');
           window.location.replace(`/unauthorized`);
           throw new Error('Unauthorized');
         }
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorText = await response.text();
+        throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
       }
       return response.json();
     })
-    .then((res) => res)
     .catch((error) => {
       console.error('API call error:', error);
       throw error;
     });
-  return res;
 }
