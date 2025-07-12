@@ -135,7 +135,6 @@ export const BasicInfo = (props) => {
       </Grid>
       <Grid item xs={12} sm={6}>
         <TextField
-          required
           fullWidth
           label="Τηλέφωνο"
           name="customer.phone"

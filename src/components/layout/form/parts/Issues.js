@@ -66,7 +66,6 @@ export const Issues = (props) => {
       <Grid item xs={12}>
         <TextField
           fullWidth
-          required
           label="Περιγραφή Βλάβης"
           name="description"
           multiline
