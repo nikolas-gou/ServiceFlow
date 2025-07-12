@@ -1,9 +1,26 @@
 import React from 'react';
 import { Box, Card, Typography, Chip, Avatar } from '@mui/material';
 import { Line } from 'react-chartjs-2';
-import { Chart as ChartJS, LineElement, PointElement, LinearScale, CategoryScale } from 'chart.js';
+import {
+  Chart as ChartJS,
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+  ArcElement,
+  Tooltip,
+  Legend,
+} from 'chart.js';
 
-ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale);
+ChartJS.register(
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+  ArcElement,
+  Tooltip,
+  Legend,
+);
 
 const chartOptions = {
   responsive: true,
@@ -53,12 +70,18 @@ const getGradientBackground = (colorName) => {
 };
 
 export const StatisticCard = (props) => {
-  const chartColor = getChartColor(props.color);
   const [gradientStart, gradientEnd] = getGradientBackground(props.color);
+
+  const handleClick = () => {
+    if (props.onClick) {
+      props.onClick();
+    }
+  };
 
   return (
     <Card
       elevation={0}
+      onClick={handleClick}
       sx={{
         height: '100%',
         maxHeight: '140px',
@@ -73,6 +96,7 @@ export const StatisticCard = (props) => {
         border: '1px solid',
         borderColor: 'rgba(255, 255, 255, 0.1)',
         boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
+        cursor: props.onClick ? 'pointer' : 'default',
         '&:hover': {
           transform: 'translateY(-2px)',
           boxShadow: '0 6px 24px rgba(0, 0, 0, 0.2)',
