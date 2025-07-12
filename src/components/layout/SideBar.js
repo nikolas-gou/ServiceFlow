@@ -16,6 +16,7 @@ import GroupIcon from '@mui/icons-material/Group';
 import BuildIcon from '@mui/icons-material/Build';
 import SettingsIcon from '@mui/icons-material/Settings';
 import InfoIcon from '@mui/icons-material/Info';
+import CableIcon from '@mui/icons-material/Cable';
 import FeedbackIcon from '@mui/icons-material/Feedback';
 import { styled } from '@mui/material/styles';
 import logo from '../../assets/OIP-removebg-preview-2.png';
@@ -165,9 +166,9 @@ export default function SideBar() {
 
   const settingsItems = [
     {
-      text: 'Ρυθμίσεις',
-      route: '/dashboard/settings',
-      icon: <SettingsIcon sx={{ color: '#b39ddb' }} />,
+      text: 'Συνδέσεις',
+      route: '/dashboard/connections',
+      icon: <CableIcon sx={{ color: '#b39ddb' }} />,
     },
     {
       text: 'Σχετικά',

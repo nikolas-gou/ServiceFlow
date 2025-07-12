@@ -141,4 +141,9 @@ export class StatisticRepository {
     const response = await apiCall(config.server, url, 'GET');
     return response.data || {};
   }
+
+  static async getConnectionismStatistics() {
+    const response = await apiCall(config.server, '/api/statistics/connectionism', 'GET');
+    return response.data || {};
+  }
 }

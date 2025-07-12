@@ -3,6 +3,7 @@ import AnalyticsDashboard from '../components/stats/AnalyticsDashboard';
 import { Typography } from '@mui/material';
 import Overview from '../pages/Overview';
 import CustomersPage from '../pages/CustomersPage';
+import { ConnectionismPage } from '../pages/ConnectionismPage';
 
 export const routes = [
   {
@@ -25,4 +26,5 @@ export const routes = [
     path: '/dashboard/services',
     element: <Typography>services</Typography>,
   },
+  { path: '/dashboard/connections', element: <ConnectionismPage /> },
 ];
