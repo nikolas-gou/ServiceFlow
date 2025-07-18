@@ -8,6 +8,7 @@ import ErrorSnackbar from '../common/ErrorSnackbar';
 import { StatisticRepository } from '../Repositories/StatisticRepository';
 import { StatisticCard } from './parts/StatisticCard';
 import { useErrorSnackbar } from '../../hooks/useErrorSnackbar';
+import { safeStatValue, safeDataArray, getStandardErrorMessage } from '../../utils/errorHandling';
 import {
   calculateTrend,
   formatValue,
@@ -16,29 +17,6 @@ import {
 } from '../../utils/statistics';
 
 ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale);
-
-// Utility για ασφαλή εμφάνιση τιμής ή error
-function safeStatValue(field, fallback = '—') {
-  if (typeof field === 'number' || typeof field === 'string') {
-    return { value: field, isError: false, errorMessage: null };
-  }
-  if (field && typeof field === 'object' && field.error) {
-    return {
-      value: 'Μη διαθέσιμο',
-      isError: true,
-      errorMessage: field.error,
-      errorDetails: field.details,
-    };
-  }
-  return { value: fallback, isError: false, errorMessage: null };
-}
-
-// Utility για ασφαλή data array
-function safeDataArray(field) {
-  if (Array.isArray(field)) return field;
-  if (field && typeof field === 'object' && field.error) return [];
-  return [];
-}
 
 export default function StatisticsCardsCustomer() {
   const location = useLocation();
@@ -84,7 +62,9 @@ export default function StatisticsCardsCustomer() {
     return [
       {
         title: 'Συνολικοί Πελάτες',
-        value: totalCustomersData.value,
+        value: totalCustomersData.isError
+          ? totalCustomersData.value
+          : formatValue(totalCustomersData.value),
         trend: totalCustomersData.isError ? null : customerTrend,
         color: totalCustomersData.isError ? 'error' : 'indigo',
         icon: totalCustomersData.isError ? (
@@ -99,7 +79,7 @@ export default function StatisticsCardsCustomer() {
       },
       {
         title: 'Ιδιώτες Πελάτες',
-        value: individualData.value,
+        value: individualData.isError ? individualData.value : formatValue(individualData.value),
         trend: individualData.isError ? null : individualTrend,
         color: individualData.isError ? 'error' : 'indigo',
         icon: individualData.isError ? <Warning fontSize="small" /> : <Person fontSize="small" />,
@@ -110,7 +90,7 @@ export default function StatisticsCardsCustomer() {
       },
       {
         title: 'Εργοστάσια',
-        value: factoryData.value,
+        value: factoryData.isError ? factoryData.value : formatValue(factoryData.value),
         trend: factoryData.isError ? null : factoryTrend,
         color: factoryData.isError ? 'error' : 'indigo',
         icon: factoryData.isError ? <Warning fontSize="small" /> : <Business fontSize="small" />,
@@ -121,7 +101,9 @@ export default function StatisticsCardsCustomer() {
       },
       {
         title: 'Καλύτερος Πελάτης',
-        value: topCustomer ? topCustomerData.value : '€0',
+        value: topCustomerData.isError
+          ? topCustomerData.value
+          : formatValue(topCustomerData.value, 'currency'),
         trend: null,
         color: topCustomerData.isError ? 'error' : 'indigo',
         icon: topCustomerData.isError ? <Warning fontSize="small" /> : <Euro fontSize="small" />,
@@ -150,7 +132,7 @@ export default function StatisticsCardsCustomer() {
       // Διόρθωση: το StatisticRepository επιστρέφει ήδη τα δεδομένα, όχι response.data
       setStatistics(response || {});
     } catch (err) {
-      console.error('Σφάλμα φόρτωσης στατιστικών πελατών:', err);
+      console.error(getStandardErrorMessage('πελατών', err));
       setStatistics({});
     } finally {
       setLoading(false);
