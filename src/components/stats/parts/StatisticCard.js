@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Card, Typography, Chip, Avatar } from '@mui/material';
+import { Box, Card, Typography, Chip, Avatar, Tooltip } from '@mui/material';
 import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -8,7 +8,7 @@ import {
   LinearScale,
   CategoryScale,
   ArcElement,
-  Tooltip,
+  Tooltip as ChartTooltip,
   Legend,
 } from 'chart.js';
 
@@ -18,7 +18,7 @@ ChartJS.register(
   LinearScale,
   CategoryScale,
   ArcElement,
-  Tooltip,
+  ChartTooltip,
   Legend,
 );
 
@@ -78,7 +78,16 @@ export const StatisticCard = (props) => {
     }
   };
 
-  return (
+  // Δημιουργία tooltip message για errors
+  const getTooltipMessage = () => {
+    if (!props.isError) return '';
+
+    let message = props.errorMessage || 'Σφάλμα φόρτωσης δεδομένων';
+
+    return message;
+  };
+
+  const cardContent = (
     <Card
       elevation={0}
       onClick={handleClick}
@@ -94,23 +103,48 @@ export const StatisticCard = (props) => {
         overflow: 'visible',
         transition: 'all 0.2s ease-in-out',
         border: '1px solid',
-        borderColor: 'rgba(255, 255, 255, 0.1)',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
-        cursor: props.onClick ? 'pointer' : 'default',
+        borderColor: props.isError ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.1)',
+        boxShadow: props.isError
+          ? '0 4px 20px rgba(190, 18, 60, 0.25)'
+          : '0 4px 20px rgba(0, 0, 0, 0.15)',
+        cursor: props.onClick ? 'pointer' : props.isError ? 'help' : 'default',
         '&:hover': {
           transform: 'translateY(-2px)',
-          boxShadow: '0 6px 24px rgba(0, 0, 0, 0.2)',
+          boxShadow: props.isError
+            ? '0 6px 24px rgba(190, 18, 60, 0.35)'
+            : '0 6px 24px rgba(0, 0, 0, 0.2)',
         },
+        // Subtle animation για error cards
+        ...(props.isError && {
+          animation: 'pulse 2s ease-in-out infinite',
+          '@keyframes pulse': {
+            '0%, 100%': {
+              opacity: 1,
+            },
+            '50%': {
+              opacity: 0.95,
+            },
+          },
+        }),
       }}
     >
       <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
         <Avatar
           sx={{
-            bgcolor: 'rgba(255, 255, 255, 0.15)',
+            bgcolor: props.isError ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.15)',
             mr: 1.5,
             width: 32,
             height: 32,
             color: 'white',
+            // Subtle shake animation για error icon
+            ...(props.isError && {
+              animation: 'shake 0.5s ease-in-out',
+              '@keyframes shake': {
+                '0%, 100%': { transform: 'translateX(0)' },
+                '25%': { transform: 'translateX(-2px)' },
+                '75%': { transform: 'translateX(2px)' },
+              },
+            }),
           }}
         >
           {props.icon}
@@ -134,12 +168,13 @@ export const StatisticCard = (props) => {
               lineHeight: 1.1,
               color: 'white',
               fontSize: '1.25rem',
+              opacity: props.isError ? 0.9 : 1,
             }}
           >
             {props.value}
           </Typography>
         </Box>
-        {props.trend && (
+        {props.trend && !props.isError && (
           <Chip
             label={props.trend}
             size="small"
@@ -150,6 +185,24 @@ export const StatisticCard = (props) => {
               height: 20,
               fontSize: '0.7rem',
               px: 0.5,
+              '& .MuiChip-label': {
+                px: 1,
+              },
+            }}
+          />
+        )}
+        {props.isError && (
+          <Chip
+            label="ERROR"
+            size="small"
+            sx={{
+              backgroundColor: 'rgba(255, 255, 255, 0.2)',
+              color: 'white',
+              fontWeight: 600,
+              height: 20,
+              fontSize: '0.6rem',
+              px: 0.5,
+              border: '1px solid rgba(255, 255, 255, 0.3)',
               '& .MuiChip-label': {
                 px: 1,
               },
@@ -175,9 +228,33 @@ export const StatisticCard = (props) => {
                 fontWeight: 600,
                 textAlign: 'center',
                 letterSpacing: '0.5px',
+                opacity: props.isError ? 0.8 : 1,
               }}
             >
               {props.customTitle}
+            </Typography>
+          </Box>
+        ) : props.isError ? (
+          // Error state - δεν εμφανίζουμε chart
+          <Box
+            sx={{
+              height: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              opacity: 0.6,
+            }}
+          >
+            <Typography
+              variant="body2"
+              sx={{
+                color: 'rgba(255, 255, 255, 0.7)',
+                fontSize: '0.75rem',
+                fontStyle: 'italic',
+                textAlign: 'center',
+              }}
+            >
+              Δεδομένα μη διαθέσιμα
             </Typography>
           </Box>
         ) : (
@@ -201,4 +278,28 @@ export const StatisticCard = (props) => {
       </Box>
     </Card>
   );
+
+  // Αν είναι error, τυλίγουμε με Tooltip
+  if (props.isError && getTooltipMessage()) {
+    return (
+      <Tooltip
+        title={getTooltipMessage()}
+        arrow
+        placement="top"
+        sx={{
+          '& .MuiTooltip-tooltip': {
+            backgroundColor: 'rgba(0, 0, 0, 0.9)',
+            color: 'white',
+            fontSize: '0.75rem',
+            maxWidth: 300,
+            whiteSpace: 'pre-line',
+          },
+        }}
+      >
+        {cardContent}
+      </Tooltip>
+    );
+  }
+
+  return cardContent;
 };
