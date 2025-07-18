@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Grid } from '@mui/material';
-import { People, Business, Person, Euro } from '@mui/icons-material';
+import { People, Business, Person, Euro, Warning } from '@mui/icons-material';
 import { Chart as ChartJS, LineElement, PointElement, LinearScale, CategoryScale } from 'chart.js';
 import { useLocation } from 'react-router-dom';
 import LoadingCard from '../common/LoadingCard';
+import ErrorSnackbar from '../common/ErrorSnackbar';
 import { StatisticRepository } from '../Repositories/StatisticRepository';
 import { StatisticCard } from './parts/StatisticCard';
+import { useErrorSnackbar } from '../../hooks/useErrorSnackbar';
 import {
   calculateTrend,
   formatValue,
@@ -15,52 +17,123 @@ import {
 
 ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale);
 
+// Utility για ασφαλή εμφάνιση τιμής ή error
+function safeStatValue(field, fallback = '—') {
+  if (typeof field === 'number' || typeof field === 'string') {
+    return { value: field, isError: false, errorMessage: null };
+  }
+  if (field && typeof field === 'object' && field.error) {
+    return {
+      value: 'Μη διαθέσιμο',
+      isError: true,
+      errorMessage: field.error,
+      errorDetails: field.details,
+    };
+  }
+  return { value: fallback, isError: false, errorMessage: null };
+}
+
+// Utility για ασφαλή data array
+function safeDataArray(field) {
+  if (Array.isArray(field)) return field;
+  if (field && typeof field === 'object' && field.error) return [];
+  return [];
+}
+
 export default function StatisticsCardsCustomer() {
   const location = useLocation();
   const [statistics, setStatistics] = useState({});
   const [loading, setLoading] = useState(true);
 
-  const getStatsConfig = () => {
-    const customerTrend = calculateTrend(statistics.monthlyTrends);
-    const individualTrend = calculateTrend(statistics.customersByTypeAndMonth?.individual);
-    const factoryTrend = calculateTrend(statistics.customersByTypeAndMonth?.factory);
+  // Χρήση του custom hook για error snackbar
+  const { showErrorToast, errorMessage, handleCloseErrorToast } = useErrorSnackbar(
+    statistics,
+    safeStatValue,
+  );
 
-    // Παίρνουμε τον καλύτερο πελάτη
-    const topCustomer = statistics.topCustomersByRevenue?.[0];
+  const getStatsConfig = () => {
+    const customerTrend = calculateTrend(safeDataArray(statistics.trends?.monthlyTrends));
+    const individualTrend = calculateTrend(
+      safeDataArray(statistics.trends?.monthlyIndividualTrends),
+    );
+    const factoryTrend = calculateTrend(safeDataArray(statistics.trends?.monthlyFactoryTrends));
+
+    // Παίρνουμε τον καλύτερο πελάτη - ελέγχουμε πρώτα για error
+    const topCustomersResult = safeStatValue(statistics.topCustomersByRevenue);
+    const topCustomer =
+      !topCustomersResult.isError && Array.isArray(statistics.topCustomersByRevenue)
+        ? statistics.topCustomersByRevenue[0]
+        : null;
+
+    const totalCustomersData = safeStatValue(statistics.totalCustomers);
+    const individualData = safeStatValue(statistics.customerTypes?.individual);
+    const factoryData = safeStatValue(statistics.customerTypes?.factory);
+
+    // Για topCustomer, ελέγχουμε πρώτα αν τα topCustomersByRevenue είχαν error
+    const topCustomerData = topCustomersResult.isError
+      ? {
+          value: 'Μη διαθέσιμο',
+          isError: true,
+          errorMessage: topCustomersResult.errorMessage,
+          errorDetails: topCustomersResult.errorDetails,
+        }
+      : topCustomer
+      ? safeStatValue(topCustomer.totalRevenue, '€0')
+      : { value: '€0', isError: false, errorMessage: null };
 
     return [
       {
         title: 'Συνολικοί Πελάτες',
-        value: formatValue(statistics.totalCustomers),
-        trend: customerTrend,
-        color: 'indigo',
-        icon: <People fontSize="small" />,
-        data: getSafeDataArray(statistics.monthlyTrends),
+        value: totalCustomersData.value,
+        trend: totalCustomersData.isError ? null : customerTrend,
+        color: totalCustomersData.isError ? 'error' : 'indigo',
+        icon: totalCustomersData.isError ? (
+          <Warning fontSize="small" />
+        ) : (
+          <People fontSize="small" />
+        ),
+        data: safeDataArray(statistics.trends?.monthlyTrends),
+        isError: totalCustomersData.isError,
+        errorMessage: totalCustomersData.errorMessage,
+        errorDetails: totalCustomersData.errorDetails,
       },
       {
         title: 'Ιδιώτες Πελάτες',
-        value: formatValue(statistics.customerTypes?.individual),
-        trend: individualTrend,
-        color: 'indigo',
-        icon: <Person fontSize="small" />,
-        data: getSafeDataArray(statistics.customersByTypeAndMonth?.individual),
+        value: individualData.value,
+        trend: individualData.isError ? null : individualTrend,
+        color: individualData.isError ? 'error' : 'indigo',
+        icon: individualData.isError ? <Warning fontSize="small" /> : <Person fontSize="small" />,
+        data: safeDataArray(statistics.trends?.monthlyIndividualTrends),
+        isError: individualData.isError,
+        errorMessage: individualData.errorMessage,
+        errorDetails: individualData.errorDetails,
       },
       {
         title: 'Εργοστάσια',
-        value: formatValue(statistics.customerTypes?.factory),
-        trend: factoryTrend,
-        color: 'indigo',
-        icon: <Business fontSize="small" />,
-        data: getSafeDataArray(statistics.customersByTypeAndMonth?.factory),
+        value: factoryData.value,
+        trend: factoryData.isError ? null : factoryTrend,
+        color: factoryData.isError ? 'error' : 'indigo',
+        icon: factoryData.isError ? <Warning fontSize="small" /> : <Business fontSize="small" />,
+        data: safeDataArray(statistics.trends?.monthlyFactoryTrends),
+        isError: factoryData.isError,
+        errorMessage: factoryData.errorMessage,
+        errorDetails: factoryData.errorDetails,
       },
       {
         title: 'Καλύτερος Πελάτης',
-        value: topCustomer ? formatValue(topCustomer.totalRevenue, 'currency') : '€0',
+        value: topCustomer ? topCustomerData.value : '€0',
         trend: null,
-        color: 'indigo',
-        icon: <Euro fontSize="small" />,
-        data: [topCustomer?.totalRevenue || 0],
+        color: topCustomerData.isError ? 'error' : 'indigo',
+        icon: topCustomerData.isError ? <Warning fontSize="small" /> : <Euro fontSize="small" />,
+        data: [
+          topCustomer && typeof topCustomer.totalRevenue === 'number'
+            ? topCustomer.totalRevenue
+            : 0,
+        ],
         customTitle: topCustomer ? `${topCustomer.name}` : 'Δεν υπάρχουν δεδομένα',
+        isError: topCustomerData.isError,
+        errorMessage: topCustomerData.errorMessage,
+        errorDetails: topCustomerData.errorDetails,
       },
     ];
   };
@@ -101,14 +174,19 @@ export default function StatisticsCardsCustomer() {
   const stats = getStatsConfig();
 
   return (
-    <Box sx={{ p: 1.5, mb: 1.5 }}>
-      <Grid container spacing={2.5}>
-        {stats.map((stat, index) => (
-          <Grid item xs={12} sm={6} md={3} key={index}>
-            <StatisticCard {...stat} />
-          </Grid>
-        ))}
-      </Grid>
-    </Box>
+    <>
+      <Box sx={{ p: 1.5, mb: 1.5 }}>
+        <Grid container spacing={2.5}>
+          {stats.map((stat, index) => (
+            <Grid item xs={12} sm={6} md={3} key={index}>
+              <StatisticCard {...stat} />
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
+
+      {/* Error Snackbar */}
+      <ErrorSnackbar open={showErrorToast} message={errorMessage} onClose={handleCloseErrorToast} />
+    </>
   );
 }
