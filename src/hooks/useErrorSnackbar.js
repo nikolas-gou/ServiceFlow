@@ -19,8 +19,54 @@ export function useErrorSnackbar(statistics, safeStatValue) {
     let errors = 0;
     let total = 0;
 
-    // Για customer statistics
-    if (statistics.totalCustomers !== undefined) {
+    // Έλεγχος αν είναι dashboard data (nested structure)
+    if (statistics.customer || statistics.motor || statistics.repair || statistics.revenue) {
+      // Dashboard data structure - ελέγχουμε κάθε section
+      const sections = ['customer', 'motor', 'repair', 'revenue'];
+
+      sections.forEach((sectionName) => {
+        const section = statistics[sectionName];
+        if (section && typeof section === 'object') {
+          // Ελέγχουμε αν ολόκληρο το section είναι error
+          const sectionResult = safeStatValue(section);
+          if (sectionResult.isError) {
+            total++;
+            errors++;
+          } else {
+            // Ελέγχουμε κάθε field μέσα στο section (recursive για nested objects)
+            const checkFields = (obj, depth = 0) => {
+              if (depth > 2) return; // Αποφυγή infinite recursion
+
+              Object.values(obj).forEach((field) => {
+                if (field !== undefined && field !== null) {
+                  if (typeof field === 'object' && !Array.isArray(field)) {
+                    // Nested object - ελέγχουμε αν είναι error ή συνεχίζουμε recursive
+                    const result = safeStatValue(field);
+                    if (result.isError) {
+                      total++;
+                      errors++;
+                    } else {
+                      // Συνεχίζουμε recursively
+                      checkFields(field, depth + 1);
+                    }
+                  } else {
+                    // Primitive value ή array
+                    total++;
+                    const result = safeStatValue(field);
+                    if (result.isError) errors++;
+                  }
+                }
+              });
+            };
+
+            checkFields(section);
+          }
+        }
+      });
+    }
+
+    // Για customer statistics (direct structure)
+    else if (statistics.totalCustomers !== undefined) {
       const customerFields = [
         statistics.totalCustomers,
         statistics.customerTypes?.individual,
