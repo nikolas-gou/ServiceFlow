@@ -1,4 +1,5 @@
 // Γενικές βοηθητικές συναρτήσεις για στατιστικά και κάρτες
+import { safeDataArray } from './errorHandling';
 
 /**
  * Υπολογίζει το trend (ποσοστιαία μεταβολή) μεταξύ των δύο τελευταίων τιμών ενός πίνακα.
@@ -71,3 +72,31 @@ export function getSafeDataArray(data, fallback = [0, 0, 0, 0, 0]) {
     value === undefined || value === null || isNaN(value) ? 0 : Number(value),
   );
 }
+
+/**
+ * Generate monthly data for charts
+ */
+export const generateMonthlyData = (data, chartData = null) => {
+  const safeData = safeDataArray(data);
+
+  // Χρήση των μηνών από το backend αν υπάρχουν
+  const allMonths = chartData?.labels || [];
+
+  if (safeData.length === 0) {
+    // Χρήση του πλήθους μηνών από το backend ή fallback σε 7
+    const monthCount = chartData?.totalMonths || 7;
+    return {
+      labels: allMonths.slice(0, monthCount),
+      values: new Array(monthCount).fill(0),
+    };
+  }
+
+  // Χρήση του πλήθους μηνών από το backend ή fallback στο μήκος των δεδομένων
+  const monthCount = chartData?.totalMonths || Math.min(safeData.length, 12);
+  const labels = allMonths.slice(0, monthCount);
+
+  return {
+    labels,
+    values: safeData.slice(0, monthCount),
+  };
+};
