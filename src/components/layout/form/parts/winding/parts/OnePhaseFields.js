@@ -1,7 +1,8 @@
 import React from 'react';
-import { TextField, Grid } from '@mui/material';
+import { Grid } from '@mui/material';
 import StepField from './StepField';
 import { CrossSectionField } from './CrossSectionField';
+import { StyledTextField } from '../../../../../common/StyledFormComponents';
 
 export const OnePhaseFields = (props) => {
   return (
@@ -17,7 +18,7 @@ export const OnePhaseFields = (props) => {
       </Grid>
       <Grid item xs={12} sm={4}>
         {/* spiral */}
-        <TextField
+        <StyledTextField
           fullWidth
           label={props.spiral_label}
           name={props.spiral_name}

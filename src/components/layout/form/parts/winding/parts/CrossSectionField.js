@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { Autocomplete, TextField, Chip, Box, Typography, Grid } from '@mui/material';
+import { Chip, Box, Typography, Grid } from '@mui/material';
+import { StyledTextField, StyledAutocomplete } from '../../../../../common/StyledFormComponents';
 
 export const CrossSectionField = (props) => {
+  // to-do
   const crossSections = [
     '5/10',
     '5.3/10',
@@ -100,23 +102,23 @@ export const CrossSectionField = (props) => {
   };
 
   const getDisplayValue = () => {
-    const links = props.repair?.motor?.motorCrossSectionLinks || [];
-    if (links.length === 0) return '';
-
-    // Φιλτράρουμε μόνο τα links που ανήκουν στον συγκεκριμένο τύπο
-    const filteredLinks = links.filter((link) => link.type === props.cross_section_type);
+    // Φιλτράρουμε τα links ανάλογα με τον τύπο
+    const filteredLinks = (props.repair?.motor?.motorCrossSectionLinks || []).filter(
+      (link) => link.type === props.cross_section_type,
+    );
 
     if (filteredLinks.length === 0) return '';
 
+    // Ομαδοποίηση και μέτρηση
     const grouped = filteredLinks.reduce((acc, link) => {
-      const section = link.crossSection;
-      acc[section] = (acc[section] || 0) + 1;
+      acc[link.crossSection] = (acc[link.crossSection] || 0) + 1;
       return acc;
     }, {});
 
+    // Δημιουργία display string
     return Object.entries(grouped)
-      .map(([section, count]) => (count > 1 ? `${count}x ${section}` : section))
-      .join(' + ');
+      .map(([section, count]) => (count > 1 ? `${count}x${section}` : section))
+      .join(', ');
   };
 
   // Φιλτράρουμε τα links ανάλογα με τον τύπο
@@ -125,9 +127,9 @@ export const CrossSectionField = (props) => {
   );
 
   return (
-    <Grid container spacing={2} sx={props.sx && props.sx}>
+    <Grid container spacing={2.5} sx={props.sx && props.sx}>
       <Grid item xs={12} sm={12}>
-        <Autocomplete
+        <StyledAutocomplete
           freeSolo
           key={selectedLinks.length} // Force re-render to clear input
           options={crossSections}
@@ -139,7 +141,7 @@ export const CrossSectionField = (props) => {
             const validationMessage = getValidationMessage(currentInput);
 
             return (
-              <TextField
+              <StyledTextField
                 {...params}
                 fullWidth
                 name={props.cross_section_name}
@@ -150,15 +152,6 @@ export const CrossSectionField = (props) => {
                   validationMessage || 'Επιλέξτε ή πληκτρολογήστε διατομή και πατήστε Enter'
                 }
                 error={!isValid}
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    '&.Mui-error': {
-                      '& fieldset': {
-                        borderColor: 'error.main',
-                      },
-                    },
-                  },
-                }}
               />
             );
           }}

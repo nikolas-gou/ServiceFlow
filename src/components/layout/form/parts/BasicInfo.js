@@ -1,17 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Grid,
-  Autocomplete,
-  TextField,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-} from '@mui/material';
+import { Grid, InputLabel, Select, MenuItem } from '@mui/material';
 import { Customer } from '../../../Models/Customer';
 import { CustomerRepository } from '../../../Repositories/CustomerRepository';
 import { MotorRepository } from '../../../Repositories/MotorRepository';
 import { typeOfMotor, typeOfMotor_translated } from '../../../Models/Motor';
+import {
+  StyledTextField,
+  StyledAutocomplete,
+  StyledFormControl,
+} from '../../../common/StyledFormComponents';
 
 export const BasicInfo = (props) => {
   const [customers, setCustomers] = useState([]);
@@ -96,15 +93,15 @@ export const BasicInfo = (props) => {
   };
 
   return (
-    <Grid container spacing={3}>
+    <Grid container spacing={2.5}>
       <Grid item xs={12} sm={6}>
-        <Autocomplete
+        <StyledAutocomplete
           freeSolo
           options={customers.map((customer) => customer.name) || []}
           value={props.repair.customer?.name || ''}
           onChange={handleCustomerChange}
           renderInput={(params) => (
-            <TextField
+            <StyledTextField
               {...params}
               required
               label="Πελάτης"
@@ -118,7 +115,7 @@ export const BasicInfo = (props) => {
         />
       </Grid>
       <Grid item xs={12} sm={6}>
-        <FormControl fullWidth>
+        <StyledFormControl fullWidth>
           <InputLabel id="type-select-label">Τύπος</InputLabel>
           <Select
             labelId="type-select-label"
@@ -131,10 +128,10 @@ export const BasicInfo = (props) => {
             <MenuItem value="individual">Ιδιώτης</MenuItem>
             <MenuItem value="factory">Εργοστάσιο</MenuItem>
           </Select>
-        </FormControl>
+        </StyledFormControl>
       </Grid>
       <Grid item xs={12} sm={6}>
-        <TextField
+        <StyledTextField
           fullWidth
           label="Τηλέφωνο"
           name="customer.phone"
@@ -146,7 +143,7 @@ export const BasicInfo = (props) => {
         />
       </Grid>
       <Grid item xs={12} sm={6}>
-        <TextField
+        <StyledTextField
           fullWidth
           label="Email"
           name="customer.email"
@@ -156,13 +153,13 @@ export const BasicInfo = (props) => {
         />
       </Grid>
       <Grid item xs={12} sm={6}>
-        <Autocomplete
+        <StyledAutocomplete
           freeSolo
           options={motorBrands || []}
           value={props.repair.motor?.manufacturer || ''}
           onChange={handleManufacturerChange}
           renderInput={(params) => (
-            <TextField
+            <StyledTextField
               {...params}
               required
               label="Μάρκα"
@@ -176,7 +173,7 @@ export const BasicInfo = (props) => {
         />
       </Grid>
       <Grid item xs={12} sm={6}>
-        <FormControl fullWidth>
+        <StyledFormControl fullWidth>
           <InputLabel id="type-select-label">Τύπος Κινητήρα</InputLabel>
           <Select
             labelId="type-select-label"
@@ -194,10 +191,10 @@ export const BasicInfo = (props) => {
               );
             })}
           </Select>
-        </FormControl>
+        </StyledFormControl>
       </Grid>
       <Grid item xs={12} sm={6}>
-        <TextField
+        <StyledTextField
           fullWidth
           label="Ημερομηνία Παραλαβής"
           name="isArrived"

@@ -4,11 +4,9 @@ import {
   IconButton,
   Popover,
   Paper,
-  FormControl,
   InputLabel,
   Select,
   MenuItem,
-  TextField,
   Button,
   Typography,
   Chip,
@@ -18,6 +16,7 @@ import {
   InputAdornment,
 } from '@mui/material';
 import { FilterList as FilterIcon, Clear as ClearIcon } from '@mui/icons-material';
+import { StyledFormControl, StyledTextField } from '../../../common/StyledFormComponents';
 
 const FilterButton = styled(IconButton)(({ theme, hasFilters }) => ({
   backgroundColor: hasFilters ? '#e3f2fd' : '#f3f4f6',
@@ -153,7 +152,7 @@ export default function CustomerFilter({ customers, onFiltersChange }) {
 
           <Stack spacing={2}>
             {/* Type Filter */}
-            <FormControl fullWidth size="small">
+            <StyledFormControl fullWidth size="small">
               <InputLabel>Τύπος</InputLabel>
               <Select
                 value={filters.type}
@@ -183,10 +182,10 @@ export default function CustomerFilter({ customers, onFiltersChange }) {
                   </MenuItem>
                 ))}
               </Select>
-            </FormControl>
+            </StyledFormControl>
 
             {/* Email Filter */}
-            <TextField
+            <StyledTextField
               size="small"
               label="Email"
               value={filters.email}

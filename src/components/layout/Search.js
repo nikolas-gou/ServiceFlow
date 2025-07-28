@@ -1,10 +1,11 @@
 import React from 'react';
-import { TextField, InputAdornment, Box, IconButton } from '@mui/material';
+import { InputAdornment, Box, IconButton } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useSearch } from '../../context/SearchContext';
 import Filter from './parts/tools/Filter';
 import CustomerFilter from './parts/tools/CustomerFilter';
+import { StyledTextField } from '../common/StyledFormComponents';
 
 export default function Search(props) {
   const { searchQuery, setSearchQuery } = useSearch();
@@ -27,7 +28,7 @@ export default function Search(props) {
       <Box flexGrow={1} />
 
       {/* Search Field */}
-      <TextField
+      <StyledTextField
         variant="outlined"
         placeholder={
           showCustomerFilter ? 'Όνομα, email, τηλέφωνο...' : 'Μάρκα, kw, hp, πελάτης, S/N...'
@@ -35,38 +36,6 @@ export default function Search(props) {
         size="small"
         value={searchQuery}
         onChange={handleSearchChange}
-        sx={{
-          background: 'rgba(255,255,255,0.75)',
-          borderRadius: '12px',
-          minWidth: 280,
-          boxShadow: '0 2px 12px rgba(30,60,114,0.08)',
-          backdropFilter: 'blur(6px)',
-          '& .MuiOutlinedInput-root': {
-            fontSize: 15,
-            height: 44,
-            '& fieldset': {
-              borderColor: '#e0e0e0',
-              transition: 'all 0.2s',
-            },
-            '&:hover fieldset': {
-              borderColor: '#bdbdbd',
-            },
-            '&.Mui-focused fieldset': {
-              borderColor: '#1976d2',
-              boxShadow: '0 0 0 3px rgba(25, 118, 210, 0.08)',
-            },
-            '& input': {
-              color: '#333333',
-              fontWeight: 500,
-              '&::placeholder': {
-                color: '#757575',
-                opacity: 1,
-                fontWeight: 400,
-                fontSize: 15,
-              },
-            },
-          },
-        }}
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">

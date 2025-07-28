@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Grid, TextField, Typography, Box, Button } from '@mui/material';
+import { Grid, Typography, Box, Button } from '@mui/material';
 import { common_faults, common_faults_translated } from '../../../Models/CommonFault';
+import { StyledTextField } from '../../../common/StyledFormComponents';
 
 export const Issues = (props) => {
   const [selectedFault, setSelectedFault] = useState([]);
@@ -44,7 +45,7 @@ export const Issues = (props) => {
     }
   };
   return (
-    <Grid container spacing={3}>
+    <Grid container spacing={2.5}>
       <Grid item xs={12}>
         <Typography variant="subtitle2" gutterBottom>
           Συχνές βλάβες:
@@ -64,7 +65,7 @@ export const Issues = (props) => {
         </Box>
       </Grid>
       <Grid item xs={12}>
-        <TextField
+        <StyledTextField
           fullWidth
           label="Περιγραφή Βλάβης"
           name="description"

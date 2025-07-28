@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Grid, Autocomplete } from '@mui/material';
+import { Grid } from '@mui/material';
+import { StyledTextField, StyledAutocomplete } from '../../../../../common/StyledFormComponents';
 
 function StepField(props) {
   const [stepError, setStepError] = useState('');
@@ -45,16 +46,16 @@ function StepField(props) {
 
   return (
     // sx pb  3 mono se sundiasmo
-    <Grid container spacing={2} sx={props.sx && props.sx}>
+    <Grid container spacing={2.5} sx={props.sx && props.sx}>
       <Grid item xs={12} sm={12}>
-        <Autocomplete
+        <StyledAutocomplete
           freeSolo
           options={stepSuggestions || []}
           name={props.step_name}
           value={props.step_value || ''}
           onChange={handleStepChange}
           renderInput={(params) => (
-            <TextField
+            <StyledTextField
               {...params}
               label={props.step_label}
               name={props.step_name}

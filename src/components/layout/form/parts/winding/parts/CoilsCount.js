@@ -1,5 +1,6 @@
 import React from 'react';
-import { TextField, Grid, Autocomplete } from '@mui/material';
+import { Grid } from '@mui/material';
+import { StyledTextField, StyledAutocomplete } from '../../../../../common/StyledFormComponents';
 
 function CoilsCount(props) {
   // Προτεινόμενες τιμές για coils count
@@ -18,16 +19,16 @@ function CoilsCount(props) {
   };
 
   return (
-    <Grid container spacing={2} sx={props.sx && props.sx}>
+    <Grid container spacing={2.5} sx={props.sx && props.sx}>
       <Grid item xs={12} sm={12}>
-        <Autocomplete
+        <StyledAutocomplete
           freeSolo
           options={coilsCountOptions || []}
           value={props.value}
           getOptionLabel={(option) => option.toString()}
           onChange={handleCoilsCountChange}
           renderInput={(params) => (
-            <TextField
+            <StyledTextField
               {...params}
               fullWidth
               label={props.label}

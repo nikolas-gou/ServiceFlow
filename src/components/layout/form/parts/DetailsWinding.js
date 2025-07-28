@@ -1,14 +1,15 @@
 import React from 'react';
-import { Grid, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { Grid, InputLabel, Select, MenuItem } from '@mui/material';
 import WindingsContentFields from './WindingsContentFields';
 import TypeOfStepField from './TypeOfStepField';
 import { typeOfVolt, typeOfVolt_translated } from '../../../Models/Motor';
+import { StyledFormControl } from '../../../common/StyledFormComponents';
 
 export const DetailsWinding = (props) => {
   return (
-    <Grid container spacing={3}>
+    <Grid container spacing={2.5}>
       <Grid item xs={12} sm={6}>
-        <FormControl fullWidth>
+        <StyledFormControl fullWidth>
           <InputLabel>Φάσεις Κινητήρα</InputLabel>
           <Select
             name="motor.typeOfVolt"
@@ -25,7 +26,7 @@ export const DetailsWinding = (props) => {
               );
             })}
           </Select>
-        </FormControl>
+        </StyledFormControl>
       </Grid>
       {/* template motor fields (step, spiral, crossSection) */}
       <Grid item xs={12} sm={6}>

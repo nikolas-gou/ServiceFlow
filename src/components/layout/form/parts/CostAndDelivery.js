@@ -1,11 +1,12 @@
 import React from 'react';
-import { Grid, TextField } from '@mui/material';
+import { Grid } from '@mui/material';
+import { StyledTextField } from '../../../common/StyledFormComponents';
 
 export const CostAndDelivery = (props) => {
   return (
-    <Grid container spacing={3}>
+    <Grid container spacing={2.5}>
       <Grid item xs={12} sm={6}>
-        <TextField
+        <StyledTextField
           fullWidth
           required
           label="Εκτιμώμενο Κόστος (€)"
@@ -19,7 +20,7 @@ export const CostAndDelivery = (props) => {
         />
       </Grid>
       <Grid item xs={12} sm={6}>
-        <TextField
+        <StyledTextField
           fullWidth
           label="Εκτιμώμενη Ημερομηνία Παράδοσης"
           name="estimatedIsComplete"

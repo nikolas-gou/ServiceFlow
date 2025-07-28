@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Grid, Autocomplete } from '@mui/material';
+import { Grid, Autocomplete } from '@mui/material';
 import { CrossSectionField } from './CrossSectionField';
 import StepField from './StepField';
 import CoilsCount from './CoilsCount'; // Ενημερωμένο import
+import { StyledTextField } from '../../../../../common/StyledFormComponents';
 
 function ThreePhaseFields(props) {
   return (
     // sx pb  3 mono se sundiasmo
-    <Grid container spacing={2} sx={props.sx && props.sx}>
+    <Grid container spacing={2.5} sx={props.sx && props.sx}>
       <Grid item xs={12} sm={6}>
         <StepField
           step_label={props.step_label}
@@ -27,7 +28,7 @@ function ThreePhaseFields(props) {
       </Grid>
       <Grid item xs={12} sm={6}>
         {/* spiral */}
-        <TextField
+        <StyledTextField
           fullWidth
           label={props.spiral_label}
           name={props.spiral_name}

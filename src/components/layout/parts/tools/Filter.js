@@ -24,6 +24,7 @@ import {
 } from '@mui/icons-material';
 
 import { volt_types, volt_types_mapping } from '../../../Models/Motor';
+import { StyledFormControl } from '../../../common/StyledFormComponents';
 
 const FilterButton = styled(IconButton)(({ theme, hasFilters }) => ({
   background: hasFilters
@@ -258,7 +259,7 @@ export default function Filter({ repairs, filteredRepairs, onFiltersChange }) {
 
           <Stack spacing={2}>
             {/* Manufacturer Filter */}
-            <FormControl fullWidth size="small">
+            <StyledFormControl fullWidth size="small">
               <InputLabel>Μάρκα</InputLabel>
               <StyledSelect
                 value={filters.manufacturer}
@@ -283,10 +284,10 @@ export default function Filter({ repairs, filteredRepairs, onFiltersChange }) {
                   </MenuItem>
                 ))}
               </StyledSelect>
-            </FormControl>
+            </StyledFormControl>
 
             {/* Status Filter */}
-            <FormControl fullWidth size="small">
+            <StyledFormControl fullWidth size="small">
               <InputLabel>Κατάσταση</InputLabel>
               <StyledSelect
                 value={filters.status}
@@ -300,10 +301,10 @@ export default function Filter({ repairs, filteredRepairs, onFiltersChange }) {
                   </MenuItem>
                 ))}
               </StyledSelect>
-            </FormControl>
+            </StyledFormControl>
 
             {/* Volt Type Filter */}
-            <FormControl fullWidth size="small">
+            <StyledFormControl fullWidth size="small">
               <InputLabel>Τάση</InputLabel>
               <StyledSelect
                 value={filters.voltType}
@@ -317,7 +318,7 @@ export default function Filter({ repairs, filteredRepairs, onFiltersChange }) {
                   </MenuItem>
                 ))}
               </StyledSelect>
-            </FormControl>
+            </StyledFormControl>
 
             {/* kW Range Filter */}
             <Box sx={{ display: 'flex', gap: 2 }}>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, TextField, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { Grid, InputLabel, Select, MenuItem } from '@mui/material';
 import {
   connectionism_types,
   connectionism_types_translated,
@@ -10,12 +10,13 @@ import {
   poles_types,
   poles_types_translated,
 } from '../../../Models/Motor';
+import { StyledTextField, StyledFormControl } from '../../../common/StyledFormComponents';
 
 export const TechnicalCharacteristics = (props) => {
   return (
-    <Grid container spacing={3}>
+    <Grid container spacing={2.5}>
       <Grid item xs={12} sm={6}>
-        <TextField
+        <StyledTextField
           fullWidth
           label="Serial Number"
           name="motor.serialNumber"
@@ -26,7 +27,7 @@ export const TechnicalCharacteristics = (props) => {
         />
       </Grid>
       <Grid item xs={12} sm={6}>
-        <FormControl fullWidth>
+        <StyledFormControl fullWidth>
           <InputLabel>Τάση (volt)</InputLabel>
           <Select
             name="motor.volt"
@@ -43,10 +44,10 @@ export const TechnicalCharacteristics = (props) => {
               );
             })}
           </Select>
-        </FormControl>
+        </StyledFormControl>
       </Grid>
       <Grid item xs={12} sm={6}>
-        <TextField
+        <StyledTextField
           fullWidth
           label="Ισχύς (kW)"
           name="motor.kw"
@@ -57,7 +58,7 @@ export const TechnicalCharacteristics = (props) => {
         />
       </Grid>
       <Grid item xs={12} sm={6}>
-        <TextField
+        <StyledTextField
           fullWidth
           label="Ισχύς (HP)"
           name="motor.hp"
@@ -68,7 +69,7 @@ export const TechnicalCharacteristics = (props) => {
         />
       </Grid>
       <Grid item xs={12} sm={6}>
-        <FormControl fullWidth>
+        <StyledFormControl fullWidth>
           <InputLabel>Σύνδεση</InputLabel>
           <Select
             name="motor.connectionism"
@@ -85,10 +86,10 @@ export const TechnicalCharacteristics = (props) => {
               );
             })}
           </Select>
-        </FormControl>
+        </StyledFormControl>
       </Grid>
       <Grid item xs={12} sm={6}>
-        <FormControl fullWidth>
+        <StyledFormControl fullWidth>
           <InputLabel>Στροφές (rpm)</InputLabel>
           <Select
             name="motor.rpm"
@@ -105,10 +106,10 @@ export const TechnicalCharacteristics = (props) => {
               );
             })}
           </Select>
-        </FormControl>
+        </StyledFormControl>
       </Grid>
       <Grid item xs={12} sm={6}>
-        <FormControl fullWidth>
+        <StyledFormControl fullWidth>
           <InputLabel>Πόλοι</InputLabel>
           <Select
             name="motor.poles"
@@ -125,7 +126,7 @@ export const TechnicalCharacteristics = (props) => {
               );
             })}
           </Select>
-        </FormControl>
+        </StyledFormControl>
       </Grid>
     </Grid>
   );

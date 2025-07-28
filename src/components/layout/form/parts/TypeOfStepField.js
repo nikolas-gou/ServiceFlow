@@ -1,10 +1,11 @@
 import React from 'react';
-import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { InputLabel, Select, MenuItem } from '@mui/material';
 import { typeOfStep, typeOfStep_translated } from '../../../Models/Motor';
+import { StyledFormControl } from '../../../common/StyledFormComponents';
 
 function TypeOfStepField(props) {
   return (
-    <FormControl fullWidth>
+    <StyledFormControl fullWidth>
       <InputLabel id="type-select-label">Τύπος Βήματος</InputLabel>
       <Select
         labelId="type-select-label"
@@ -22,7 +23,7 @@ function TypeOfStepField(props) {
           );
         })}
       </Select>
-    </FormControl>
+    </StyledFormControl>
   );
 }
 
