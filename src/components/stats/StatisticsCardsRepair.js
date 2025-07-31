@@ -12,7 +12,6 @@ import {
 import { Chart as ChartJS, LineElement, PointElement, LinearScale, CategoryScale } from 'chart.js';
 import { useLocation } from 'react-router-dom';
 import LoadingCard from '../common/LoadingCard';
-import ErrorSnackbar from '../common/ErrorSnackbar';
 import { StatisticRepository } from '../Repositories/StatisticRepository';
 import { StatisticCard } from './parts/StatisticCard';
 import { useErrorSnackbar } from '../../hooks/useErrorSnackbar';
@@ -23,6 +22,7 @@ import {
   getSafeDataArray,
   getTrendColor,
 } from '../../utils/statistics';
+import StyledSnackbar from '../common/StyledSnackbar';
 
 ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale);
 
@@ -144,7 +144,15 @@ export default function StatisticsCardsRepair() {
       </Box>
 
       {/* Error Snackbar */}
-      <ErrorSnackbar open={showErrorToast} message={errorMessage} onClose={handleCloseErrorToast} />
+      <StyledSnackbar
+        open={showErrorToast}
+        onClose={handleCloseErrorToast}
+        severity="error"
+        title="Σφάλμα"
+        message={errorMessage}
+        autoHideDuration={6000}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      />
     </>
   );
 }

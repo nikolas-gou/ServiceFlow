@@ -5,7 +5,6 @@ import { StatisticRepository } from '../Repositories/StatisticRepository';
 import { CustomerStatisticsModal } from './CustomerStatisticsModal';
 import { MotorStatisticsModal } from './MotorStatisticsModal';
 import LoadingCard from '../common/LoadingCard';
-import ErrorSnackbar from '../common/ErrorSnackbar';
 import { useErrorSnackbar } from '../../hooks/useErrorSnackbar';
 import { getStandardErrorMessage, safeStatValue } from '../../utils/errorHandling';
 import { AnalyticsCard } from './parts/AnalyticsCard';
@@ -13,6 +12,7 @@ import { AllCategoryCards } from './cards/AllCategoryCards';
 import { MotorCardsData } from './cards/MotorCardsData';
 import { CustomerCardsData } from './cards/CustomerCardsData';
 import { RepairCardsData } from './cards/RepairCardsData';
+import StyledSnackbar from '../common/StyledSnackbar';
 
 // Styled Components
 const StyledTabs = styled(Tabs)(({ theme }) => ({
@@ -149,22 +149,7 @@ export default function AnalyticsDashboard() {
   // Render content based on active tab
   const renderTabContent = () => {
     if (loading) {
-      return (
-        <Box
-          sx={{
-            textAlign: 'center',
-            py: 8,
-            background: 'linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)',
-            borderRadius: 4,
-            border: '1px solid rgba(0,0,0,0.08)',
-          }}
-        >
-          <CircularProgress size={60} thickness={4} />
-          <Typography variant="h6" sx={{ mt: 2, color: 'text.secondary' }}>
-            Φόρτωση αναλυτικών στοιχείων...
-          </Typography>
-        </Box>
-      );
+      return <LoadingCard />;
     }
 
     const filteredCards = getCardsForActiveTab();
@@ -231,7 +216,15 @@ export default function AnalyticsDashboard() {
       <TabContent>{renderTabContent()}</TabContent>
 
       {/* Error Snackbar */}
-      <ErrorSnackbar open={showErrorToast} message={errorMessage} onClose={handleCloseErrorToast} />
+      <StyledSnackbar
+        open={showErrorToast}
+        onClose={handleCloseErrorToast}
+        severity="error"
+        title="Σφάλμα"
+        message={errorMessage}
+        autoHideDuration={6000}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      />
     </Box>
   );
 }

@@ -28,10 +28,10 @@ import {
   CategoryScale,
 } from 'chart.js';
 
-import ErrorSnackbar from '../common/ErrorSnackbar';
 import { useErrorSnackbar } from '../../hooks/useErrorSnackbar';
 import { safeStatValue, safeDataArray, getStandardErrorMessage } from '../../utils/errorHandling';
 import { formatValue } from '../../utils/statistics';
+import StyledSnackbar from '../common/StyledSnackbar';
 
 ChartJS.register(
   ArcElement,
@@ -569,7 +569,15 @@ export const CustomerStatisticsModal = ({ open = false, statistics, onClose }) =
       </Box>
 
       {/* Error Snackbar */}
-      <ErrorSnackbar open={showErrorToast} message={errorMessage} onClose={handleCloseErrorToast} />
+      <StyledSnackbar
+        open={showErrorToast}
+        onClose={handleCloseErrorToast}
+        severity="error"
+        title="Σφάλμα"
+        message={errorMessage}
+        autoHideDuration={6000}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      />
     </Box>
   );
 };
