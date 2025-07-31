@@ -69,8 +69,9 @@ export const Issues = (props) => {
           fullWidth
           label="Περιγραφή Βλάβης"
           name="description"
-          multiline
-          rows={6}
+          multiline={true}
+          isMultiline={true}
+          rows={4}
           variant="outlined"
           value={props.repair.description || ''}
           onChange={props.handleInputChange}

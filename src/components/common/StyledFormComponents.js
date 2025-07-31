@@ -3,13 +3,16 @@ import { TextField, Autocomplete, FormControl } from '@mui/material';
 
 // Shared Styled Components για Form Elements
 
-export const StyledTextField = styled(TextField)(({ theme, size = 'medium' }) => ({
+export const StyledTextField = styled(TextField, {
+  shouldForwardProp: (prop) => prop !== 'isMultiline',
+})(({ theme, size = 'medium', isMultiline }) => ({
   '& .MuiOutlinedInput-root': {
     borderRadius: '12px',
     backgroundColor: 'rgba(255, 255, 255, 0.8)',
     backdropFilter: 'blur(10px)',
     transition: 'all 0.3s ease',
-    height: size === 'small' ? '40px' : '56px',
+    // Δεν θέτουμε height για multiline fields
+    ...(isMultiline ? {} : { height: size === 'small' ? '40px' : '56px' }),
     '& fieldset': {
       borderColor: 'rgba(25, 118, 210, 0.2)',
       borderWidth: '1px',
@@ -43,7 +46,8 @@ export const StyledTextField = styled(TextField)(({ theme, size = 'medium' }) =>
   '& .MuiOutlinedInput-input': {
     padding: size === 'small' ? '8px 14px' : '16px',
     fontSize: size === 'small' ? '0.875rem' : '0.95rem',
-    height: size === 'small' ? '24px' : '24px',
+    // Δεν θέτουμε height για multiline fields
+    ...(isMultiline ? {} : { height: size === 'small' ? '24px' : '24px' }),
     '&::placeholder': {
       color: 'rgba(84, 110, 122, 0.6)',
       opacity: 1,
