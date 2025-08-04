@@ -11,6 +11,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import InfoIcon from '@mui/icons-material/Info';
 import FeedbackIcon from '@mui/icons-material/Feedback';
 import DashboardIcon from '@mui/icons-material/Dashboard';
+import CableIcon from '@mui/icons-material/Cable';
 
 const StyledBreadcrumbs = styled(MuiBreadcrumbs)(({ theme }) => ({
   '& .MuiBreadcrumbs-separator': {
@@ -86,6 +87,10 @@ const pathMap = {
   services: {
     label: 'Επισκευές',
     icon: <BuildIcon sx={{ color: '#ffb74d' }} />,
+  },
+  connections: {
+    label: 'Συνδέσεις',
+    icon: <CableIcon sx={{ color: '#b39ddb' }} />,
   },
   settings: {
     label: 'Ρυθμίσεις',
