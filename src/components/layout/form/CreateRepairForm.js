@@ -262,7 +262,7 @@ function CreateRepairForm(props) {
           [parent]: {
             ...prev[parent],
             hp: processedValue,
-            kw: (parseFloat(processedValue) * 0.745699872).toFixed(2), // Μετατροπή hp σε kw
+            kw: processedValue > 0 ? (parseFloat(processedValue) * 0.745699872).toFixed(2) : null, // Μετατροπή hp σε kw
           },
         }));
       } else if (child === 'kw') {
@@ -272,7 +272,7 @@ function CreateRepairForm(props) {
           [parent]: {
             ...prev[parent],
             kw: processedValue,
-            hp: (parseFloat(processedValue) / 0.745699872).toFixed(2), // Μετατροπή kw σε hp
+            hp: processedValue > 0 ? (parseFloat(processedValue) / 0.745699872).toFixed(2) : null, // Μετατροπή kw σε hp
           },
         }));
       } else {
