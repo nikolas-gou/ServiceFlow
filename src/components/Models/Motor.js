@@ -162,3 +162,21 @@ export function getMotorTypeString(motor) {
   if (!volt || !step) return '';
   return `${volt}-${step}`;
 }
+
+// Helper function για cross sections
+export const getMotorCrossSectionsByType = (motor, types) => {
+  if (!motor || !motor.motorCrossSectionLinks) {
+    return [];
+  }
+
+  return motor.motorCrossSectionLinks
+    .filter((link) => types.includes(link.type))
+    .map((link) => link.crossSection)
+    .filter((crossSection) => crossSection !== null && crossSection !== undefined);
+};
+
+// Helper function για σωστή εμφάνιση διατομών
+export const formatCrossSections = (arr) => {
+  if (!arr || arr.length === 0) return '-';
+  return arr.join(' + ');
+};
