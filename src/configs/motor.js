@@ -3,11 +3,10 @@ import { Settings, Tune } from '@mui/icons-material';
 import { getMotorCrossSectionsByType, formatCrossSections } from '../components/Models/Motor';
 
 /**
- * Περιέχει πληροφορίες για την εμφάνιση των στοιχείων περιέλιξης του κινητήρα
- * ανάλογα με τον τύπο του κινητήρα (τριφασικός, μονοφασικός, κλπ.)
+ * It contains specific configs that are different based on the motor type.
  *
- * @param {Object} motor - Το αντικείμενο κινητήρα με όλα τα τεχνικά χαρακτηριστικά
- * @returns {Object} - Χάρτης διαμόρφωσης για κάθε τύπο κινητήρα
+ * @param {Object} motor - The Motor object
+ * @returns {Object} - All configurations for the motor
  */
 export const getWindingConfigMap = (motor) => ({
   // Τριφασικός κινητήρας - κανονική περιέλιξη (ολόκληρο)
@@ -181,3 +180,26 @@ export const getWindingConfigMap = (motor) => ({
     },
   },
 });
+
+/**
+ * @description A function to get the configuration for the motor based on the type of motor.
+ * @param {Object} motor - The Motor object
+ * @param {string} typeString - The type of motor
+ * @returns {Object} - The configuration for the motor. for example half||step, spiral, crossSection, color, icon, etc.
+ */
+export const getWindingConfigMapByType = (motor, typeString) => {
+  switch (typeString) {
+    case '3-phase-standard':
+      return getWindingConfigMap(motor)['3-phase-standard'];
+    case '3-phase-half':
+      return getWindingConfigMap(motor)['3-phase-half'];
+    case '3-phase-combined':
+      return getWindingConfigMap(motor)['3-phase-combined'];
+    case '1-phase-standard':
+      return getWindingConfigMap(motor)['1-phase-standard'];
+    case '1-phase-half':
+      return getWindingConfigMap(motor)['1-phase-half'];
+    case '1-phase-combined':
+      return getWindingConfigMap(motor)['1-phase-combined'];
+  }
+};
