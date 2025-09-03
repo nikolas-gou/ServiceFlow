@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
-import { Chip, Box, Typography, Grid } from '@mui/material';
-import { StyledTextField, StyledAutocomplete } from '../../../../../common/StyledFormComponents';
+import React from 'react';
+import { Autocomplete, TextField, Chip, Box, Typography, Grid } from '@mui/material';
 
 export const CrossSectionField = (props) => {
-  // to-do
+  // to-do: θ φτιαξω απο το back να ερχονατι τα 5 πιο συχνα cross..  αλλα και ολα που εχουνε προστεθει
   const crossSections = [
     '5/10',
     '5.3/10',
@@ -27,14 +26,14 @@ export const CrossSectionField = (props) => {
     '25/10',
   ];
 
-  // Regex για validation - μόνο το format: Χ/ΧΧ ή Χ.Χ/ΧΧ
+  // Regex για validation - μόνο το format: Χ/10 ή Χ.Χ/10
   const validateCrossSectionPattern = (value) => {
     // Patterns που δεχόμαστε:
-    // 1. Χ/ΧΧ (π.χ. 5/10, 12/10)
-    // 2. Χ.Χ/ΧΧ (π.χ. 5.3/10, 12.5/10)
+    // 1. Χ/10 (π.χ. 5/10, 12/10)
+    // 2. Χ.Χ/10 (π.χ. 5.3/10, 12.5/10)
     const patterns = [
-      /^\d+\/\d{1,2}$/, // 5/10, 12/10
-      /^\d+\.\d+\/\d{1,2}$/, // 5.3/10, 12.5/10
+      /^\d+\/10$/, // 5/10, 12/10
+      /^\d+\.\d+\/10$/, // 5.3/10, 12.5/10
     ];
 
     return patterns.some((pattern) => pattern.test(value));
@@ -102,23 +101,23 @@ export const CrossSectionField = (props) => {
   };
 
   const getDisplayValue = () => {
-    // Φιλτράρουμε τα links ανάλογα με τον τύπο
-    const filteredLinks = (props.repair?.motor?.motorCrossSectionLinks || []).filter(
-      (link) => link.type === props.cross_section_type,
-    );
+    const links = props.repair?.motor?.motorCrossSectionLinks || [];
+    if (links.length === 0) return '';
+
+    // Φιλτράρουμε μόνο τα links που ανήκουν στον συγκεκριμένο τύπο
+    const filteredLinks = links.filter((link) => link.type === props.cross_section_type);
 
     if (filteredLinks.length === 0) return '';
 
-    // Ομαδοποίηση και μέτρηση
     const grouped = filteredLinks.reduce((acc, link) => {
-      acc[link.crossSection] = (acc[link.crossSection] || 0) + 1;
+      const section = link.crossSection;
+      acc[section] = (acc[section] || 0) + 1;
       return acc;
     }, {});
 
-    // Δημιουργία display string
     return Object.entries(grouped)
-      .map(([section, count]) => (count > 1 ? `${count}x${section}` : section))
-      .join(', ');
+      .map(([section, count]) => (count > 1 ? `${count}x ${section}` : section))
+      .join(' + ');
   };
 
   // Φιλτράρουμε τα links ανάλογα με τον τύπο
@@ -127,9 +126,9 @@ export const CrossSectionField = (props) => {
   );
 
   return (
-    <Grid container spacing={2.5} sx={props.sx && props.sx}>
+    <Grid container spacing={2} sx={props.sx && props.sx}>
       <Grid item xs={12} sm={12}>
-        <StyledAutocomplete
+        <Autocomplete
           freeSolo
           key={selectedLinks.length} // Force re-render to clear input
           options={crossSections}
@@ -141,7 +140,7 @@ export const CrossSectionField = (props) => {
             const validationMessage = getValidationMessage(currentInput);
 
             return (
-              <StyledTextField
+              <TextField
                 {...params}
                 fullWidth
                 name={props.cross_section_name}
@@ -152,6 +151,15 @@ export const CrossSectionField = (props) => {
                   validationMessage || 'Επιλέξτε ή πληκτρολογήστε διατομή και πατήστε Enter'
                 }
                 error={!isValid}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    '&.Mui-error': {
+                      '& fieldset': {
+                        borderColor: 'error.main',
+                      },
+                    },
+                  },
+                }}
               />
             );
           }}
