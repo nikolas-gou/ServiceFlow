@@ -56,28 +56,18 @@ const commonStyles = {
 
 export const CardDescription = (props) => {
   return (
-    <MainCard sx={{ mt: 2, background: 'linear-gradient(145deg, #e3f2fd 0%, #bbdefb 100%)' }}>
-      <CardContent sx={{ p: 3 }}>
-        <Box sx={{ ...commonStyles.headerContainer, mb: 2 }}>
-          <Avatar sx={{ bgcolor: 'info.main', width: 40, height: 40 }}>
-            <Info sx={{ fontSize: 20 }} />
-          </Avatar>
-          <Typography variant="h6" color="info.main" fontWeight="bold">
-            Περιγραφή Επισκευής
+    <>
+      <Typography variant="body1" sx={{ lineHeight: 1.6, color: 'text.primary' }}>
+        {props.repair.description}
+      </Typography>
+      {props.repair.notes && (
+        <>
+          <Divider sx={{ my: 2 }} />
+          <Typography variant="body1" sx={{ fontStyle: 'italic', color: 'text.secondary' }}>
+            <strong>Σημειώσεις:</strong> {props.repair.notes}
           </Typography>
-        </Box>
-        <Typography variant="body1" sx={{ lineHeight: 1.6, color: 'text.primary' }}>
-          {props.repair.description}
-        </Typography>
-        {props.repair.notes && (
-          <>
-            <Divider sx={{ my: 2 }} />
-            <Typography variant="body1" sx={{ fontStyle: 'italic', color: 'text.secondary' }}>
-              <strong>Σημειώσεις:</strong> {props.repair.notes}
-            </Typography>
-          </>
-        )}
-      </CardContent>
-    </MainCard>
+        </>
+      )}
+    </>
   );
 };
