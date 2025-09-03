@@ -154,7 +154,11 @@ export const repairStatus_mapping = {
   cancelled: 'Ακυρώθηκε',
 };
 
-// Returns a string like '1-phase-standard', '3-phase-half', etc. based on the motor object
+/**
+ * @param {οbject} motor - Motor object
+ * @returns {string} A string like '1-phase-standard', '3-phase-half', etc.
+ * @notes Based on the typeOfVolt and typeOfStep of the motor.
+ */
 export function getMotorTypeString(motor) {
   if (!motor) return '';
   const volt = motor.typeOfVolt || '';
