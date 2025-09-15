@@ -1,17 +1,35 @@
 import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Box, Fab } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import SideBar from './SideBar';
 import TopAppBar from './TopAppBar';
 import { ModalRepairForm } from './form/parts/ModalRepairForm';
+import { ModalConnectionForm } from './form/parts/ModalConnectionForm';
 
 const drawerWidth = 250;
 
 const Layout = (props) => {
   const [openModal, setOpenModal] = useState(false);
+  const location = useLocation();
+  const [root, parent, child] = location.pathname.split('/');
 
   const handleOpenModal = () => {
     setOpenModal(true);
+  };
+
+  const typeOfModal = () => {
+    if (
+      child == 'overview' ||
+      child == 'analytics' ||
+      child == 'customers' ||
+      child == 'services'
+    ) {
+      return 'repair';
+    }
+    if (child == 'connections') {
+      return 'connection';
+    }
   };
 
   return (
@@ -101,12 +119,22 @@ const Layout = (props) => {
         </Fab>
 
         {/* Modal for the form */}
-        <ModalRepairForm
-          open={openModal}
-          onClose={() => setOpenModal(false)}
-          repair={null}
-          isEdit={false}
-        />
+        {typeOfModal() == 'repair' && (
+          <ModalRepairForm
+            open={openModal}
+            onClose={() => setOpenModal(false)}
+            repair={null}
+            isEdit={false}
+          />
+        )}
+        {typeOfModal() == 'connection' && (
+          <ModalConnectionForm
+            open={openModal}
+            onClose={() => setOpenModal(false)}
+            connection={null}
+            isEdit={false}
+          />
+        )}
       </Box>
     </Box>
   );
