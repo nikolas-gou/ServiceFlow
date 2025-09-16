@@ -98,6 +98,7 @@ export const CardHeader = (props) => {
       { label: `${rpm_types_mapping[props.repair.motor.rpm] || 1490}RPM` },
       { label: `${poles_types_mapping[props.repair.motor.poles]}P` || 0 },
       { label: volt_types_mapping[props.repair.motor.volt] || props.repair.motor.volt || '-' },
+      { label: `${props.repair.motor.amps || 0} Αμπέρ` },
       {
         label:
           typeOfVolt_mapping[props.repair.motor.typeOfVolt] || props.repair.motor.typeOfVolt || '-',

@@ -22,6 +22,7 @@ export class Motor {
     this.helperHalfCrossSection = data.helperHalfCrossSection || null;
     this.connectionism = data.connectionism || 'simple';
     this.volt = data.volt || '380VY';
+    this.amps = data.amps || null;
     this.poles = data.poles || '6';
     this.coilsCount = data.coilsCount || 1;
     this.halfCoilsCount = data.halfCoilsCount || 1;
@@ -63,6 +64,7 @@ export class Motor {
       helperHalfCrossSection: this.helperHalfCrossSection,
       connectionism: this.connectionism,
       volt: this.volt,
+      amps: this.amps,
       poles: this.poles,
       coilsCount: this.coilsCount,
       halfCoilsCount: this.halfCoilsCount,

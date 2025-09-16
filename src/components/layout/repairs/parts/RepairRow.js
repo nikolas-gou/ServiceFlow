@@ -128,6 +128,11 @@ export const RepairRow = ({ repair, onView, onEdit, onDelete, zebra }) => {
         </CompactTableCell>
         <CompactTableCell>
           <Typography variant="caption" fontSize="0.75rem">
+            {motor.amps ? motor.amps : '-'}
+          </Typography>
+        </CompactTableCell>
+        <CompactTableCell>
+          <Typography variant="caption" fontSize="0.75rem">
             {typeOfVolt_mapping[motor.typeOfVolt] && typeOfStep_mapping[motor.typeOfStep] ? (
               <>
                 {typeOfVolt_mapping[motor.typeOfVolt]} (
@@ -143,7 +148,7 @@ export const RepairRow = ({ repair, onView, onEdit, onDelete, zebra }) => {
             {typeOfMotor_mapping[motor.typeOfMotor] || '-'}
           </Typography>
         </CompactTableCell>
-        <CompactTableCell>
+        {/* <CompactTableCell>
           <Chip
             label={repairStatus_mapping[repair.repairStatus]}
             color={chipColor}
@@ -152,7 +157,7 @@ export const RepairRow = ({ repair, onView, onEdit, onDelete, zebra }) => {
             variant="filled"
             sx={{ fontWeight: 600, minWidth: 90 }}
           />
-        </CompactTableCell>
+        </CompactTableCell> */}
         <CompactTableCell>
           <Typography variant="caption" color="text.secondary" fontSize="0.7rem">
             {repair.isArrived || '-'}

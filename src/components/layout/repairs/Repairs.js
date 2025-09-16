@@ -198,9 +198,10 @@ export default function Repairs() {
               <CompactTableCell>kW</CompactTableCell>
               <CompactTableCell>hp</CompactTableCell>
               <CompactTableCell>Τάση</CompactTableCell>
+              <CompactTableCell>Αμπέρ</CompactTableCell>
               <CompactTableCell>Φάσεις</CompactTableCell>
               <CompactTableCell>Τύπος</CompactTableCell>
-              <CompactTableCell>Κατάσταση</CompactTableCell>
+              {/* <CompactTableCell>Κατάσταση</CompactTableCell> */}
               <CompactTableCell>Παραλαβή</CompactTableCell>
               <CompactTableCell width="50px">Προβολή</CompactTableCell>
             </TableRow>

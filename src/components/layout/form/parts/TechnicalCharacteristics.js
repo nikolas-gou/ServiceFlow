@@ -49,44 +49,13 @@ export const TechnicalCharacteristics = (props) => {
       <Grid item xs={12} sm={6}>
         <StyledTextField
           fullWidth
-          label="Ισχύς (kW)"
-          name="motor.kw"
+          label="Αμπέρ"
+          name="motor.amps"
           type="number"
           variant="outlined"
-          value={props.repair.motor?.kw || ''}
+          value={props.repair.motor?.amps || ''}
           onChange={props.handleInputChange}
         />
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        <StyledTextField
-          fullWidth
-          label="Ισχύς (HP)"
-          name="motor.hp"
-          type="number"
-          variant="outlined"
-          value={props.repair.motor?.hp || ''}
-          onChange={props.handleInputChange}
-        />
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        <StyledFormControl fullWidth>
-          <InputLabel>Σύνδεση</InputLabel>
-          <Select
-            name="motor.connectionism"
-            value={props.repair.motor?.connectionism || ''}
-            label="Σύνδεση"
-            onChange={props.handleInputChange}
-          >
-            {connectionism_types.map((type, index) => {
-              // * ενα converter για translated
-              return (
-                <MenuItem key={type} value={type.toLowerCase()}>
-                  {connectionism_types_translated[index]}
-                </MenuItem>
-              );
-            })}
-          </Select>
-        </StyledFormControl>
       </Grid>
       <Grid item xs={12} sm={6}>
         <StyledFormControl fullWidth>
@@ -109,6 +78,28 @@ export const TechnicalCharacteristics = (props) => {
         </StyledFormControl>
       </Grid>
       <Grid item xs={12} sm={6}>
+        <StyledTextField
+          fullWidth
+          label="Ισχύς (kW)"
+          name="motor.kw"
+          type="number"
+          variant="outlined"
+          value={props.repair.motor?.kw || ''}
+          onChange={props.handleInputChange}
+        />
+      </Grid>
+      <Grid item xs={12} sm={6}>
+        <StyledTextField
+          fullWidth
+          label="Ισχύς (HP)"
+          name="motor.hp"
+          type="number"
+          variant="outlined"
+          value={props.repair.motor?.hp || ''}
+          onChange={props.handleInputChange}
+        />
+      </Grid>
+      <Grid item xs={12} sm={6}>
         <StyledFormControl fullWidth>
           <InputLabel>Πόλοι</InputLabel>
           <Select
@@ -122,6 +113,26 @@ export const TechnicalCharacteristics = (props) => {
               return (
                 <MenuItem key={type} value={type}>
                   {poles_types_translated[index]}
+                </MenuItem>
+              );
+            })}
+          </Select>
+        </StyledFormControl>
+      </Grid>
+      <Grid item xs={12} sm={6}>
+        <StyledFormControl fullWidth>
+          <InputLabel>Σύνδεση</InputLabel>
+          <Select
+            name="motor.connectionism"
+            value={props.repair.motor?.connectionism || ''}
+            label="Σύνδεση"
+            onChange={props.handleInputChange}
+          >
+            {connectionism_types.map((type, index) => {
+              // * ενα converter για translated
+              return (
+                <MenuItem key={type} value={type.toLowerCase()}>
+                  {connectionism_types_translated[index]}
                 </MenuItem>
               );
             })}
