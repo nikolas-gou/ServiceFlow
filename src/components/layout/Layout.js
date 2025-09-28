@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Box, Fab } from '@mui/material';
+import { Box, Fab, useMediaQuery } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import SideBar from './SideBar';
+import SideBar from './sidebar/SideBar';
 import TopAppBar from './TopAppBar';
 import { ModalRepairForm } from './form/parts/ModalRepairForm';
 import { ModalConnectionForm } from './form/parts/ModalConnectionForm';
@@ -11,11 +11,43 @@ const drawerWidth = 250;
 
 const Layout = (props) => {
   const [openModal, setOpenModal] = useState(false);
+  const [tabletOpen, setTabletOpen] = useState(false);
   const location = useLocation();
   const [root, parent, child] = location.pathname.split('/');
+  // Ο σκοπος μου ειναι πχ σε 13αρι λαπτοπ να ειναι στα ορια απο εκει και κατω να κλεινει(κυριως για χρηση tablet)
+  const isLargeScreen = useMediaQuery('(min-width: 1366px)');
 
   const handleOpenModal = () => {
     setOpenModal(true);
+  };
+
+  const handleTabletToggle = () => {
+    setTabletOpen(!tabletOpen);
+  };
+
+  const renderSidebar = () => {
+    if (!isLargeScreen) {
+      return (
+        <>
+          <SideBar
+            tabletOpen={tabletOpen}
+            isLargeScreen={isLargeScreen}
+            onClose={handleTabletToggle}
+          />
+        </>
+      );
+    }
+    return (
+      <Box
+        sx={{
+          width: drawerWidth,
+          minWidth: drawerWidth,
+          flexShrink: 0,
+        }}
+      >
+        <SideBar isLargeScreen={isLargeScreen} onClose={handleTabletToggle} />
+      </Box>
+    );
   };
 
   const typeOfModal = () => {
@@ -41,15 +73,7 @@ const Layout = (props) => {
       }}
     >
       {/* Sidebar */}
-      <Box
-        sx={{
-          width: drawerWidth,
-          minWidth: drawerWidth,
-          flexShrink: 0,
-        }}
-      >
-        <SideBar />
-      </Box>
+      {renderSidebar()}
 
       {/* Main content */}
       <Box
@@ -61,7 +85,7 @@ const Layout = (props) => {
           position: 'relative',
         }}
       >
-        <TopAppBar />
+        <TopAppBar onMenuClick={handleTabletToggle} isLargeScreen={isLargeScreen} />
         {/* Scrollable Content */}
         <Box
           sx={{

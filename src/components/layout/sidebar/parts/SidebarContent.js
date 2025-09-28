@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
-  Drawer,
   List,
   ListItemButton,
   ListItemIcon,
@@ -14,24 +13,11 @@ import HomeIcon from '@mui/icons-material/Home';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import GroupIcon from '@mui/icons-material/Group';
 import BuildIcon from '@mui/icons-material/Build';
-import SettingsIcon from '@mui/icons-material/Settings';
 import InfoIcon from '@mui/icons-material/Info';
 import CableIcon from '@mui/icons-material/Cable';
 import FeedbackIcon from '@mui/icons-material/Feedback';
 import { styled } from '@mui/material/styles';
-import logo from '../../assets/OIP-removebg-preview-2.png';
-
-const drawerWidth = 250;
-
-const StyledDrawer = styled(Drawer)(({ theme }) => ({
-  '& .MuiDrawer-paper': {
-    width: drawerWidth,
-    background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
-    borderRight: 'none',
-    boxShadow: '4px 0 24px rgba(0, 0, 0, 0.15)',
-    color: 'white',
-  },
-}));
+import logo from '../../../../assets/OIP-removebg-preview-2.png';
 
 const LogoContainer = styled(Box)(({ theme }) => ({
   textAlign: 'center',
@@ -133,11 +119,15 @@ const StyledDivider = styled(Divider)({
   height: '1px',
 });
 
-export default function SideBar() {
+export default function SidebarContent({ tabletOpen, onClose }) {
   const navigate = useNavigate();
   const location = useLocation();
 
   const handleListItemClick = (event, route) => {
+    if (tabletOpen && onClose) {
+      // non-desktop version
+      onClose();
+    }
     navigate(route);
   };
 
@@ -183,7 +173,7 @@ export default function SideBar() {
   ];
 
   return (
-    <StyledDrawer variant="permanent" anchor="left">
+    <>
       <LogoContainer>
         <StyledLogo src={logo} alt="logo" />
         <Typography
@@ -210,7 +200,6 @@ export default function SideBar() {
           Service Flow
         </Typography>
       </LogoContainer>
-
       <List>
         {menuItems.map((item) => (
           <StyledListItem
@@ -223,9 +212,7 @@ export default function SideBar() {
           </StyledListItem>
         ))}
       </List>
-
       <StyledDivider />
-
       <List>
         {settingsItems.map((item) => (
           <StyledListItem
@@ -238,8 +225,7 @@ export default function SideBar() {
           </StyledListItem>
         ))}
       </List>
-
       <FooterText>© 2025 Nikolaos Gkouziotis. All rights reserved.</FooterText>
-    </StyledDrawer>
+    </>
   );
 }
