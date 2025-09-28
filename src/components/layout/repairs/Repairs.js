@@ -194,6 +194,7 @@ export default function Repairs() {
             <TableRow>
               <CompactTableCell>S/N</CompactTableCell>
               <CompactTableCell>Πελάτης</CompactTableCell>
+              <CompactTableCell>Περιγραφή Κινητήρα</CompactTableCell>
               <CompactTableCell>Μάρκα</CompactTableCell>
               <CompactTableCell>kW</CompactTableCell>
               <CompactTableCell>hp</CompactTableCell>

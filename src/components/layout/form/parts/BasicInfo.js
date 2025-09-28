@@ -14,6 +14,17 @@ export const BasicInfo = (props) => {
   const [customers, setCustomers] = useState([]);
   const [motorBrands, setMotorBrands] = useState([]);
 
+  const commonTitlesOfMotor = [
+    'Ανεμιστήρας',
+    'Γερανός',
+    'Υπ. Αντλία',
+    'Κώνικο',
+    'Ρότορας',
+    'Στάτης',
+    'Κονφλέρ',
+    'Χλωοκοπτικό',
+  ];
+
   // Αρχικοποίηση των δεδομένων φόρμας
   useEffect(() => {
     loadCustomers();
@@ -69,6 +80,28 @@ export const BasicInfo = (props) => {
       props.setErrors((prev) => ({
         ...prev,
         ['customer.name']: null,
+      }));
+    }
+  };
+
+  const handleAutocompleteChange = (event, newValue) => {
+    const id = event.target.getAttribute('id') || '';
+
+    if (id && id.includes('motor.description')) {
+      props.setRepair((prev) => ({
+        ...prev,
+        motor: {
+          ...prev.motor,
+          description: newValue,
+        },
+      }));
+    }
+
+    // Καθαρισμός τυχόν σφαλμάτων
+    if (props.errors['motor.description']) {
+      props.setErrors((prev) => ({
+        ...prev,
+        ['motor.description']: null,
       }));
     }
   };
@@ -150,6 +183,30 @@ export const BasicInfo = (props) => {
           variant="outlined"
           value={props.repair.customer?.email || ''}
           onChange={props.handleInputChange}
+        />
+      </Grid>
+      <Grid item xs={12} sm={6}>
+        <StyledAutocomplete
+          freeSolo
+          id="motor.description"
+          key="motor.description"
+          data-field="motor-description"
+          options={commonTitlesOfMotor || []}
+          value={props.repair.motor?.description || ''}
+          onChange={handleAutocompleteChange}
+          renderInput={(params, option) => (
+            <StyledTextField
+              {...params}
+              key="motor.description"
+              label="Περιγραφή Κινητήρα"
+              placeholder="π.χ. Ανεμιστήρας, Κωνικό 2 Ταχ/των"
+              name="motor.description"
+              variant="outlined"
+              onChange={(e) => props.handleInputChange(e)}
+              error={props.hasError('motor.description')}
+              helperText={props.getErrorMessage('motor.description')}
+            />
+          )}
         />
       </Grid>
       <Grid item xs={12} sm={6}>

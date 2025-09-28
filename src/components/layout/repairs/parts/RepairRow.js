@@ -108,6 +108,11 @@ export const RepairRow = ({ repair, onView, onEdit, onDelete, zebra }) => {
         </CompactTableCell>
         <CompactTableCell>
           <Typography variant="body2" fontSize="0.8rem">
+            {motor.description || '-'}
+          </Typography>
+        </CompactTableCell>
+        <CompactTableCell>
+          <Typography variant="body2" fontSize="0.8rem">
             {motor.manufacturer || '-'}
           </Typography>
         </CompactTableCell>

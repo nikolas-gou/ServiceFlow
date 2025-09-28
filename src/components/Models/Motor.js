@@ -4,6 +4,7 @@ export class Motor {
   constructor(data = {}) {
     this.id = data.id || null;
     this.serialNumber = data.serialNumber || null;
+    this.description = data.description || null;
     this.manufacturer = data.manufacturer || '';
     this.kw = data.kw || null;
     this.hp = data.hp || null;
@@ -46,6 +47,7 @@ export class Motor {
     return {
       id: this.id,
       serialNumber: this.serialNumber,
+      description: this.description,
       manufacturer: this.manufacturer,
       kw: this.kw,
       hp: this.hp,
