@@ -1,5 +1,5 @@
 const config = {
-  server: 'http://localhost:8000',
+  server: 'http://192.168.2.8:8000', // server: 'http://localhost:8000',
   dateFormat: 'el-GR',
 };
 
