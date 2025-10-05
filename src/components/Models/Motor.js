@@ -1,4 +1,5 @@
 import { MotorCrossSectionLinks } from './MotorCrossSectionLinks';
+import { Image } from './Image';
 
 export class Motor {
   constructor(data = {}) {
@@ -17,10 +18,6 @@ export class Motor {
     this.halfSpiral = data.halfSpiral || null;
     this.helperSpiral = data.helperSpiral || null;
     this.helperHalfSpiral = data.helperHalfSpiral || null;
-    this.crossSection = data.crossSection || null;
-    this.halfCrossSection = data.halfCrossSection || null;
-    this.helperCrossSection = data.helperCrossSection || null;
-    this.helperHalfCrossSection = data.helperHalfCrossSection || null;
     this.connectionism = data.connectionism || 'simple';
     this.volt = data.volt || '380VY';
     this.amps = data.amps || null;
@@ -60,10 +57,6 @@ export class Motor {
       halfSpiral: this.halfSpiral,
       helperSpiral: this.helperSpiral,
       helperHalfSpiral: this.helperHalfSpiral,
-      crossSection: this.crossSection,
-      halfCrossSection: this.halfCrossSection,
-      helperCrossSection: this.helperCrossSection,
-      helperHalfCrossSection: this.helperHalfCrossSection,
       connectionism: this.connectionism,
       volt: this.volt,
       amps: this.amps,
