@@ -1,5 +1,4 @@
 import { MotorCrossSectionLinks } from './MotorCrossSectionLinks';
-import { Image } from './Image';
 
 export class Motor {
   constructor(data = {}) {
