@@ -6,10 +6,14 @@ export default function apiCall(host, endpoint = '/', reqMethod = 'get', data = 
     method: reqMethod,
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json',
     },
     mode: 'cors',
   };
+
+  // Προσθήκη Content-Type μόνο αν δεν είναι FormData
+  if (!(data instanceof FormData)) {
+    reqData.headers['Content-Type'] = 'application/json';
+  }
 
   /**
    * Fill in additional headers
@@ -24,10 +28,14 @@ export default function apiCall(host, endpoint = '/', reqMethod = 'get', data = 
    * Merge reqdata with options
    */
   if (Object.keys(options).length === 0) {
-    if (reqMethod === 'POST') reqData['body'] = JSON.stringify(data);
-    if (reqMethod === 'PATCH') reqData['body'] = JSON.stringify(data);
-    if (reqMethod === 'PUT') reqData['body'] = JSON.stringify(data);
-    if (reqMethod === 'DELETE') reqData['body'] = JSON.stringify(data);
+    if (data instanceof FormData) {
+      reqData['body'] = data;
+    } else {
+      if (reqMethod === 'POST') reqData['body'] = JSON.stringify(data);
+      if (reqMethod === 'PATCH') reqData['body'] = JSON.stringify(data);
+      if (reqMethod === 'PUT') reqData['body'] = JSON.stringify(data);
+      if (reqMethod === 'DELETE') reqData['body'] = JSON.stringify(data);
+    }
   } else {
     reqData['body'] = data;
   }
