@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Grid, Typography } from '@mui/material';
-import { Memory, Info, Person, Build } from '@mui/icons-material';
+import { Memory, Info, Person, Build, CameraAlt } from '@mui/icons-material';
 
 import { getMotorTypeString } from '../../Models/Motor';
 import { CardCustomer } from './CardCustomer';
@@ -8,6 +8,7 @@ import { CardRepair } from './CardRepair';
 import { CardDescription } from './CardDescription';
 import { CardHeader } from './CardHeader';
 import { CardConnectionism } from './CardConnectionism';
+import { CardPhotos } from './CardPhotos';
 import MainCardWrapper from '../../common/card/MainCardWrapper';
 import BoxInfoDisplay from '../../common/box/main/EnhancedMotorRepairDisplay/BoxInfoDisplay';
 import SplitBoxInfoDisplay from '../../common/box/main/EnhancedMotorRepairDisplay/SplitBoxInfoDisplay';
@@ -93,6 +94,13 @@ function EnhancedMotorRepairDisplay({ repair }) {
               mt={2}
             >
               <CardDescription repair={repair} />
+            </MainCardWrapper>
+          )}
+
+          {/* Photos Card */}
+          {repair.images && repair.images.length > 0 && (
+            <MainCardWrapper icon={<CameraAlt sx={{ fontSize: 18 }} />} title="Φωτογραφίες" mt={2}>
+              <CardPhotos repair={repair} />
             </MainCardWrapper>
           )}
         </Grid>
