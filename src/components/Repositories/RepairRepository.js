@@ -10,6 +10,11 @@ export class RepairRepository {
     return data;
   }
 
+  static async getRepairById(repairId) {
+    const response = await apiCall(config.server, `/api/repairs/${repairId}`, 'GET');
+    return response.data || {};
+  }
+
   static async getStats() {
     const response = await apiCall(config.server, '/api/statsOfRepair', 'GET');
     return response.data || {};
