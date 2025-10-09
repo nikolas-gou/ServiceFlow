@@ -24,10 +24,13 @@ import { TechnicalCharacteristics } from './parts/TechnicalCharacteristics';
 import { DetailsWinding } from './parts/DetailsWinding';
 import { Issues } from './parts/Issues';
 import { CostAndDelivery } from './parts/CostAndDelivery';
+import Photos from './parts/Photos';
 import { useRepairs } from '../../../context/RepairsContext';
 import StyledSnackbar from '../../common/StyledSnackbar';
 import StyledButton from '../../common/StyledButton';
 import LoadingSave from '../../common/LoadingSave';
+import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
+import { ImageRepository } from '../../Repositories/ImageRepository';
 
 // Styled Components
 const FormContainer = styled(Box)(({ theme }) => ({
@@ -364,7 +367,7 @@ function CreateRepairForm(props) {
 
   const handleNextStep = () => {
     if (validateCurrentTab()) {
-      if (tabValue < 4) {
+      if (tabValue < 5) {
         setTabValue(tabValue + 1);
       } else {
         handleSubmit();
@@ -403,23 +406,23 @@ function CreateRepairForm(props) {
     }
   };
 
-  // Φόρτωση πελατών από το repository
   const createNewRepair = async (dataApi) => {
     try {
-      const response = await RepairRepository.createNewRepair({
-        repair: dataApi,
-        customer: dataApi.customer,
-        motor: dataApi.motor,
-      });
+      // Δημιουργία Repair
+      const response = await RepairRepository.createNewRepair({ repair: dataApi });
 
-      // Βεβαιώνουμε ότι το response είναι object και όχι array
-      if (Array.isArray(response)) {
-        setRepair(response[0] || {});
-        addRepair(response[0] || {});
-      } else {
-        setRepair(response || {});
-        addRepair(response || {});
+      // Upload φωτογραφιών - Αν υπάρχουν
+      if (dataApi.images?.length > 0) {
+        const filesToUpload = dataApi.images.map((image) => image.file);
+
+        await ImageRepository.uploadImages(filesToUpload, response.id);
       }
+      // 3. Fetch το repair ΞΑΝΑ για να πάρουμε τις φωτογραφίες
+      const updatedRepair = await RepairRepository.getRepairById(response.id);
+
+      // Προσθήκη στο state και context με τις φωτογραφίες
+      setRepair(updatedRepair);
+      addRepair(updatedRepair);
     } catch (err) {
       console.error('Σφάλμα Δημιουργίας Επισκευής:', err);
       throw err; // Re-throw για τη διαχείριση στο handleSubmit
@@ -427,8 +430,8 @@ function CreateRepairForm(props) {
   };
 
   // Τίτλος κουμπιού ανάλογα με την καρτέλα
-  const buttonText = tabValue === 4 ? 'Αποθήκευση' : 'Επόμενο Βήμα';
-  const buttonIcon = tabValue === 4 ? <SaveIcon /> : <NavigateNextIcon />;
+  const buttonText = tabValue === 5 ? 'Αποθήκευση' : 'Επόμενο Βήμα';
+  const buttonIcon = tabValue === 5 ? <SaveIcon /> : <NavigateNextIcon />;
 
   // Έλεγχος σφαλμάτων για κάθε πεδίο
   const hasError = (fieldName) => Boolean(errors[fieldName]);
@@ -439,6 +442,7 @@ function CreateRepairForm(props) {
     'Τεχνικά Χαρακτηριστικά',
     'Στοιχεία Κινητήρα',
     'Περιγραφή Βλάβης',
+    'Φωτογραφίες',
     'Κόστος & Παράδοση',
   ];
 
@@ -448,6 +452,7 @@ function CreateRepairForm(props) {
     SettingsIcon, // Τεχνικά Χαρακτηριστικά
     ElectricBoltIcon, // Στοιχεία Κινητήρα
     BugReportIcon, // Περιγραφή Βλάβης
+    AddAPhotoIcon, // Φωτογραφίες
     EuroIcon, // Κόστος & Παράδοση
   ];
 
@@ -591,7 +596,7 @@ function CreateRepairForm(props) {
             )}
           </TabContent>
 
-          {/* Tab 5: Κόστος & Παράδοση */}
+          {/* Tab 5: Φωτογραφίες */}
           <TabContent
             hidden={tabValue !== 4}
             sx={{
@@ -600,7 +605,19 @@ function CreateRepairForm(props) {
               transition: 'all 0.3s ease',
             }}
           >
-            {tabValue === 4 && (
+            {tabValue === 4 && <Photos repair={repair} setRepair={setRepair} />}
+          </TabContent>
+
+          {/* Tab 6: Κόστος & Παράδοση */}
+          <TabContent
+            hidden={tabValue !== 5}
+            sx={{
+              transform: tabValue === 5 ? 'translateX(0)' : 'translateX(20px)',
+              opacity: tabValue === 5 ? 1 : 0,
+              transition: 'all 0.3s ease',
+            }}
+          >
+            {tabValue === 5 && (
               <CostAndDelivery
                 repair={repair}
                 handleInputChange={handleInputChange}
