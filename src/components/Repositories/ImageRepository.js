@@ -20,7 +20,7 @@ export class ImageRepository {
         formData,
       );
 
-      return response.map((imageData) => new Image(imageData));
+      return response.data.map((imageData) => new Image(imageData));
     } catch (error) {
       console.error('Σφάλμα κατά το ανέβασμα των εικόνων:', error);
       throw error;
