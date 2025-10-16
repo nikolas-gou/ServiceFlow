@@ -15,7 +15,7 @@ export class ImageRepository {
       // Το endpoint θα αποθηκεύσει τις φωτογραφίες στο /public/uploads/repairs/[repairId]/
       const response = await apiCall(
         config.server,
-        `/api/images/batch/${repairID}`,
+        `/api/images/upload/${repairID}`,
         'POST',
         formData,
       );
