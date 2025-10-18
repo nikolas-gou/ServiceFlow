@@ -3,9 +3,21 @@ import { TextField, Autocomplete, FormControl } from '@mui/material';
 
 // Shared Styled Components για Form Elements
 
-export const StyledTextField = styled(TextField, {
-  shouldForwardProp: (prop) => prop !== 'isMultiline',
-})(({ theme, size = 'medium', isMultiline }) => ({
+export const StyledTextField = styled(
+  ({ inputProps, ...otherProps }) => (
+    <TextField
+      {...otherProps}
+      autoComplete="off"
+      inputProps={{
+        autoComplete: 'off',
+        ...inputProps,
+      }}
+    />
+  ),
+  {
+    shouldForwardProp: (prop) => prop !== 'isMultiline',
+  },
+)(({ theme, size = 'medium', isMultiline }) => ({
   '& .MuiOutlinedInput-root': {
     borderRadius: '12px',
     backgroundColor: 'rgba(255, 255, 255, 0.8)',
@@ -55,7 +67,21 @@ export const StyledTextField = styled(TextField, {
   },
 }));
 
-export const StyledAutocomplete = styled(Autocomplete)(({ theme, size = 'medium' }) => ({
+export const StyledAutocomplete = styled(({ renderInput, ...props }) => (
+  <Autocomplete
+    {...props}
+    autoComplete={false} // απενεργοποιεί το δικό του internal autocomplete
+    renderInput={(params) =>
+      renderInput({
+        ...params,
+        inputProps: {
+          ...params.inputProps,
+          autoComplete: 'new-password', // απενεργοποιεί το browser autocomplete
+        },
+      })
+    }
+  />
+))(({ theme, size = 'medium' }) => ({
   '& .MuiOutlinedInput-root': {
     borderRadius: '12px',
     backgroundColor: 'rgba(255, 255, 255, 0.8)',
