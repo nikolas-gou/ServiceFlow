@@ -180,3 +180,21 @@ export const formatCrossSections = (arr) => {
   if (!arr || arr.length === 0) return '-';
   return arr.join(' + ');
 };
+
+export const cleanDetailsWindingOnVoltStepChange = (motor) => {
+  if (!motor) return;
+  const fieldsToClear = {
+    ['motor.step']: null,
+    ['motor.halfStep']: null,
+    ['motor.helperStep']: null,
+    ['motor.helperHalfStep']: null,
+    ['motor.spiral']: null,
+    ['motor.halfSpiral']: null,
+    ['motor.helperSpiral']: null,
+    ['motor.helperHalfSpiral']: null,
+    ['motor.coilsCount']: 1,
+    ['motor.halfCoilsCount']: 1,
+    ['motor.helperCoilsCount']: 1,
+  };
+  return fieldsToClear;
+};

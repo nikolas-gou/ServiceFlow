@@ -4,8 +4,16 @@ import WindingsContentFields from './WindingsContentFields';
 import TypeOfStepField from './TypeOfStepField';
 import { typeOfVolt, typeOfVolt_translated } from '../../../Models/Motor';
 import { StyledFormControl } from '../../../common/StyledFormComponents';
+import { useWindingFieldReset } from '../../../../hooks/useWindingFieldReset';
 
 export const DetailsWinding = (props) => {
+  const { resetWindingFields } = useWindingFieldReset(props.handleInputChange);
+
+  const handleOnChange = (event) => {
+    resetWindingFields(props.repair.motor);
+    props.handleInputChange(event);
+  };
+
   return (
     <Grid container spacing={2.5}>
       <Grid item xs={12} sm={6}>
@@ -15,7 +23,7 @@ export const DetailsWinding = (props) => {
             name="motor.typeOfVolt"
             value={props.repair.motor?.typeOfVolt || ''}
             label="Φάσεις Κινητήρα"
-            onChange={props.handleInputChange}
+            onChange={handleOnChange}
           >
             {typeOfVolt.map((type, index) => {
               // * ενα converter για translated
