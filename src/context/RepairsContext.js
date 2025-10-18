@@ -21,12 +21,7 @@ export const RepairsProvider = ({ children }) => {
   }, []);
 
   const addRepair = (repair) => {
-    // Βεβαιώνουμε ότι το repair είναι object και όχι array
-    if (Array.isArray(repair)) {
-      setRepairs((prev) => [...repair, ...prev]);
-    } else {
-      setRepairs((prev) => [repair, ...prev]);
-    }
+    setRepairs((prev) => [repair, ...prev]);
   };
 
   return (
