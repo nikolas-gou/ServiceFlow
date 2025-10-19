@@ -5,8 +5,6 @@ import {
   NavigateNext as NavigateNextIcon,
   NavigateBefore as NavigateBeforeIcon,
   CheckCircle as CheckCircleIcon,
-  PlayArrow as PlayArrowIcon,
-  CircleOutlined as CircleOutlinedIcon,
   Person as PersonIcon,
   Settings as SettingsIcon,
   ElectricBolt as ElectricBoltIcon,
@@ -31,6 +29,7 @@ import StyledButton from '../../common/StyledButton';
 import LoadingSave from '../../common/LoadingSave';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import { ImageRepository } from '../../Repositories/ImageRepository';
+import { uploadSize } from '../../Models/Image';
 
 // Styled Components
 const FormContainer = styled(Box)(({ theme }) => ({
@@ -243,6 +242,9 @@ function CreateRepairForm(props) {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const MB_TO_BYTES = 1000000;
+  const MAX_UPLOAD_SIZE_MB = 7.5;
+
   // context
   const { addRepair } = useRepairs();
 
@@ -332,6 +334,13 @@ function CreateRepairForm(props) {
         }
 
         break;
+      case 4: // Φωτογραφίες
+        if (!validateImageSize(repair.images)) {
+          newErrors['images'] = 'Το μέγεθος των φωτογραφιών δεν πρέπει να υπερβαίνει τα 7.5MB';
+          errorMsg = 'Το μέγεθος των φωτογραφιών δεν πρέπει να υπερβαίνει τα 7.5MB';
+          isValid = false;
+        }
+        break;
       default:
         break;
     }
@@ -357,6 +366,11 @@ function CreateRepairForm(props) {
     if (!repair.motor?.manufacturer) {
       allErrors['motor.manufacturer'] = 'Η επιλογή Μάρκας είναι υποχρεωτική';
       errorMsg = errorMsg || 'Ξέχασες να επιλέξεις Μάρκα';
+      isValid = false;
+    }
+    if (!validateImageSize(repair.images)) {
+      allErrors['images'] = 'Το μέγεθος των φωτογραφιών δεν πρέπει να υπερβαίνει τα 7.5MB';
+      errorMsg = 'Το μέγεθος των φωτογραφιών δεν πρέπει να υπερβαίνει τα 7.5MB';
       isValid = false;
     }
     setErrors(allErrors);
@@ -396,7 +410,10 @@ function CreateRepairForm(props) {
           props.onSubmitSuccess();
         }, 1500);
       } catch (error) {
-        setErrorMessage('Σφάλμα κατά την αποθήκευση. Παρακαλώ δοκιμάστε ξανά.');
+        // Χρήση του error message από το backend αν υπάρχει
+        const errorMessage =
+          error.message || 'Σφάλμα κατά την αποθήκευση. Παρακαλώ δοκιμάστε ξανά.';
+        setErrorMessage(errorMessage);
         setErrorAlert(true);
       } finally {
         setIsSubmitting(false);
@@ -424,7 +441,6 @@ function CreateRepairForm(props) {
       setRepair(updatedRepair);
       addRepair(updatedRepair);
     } catch (err) {
-      console.error('Σφάλμα Δημιουργίας Επισκευής:', err);
       throw err; // Re-throw για τη διαχείριση στο handleSubmit
     }
   };
@@ -470,6 +486,11 @@ function CreateRepairForm(props) {
       // Επόμενο βήμα - Το θεματικό εικονίδιο με μειωμένη διαφάνεια
       return <IconComponent sx={{ fontSize: 'inherit', opacity: 0.7 }} />;
     }
+  };
+
+  const validateImageSize = (images) => {
+    const size = uploadSize(images) / MB_TO_BYTES;
+    return size <= MAX_UPLOAD_SIZE_MB;
   };
 
   return (
@@ -670,7 +691,7 @@ function CreateRepairForm(props) {
         severity="success"
         title="Επιτυχής Καταχώρηση!"
         message="Η επισκευή καταχωρήθηκε με επιτυχία στο σύστημα"
-        autoHideDuration={4000}
+        autoHideDuration={6000}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       />
 
