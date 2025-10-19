@@ -27,9 +27,14 @@ export class ImageRepository {
     }
   }
 
-  static async deleteImage(imageId) {
+  /**
+   * Deletes a list of images
+   * @param {Array} filesToDelete - The files to delete
+   * @returns {Promise<void>} The response from the API
+   */
+  static async deleteImages(filesToDelete) {
     try {
-      await apiCall('', `/api/images/${imageId}`, 'DELETE');
+      await apiCall(config.server, `/api/images/delete`, 'DELETE', filesToDelete);
     } catch (error) {
       console.error('Σφάλμα κατά τη διαγραφή της εικόνας:', error);
       throw error;
