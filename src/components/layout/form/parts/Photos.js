@@ -6,6 +6,7 @@ import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import CollectionsIcon from '@mui/icons-material/Collections';
 import StyledButton from '../../../common/StyledButton';
 import { Image } from '../../../Models/Image';
+import config from '../../../../config';
 
 const PhotoUploadContainer = styled(Box)(({ theme }) => ({
   padding: theme.spacing(2),
@@ -70,7 +71,7 @@ const PhotoActions = styled(Box)(({ theme }) => ({
   transition: 'opacity 0.3s ease',
 }));
 
-const Photos = ({ repair, setRepair }) => {
+const Photos = ({ repair, setRepair, setFilesToDelete }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   // reference for hidden input elements
@@ -137,6 +138,22 @@ const Photos = ({ repair, setRepair }) => {
       ...prev,
       images: prev.images.filter((_, i) => i !== index),
     }));
+
+    if (!photoToDelete.isNew) {
+      setFilesToDelete((prev) => [...prev, photoToDelete.id]);
+    }
+  };
+
+  const getImageUrl = (image) => {
+    // Αν έχει preview (νέα φωτογραφία), χρησιμοποίησε το
+    if (image.preview) {
+      return image.preview;
+    }
+    // Αλλιώς, αν έχει id από server, χρησιμοποίησε το API endpoint
+    if (image.id) {
+      return `${config.server}/api/images/serve/${image.id}`;
+    }
+    return '';
   };
 
   // Παίρνουμε τις φωτογραφίες από το repair object
@@ -205,7 +222,7 @@ const Photos = ({ repair, setRepair }) => {
         {photos.map((photo, index) => (
           <Grid item xs={12} sm={6} md={4} key={photo.preview}>
             <PhotoPreview>
-              <img src={photo.preview} alt={`Φωτογραφία ${index + 1}`} />
+              <img src={getImageUrl(photo)} alt={`Φωτογραφία ${index + 1}`} />
               <PhotoActions className="photo-actions">
                 <StyledButton
                   variant="contained"
