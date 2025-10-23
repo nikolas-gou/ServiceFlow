@@ -17,7 +17,7 @@ export class Motor {
     this.halfSpiral = data.halfSpiral || null;
     this.helperSpiral = data.helperSpiral || null;
     this.helperHalfSpiral = data.helperHalfSpiral || null;
-    this.connectionism = data.connectionism || 'simple';
+    this.connectionism = data.connectionism || 'other';
     this.volt = data.volt || '380VY';
     this.amps = data.amps || null;
     this.poles = data.poles || '6';
