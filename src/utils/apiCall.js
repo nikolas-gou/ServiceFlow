@@ -42,19 +42,37 @@ export default function apiCall(host, endpoint = '/', reqMethod = 'get', data = 
 
   return fetch(`${host}${endpoint}`, reqData)
     .then(async (response) => {
-      if (!response.ok) {
-        if (response.status === 403) {
-          window.alert('UNAUTHORIZED');
-          window.location.replace(`/unauthorized`);
-          throw new Error('Unauthorized');
-        }
-        const errorText = await response.text();
-        throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+      if (response.ok) {
+        return response.json();
       }
-      return response.json();
+      // Error case - Robust parsing για mixed HTML+JSON responses
+      const responseText = await response.text();
+
+      // Προσπάθεια να εξάγουμε JSON από το response (ακόμα κι αν έχει HTML warnings)
+      const jsonMatch = responseText.match(/\{.*\}/s);
+      if (jsonMatch) {
+        try {
+          const errorData = JSON.parse(jsonMatch[0]);
+          if (errorData.message) {
+            // Βρήκαμε το message από το backend!
+            throw new Error(errorData.message);
+          }
+        } catch (jsonParseError) {
+          // Αν το JSON.parse αποτύχει (malformed JSON)
+          if (jsonParseError instanceof SyntaxError) {
+            // Malformed JSON - συνεχίζουμε στο fallback
+          } else {
+            // Αν είναι το Error που κάναμε throw εμείς, το ξαναπετάμε
+            throw jsonParseError;
+          }
+        }
+      }
+
+      // Fallback: Generic error με status code
+      throw new Error(`Σφάλμα διακομιστή (Status: ${response.status})`);
     })
     .catch((error) => {
-      console.error('API call error:', error);
+      // Re-throw το error για να το χειριστεί το calling code
       throw error;
     });
 }
