@@ -9,7 +9,6 @@ import {
 } from '@mui/icons-material';
 import {
   volt_types_mapping,
-  repairStatus_mapping,
   typeOfMotor_mapping,
   typeOfVolt_mapping,
   typeOfStep_mapping,
@@ -96,6 +95,11 @@ export const RepairRow = ({ repair, onView, onEdit, onDelete, zebra }) => {
         }}
         onClick={() => onView(repair)}
       >
+        <CompactTableCell>
+          <Typography variant="body2" fontWeight={600} fontSize="0.8rem">
+            {repair.id}
+          </Typography>
+        </CompactTableCell>
         <CompactTableCell>
           <Typography variant="body2" fontWeight={600} fontSize="0.8rem">
             {motor.serialNumber || '-'}

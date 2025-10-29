@@ -12,8 +12,6 @@ import {
   styled,
   Divider,
 } from '@mui/material';
-import { useSearch } from '../../../context/SearchContext';
-import { volt_types_mapping } from '../../Models/Motor';
 import { useRepairs } from '../../../context/RepairsContext';
 import Search from '../Search';
 import { RepairDetailModal } from './parts/RepairDetailModal';
@@ -21,6 +19,7 @@ import { RepairRow } from './parts/RepairRow';
 import InboxIcon from '@mui/icons-material/Inbox';
 import BuildIcon from '@mui/icons-material/Build';
 import { ModalRepairForm } from '../form/parts/ModalRepairForm';
+import PaginationComponent from '../pagination/PaginationComponent';
 
 // Styled components για compact εμφάνιση
 const CompactTableCell = styled(TableCell)(({ theme }) => ({
@@ -41,16 +40,23 @@ const CompactTableCell = styled(TableCell)(({ theme }) => ({
 
 // Main Modal Repairs Component
 export default function Repairs() {
-  const { searchQuery } = useSearch();
-  const { repairs, loading, setRepairs } = useRepairs();
+  const {
+    repairs,
+    loading,
+    pagination,
+    setPage,
+    setPerPage,
+    filters: contextFilters,
+    updateFilters,
+    deleteRepair,
+  } = useRepairs();
 
   // Modal state
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [selectedRepair, setSelectedRepair] = useState({});
 
-  // State για τα filters
-  const [filters, setFilters] = useState({
+  const [localFilters, setLocalFilters] = useState({
     manufacturer: '',
     status: '',
     voltType: '',
@@ -58,14 +64,39 @@ export default function Repairs() {
     kwMax: '',
   });
 
+  const [localSearch, setLocalSearch] = useState('');
+
   // Handle repair deletion
   const handleDelete = (repairId) => {
-    setRepairs(repairs.filter((repair) => repair.id !== repairId));
+    // todo: is right the proccess of deletion?
+    deleteRepair(repairId);
   };
 
-  // Συνάρτηση για να χειριστεί τις αλλαγές στα φίλτρα
   const handleFiltersChange = (newFilters) => {
-    setFilters(newFilters);
+    setLocalFilters(newFilters);
+    // Update context filters (which will trigger a new API call)
+    updateFilters({
+      ...newFilters,
+      search: localSearch,
+    });
+  };
+
+  const handleSearchChange = (newSearch) => {
+    setLocalSearch(newSearch);
+    // Update context filters (which will trigger a new API call)
+    updateFilters({
+      ...localFilters,
+      search: newSearch,
+    });
+  };
+
+  // Pagination handlers
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+  };
+
+  const handleItemsPerPageChange = (newItemsPerPage) => {
+    setPerPage(newItemsPerPage);
   };
 
   // Handle modal close
@@ -84,45 +115,6 @@ export default function Repairs() {
     setSelectedRepair(repair);
     setEditModalOpen(true);
   };
-
-  // Φιλτράρισμα με βάση το search και τα filters
-  const filteredRepairs = repairs.filter((repair) => {
-    // Search query filter
-    const matchesSearch =
-      !searchQuery ||
-      repair.motor.manufacturer?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      repair.motor.kw?.toString().includes(searchQuery) ||
-      repair.motor.hp?.toString().includes(searchQuery) ||
-      repair.customer.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      repair.motor.serialNumber?.toLowerCase().includes(searchQuery.toLowerCase());
-
-    // Manufacturer filter
-    const matchesManufacturer =
-      !filters.manufacturer || repair.motor.manufacturer === filters.manufacturer;
-
-    // Status filter
-    const matchesStatus = !filters.status || repair.repairStatus === filters.status;
-
-    // Volt type filter
-    const matchesVoltType =
-      !filters.voltType || volt_types_mapping[repair.motor.volt] === filters.voltType;
-
-    // kW range filter
-    const matchesKwMin =
-      !filters.kwMin || (repair.motor.kw && repair.motor.kw >= parseFloat(filters.kwMin));
-
-    const matchesKwMax =
-      !filters.kwMax || (repair.motor.kw && repair.motor.kw <= parseFloat(filters.kwMax));
-
-    return (
-      matchesSearch &&
-      matchesManufacturer &&
-      matchesStatus &&
-      matchesVoltType &&
-      matchesKwMin &&
-      matchesKwMax
-    );
-  });
 
   return (
     <Box sx={{ mt: 2 }}>
@@ -167,7 +159,7 @@ export default function Repairs() {
                   fontWeight: 500,
                 }}
               >
-                {filteredRepairs.length}
+                {pagination.totalItems}
               </Typography>
             </Box>
           </Box>
@@ -176,22 +168,26 @@ export default function Repairs() {
         {/* Search και Filter components */}
         <Search
           repairs={repairs}
-          filteredRepairs={filteredRepairs}
+          filteredRepairs={repairs}
           onFiltersChange={handleFiltersChange}
+          onSearchChange={handleSearchChange}
+          searchValue={localSearch}
         />
       </Box>
-
       <TableContainer
         component={Paper}
         sx={{
           maxHeight: 'calc(100vh - 280px)',
           boxShadow: '0 2px 8px rgba(25,118,210,0.08)',
           borderRadius: '16px',
+          maxHeight: '50vh', // test
         }}
       >
         <Table stickyHeader size="small">
           <TableHead>
             <TableRow>
+              {/* only for testing */}
+              <CompactTableCell>ID</CompactTableCell>
               <CompactTableCell>S/N</CompactTableCell>
               <CompactTableCell>Πελάτης</CompactTableCell>
               <CompactTableCell>Περιγραφή Κινητήρα</CompactTableCell>
@@ -208,18 +204,18 @@ export default function Repairs() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredRepairs.map((repair, index) => (
+            {repairs.map((repair, index) => (
               <RepairRow
                 key={repair.id}
                 repair={repair}
-                index={index}
+                index={(pagination.currentPage - 1) * pagination.perPage + index}
                 onView={handleViewRepair}
                 onEdit={handleEditRepair}
                 onDelete={handleDelete}
                 zebra={index % 2 === 0}
               />
             ))}
-            {filteredRepairs.length === 0 && (
+            {repairs.length === 0 && !loading && (
               <TableRow>
                 <CompactTableCell colSpan={11} align="center">
                   <Box
@@ -233,7 +229,7 @@ export default function Repairs() {
                   >
                     <InboxIcon sx={{ fontSize: 48, mb: 1 }} />
                     <Typography variant="body2">
-                      {searchQuery || Object.values(filters).some((f) => f !== '')
+                      {localSearch || Object.values(localFilters).some((f) => f !== '')
                         ? `Δεν βρέθηκαν αποτελέσματα`
                         : 'Δεν υπάρχουν επισκευές'}
                     </Typography>
@@ -244,6 +240,17 @@ export default function Repairs() {
           </TableBody>
         </Table>
       </TableContainer>
+
+      {/* Pagination Component */}
+      <PaginationComponent
+        currentPage={pagination.currentPage}
+        totalPages={pagination.totalPages}
+        totalItems={pagination.totalItems}
+        itemsPerPage={pagination.perPage}
+        onPageChange={handlePageChange}
+        onItemsPerPageChange={handleItemsPerPageChange}
+        showItemsPerPage={true}
+      />
 
       {/* Repair Detail Modal */}
       <RepairDetailModal open={viewModalOpen} repair={selectedRepair} onClose={handleCloseModal} />

@@ -8,15 +8,32 @@ import CustomerFilter from './parts/tools/CustomerFilter';
 import { StyledTextField } from '../common/StyledFormComponents';
 
 export default function Search(props) {
-  const { searchQuery, setSearchQuery } = useSearch();
+  // Get context search for backward compatibility
+  const { searchQuery: contextSearchQuery, setSearchQuery } = useSearch();
 
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
+  const handleSearchInputChange = (e) => {
+    if (props.onSearchChange) {
+      // Use local search pattern
+      props.onSearchChange(e.target.value);
+    } else {
+      // on customer page(fix ti in future todo)
+      setSearchQuery(e.target.value);
+    }
   };
 
   const clearSearch = () => {
-    setSearchQuery('');
+    if (props.onSearchChange) {
+      // Use local search pattern
+      props.onSearchChange('');
+    } else {
+      // on customer page(fix ti in future todo)
+      setSearchQuery('');
+    }
   };
+
+  // Use local search value if provided, otherwise use context(on customer page(fix ti in future todo))
+  const currentSearchValue =
+    props.searchValue !== undefined ? props.searchValue : contextSearchQuery;
 
   // Determine which filter to show based on available data
   const showCustomerFilter = props.customers && !props.repairs;
@@ -34,8 +51,8 @@ export default function Search(props) {
           showCustomerFilter ? 'Όνομα, email, τηλέφωνο...' : 'Μάρκα, kw, hp, πελάτης, S/N...'
         }
         size="small"
-        value={searchQuery}
-        onChange={handleSearchChange}
+        value={currentSearchValue}
+        onChange={handleSearchInputChange}
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
@@ -51,7 +68,7 @@ export default function Search(props) {
               />
             </InputAdornment>
           ),
-          endAdornment: searchQuery && (
+          endAdornment: currentSearchValue && (
             <InputAdornment position="end">
               <IconButton
                 size="small"
