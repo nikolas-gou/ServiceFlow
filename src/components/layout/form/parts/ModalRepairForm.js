@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import { Paper, Modal, IconButton, Box, Typography } from '@mui/material';
 import { Close as CloseIcon, Build as BuildIcon } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
@@ -129,9 +129,27 @@ const ModalContent = styled(Box)(({ theme }) => ({
 }));
 
 export const ModalRepairForm = ({ open, onClose, repair, isEdit }) => {
-  const handleClose = () => {
-    onClose();
-  };
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+
+  const handleDirtyChange = useCallback((dirty) => {
+    setHasUnsavedChanges(Boolean(dirty));
+  }, []);
+
+  const handleClose = useCallback(
+    (event, reason) => {
+      if (hasUnsavedChanges) {
+        const confirmClose = window.confirm(
+          'Υπάρχουν μη αποθηκευμένες αλλαγές. Είσαι σίγουρος ότι θέλεις να κλείσεις; Τα στοιχεία θα χαθούν.',
+        );
+        if (!confirmClose) {
+          // Ακύρωση κλεισίματος
+          return;
+        }
+      }
+      onClose();
+    },
+    [hasUnsavedChanges, onClose],
+  );
 
   return (
     <StyledModal
@@ -163,9 +181,22 @@ export const ModalRepairForm = ({ open, onClose, repair, isEdit }) => {
 
         <ModalContent>
           {!isEdit ? (
-            <CreateRepairForm onSubmitSuccess={handleClose} />
+            <CreateRepairForm
+              onSubmitSuccess={() => {
+                setHasUnsavedChanges(false);
+                onClose();
+              }}
+              onDirtyChange={handleDirtyChange}
+            />
           ) : (
-            <EditRepairForm repair={repair} onSubmitSuccess={handleClose} />
+            <EditRepairForm
+              repair={repair}
+              onSubmitSuccess={() => {
+                setHasUnsavedChanges(false);
+                onClose();
+              }}
+              onDirtyChange={handleDirtyChange}
+            />
           )}
         </ModalContent>
       </StyledPaper>

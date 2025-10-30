@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Box } from '@mui/material';
 import {
   Save as SaveIcon,
@@ -234,6 +234,7 @@ const NavigationContainer = styled(Box)(({ theme }) => ({
 }));
 
 function CreateRepairForm(props) {
+  const { onSubmitSuccess, onDirtyChange } = props;
   const [tabValue, setTabValue] = useState(0);
   const [repair, setRepair] = useState(new Repair());
   const [successAlert, setSuccessAlert] = useState(false);
@@ -241,6 +242,9 @@ function CreateRepairForm(props) {
   const [errorMessage, setErrorMessage] = useState('');
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
+  const hasAnnouncedDirtyRef = useRef(false);
+  const initialSnapshotRef = useRef(JSON.stringify(new Repair()));
 
   const MB_TO_BYTES = 1000000;
   const MAX_UPLOAD_SIZE_MB = 7.5;
@@ -250,6 +254,13 @@ function CreateRepairForm(props) {
 
   // Γενική διαχείριση αλλαγών για τα απλά πεδία
   const handleInputChange = (e) => {
+    if (!isDirty) {
+      setIsDirty(true);
+      if (onDirtyChange && !hasAnnouncedDirtyRef.current) {
+        hasAnnouncedDirtyRef.current = true;
+        onDirtyChange(true);
+      }
+    }
     const { name, value } = e.target;
 
     // Μετατροπή σε κεφαλαία αν είναι το πεδίο customer.name
@@ -407,7 +418,10 @@ function CreateRepairForm(props) {
 
         // Κλείσιμο του modal μετά από μικρή καθυστέρηση για να δει ο χρήστης την επιτυχία
         setTimeout(() => {
-          props.onSubmitSuccess();
+          setIsDirty(false);
+          hasAnnouncedDirtyRef.current = false;
+          if (onDirtyChange) onDirtyChange(false);
+          onSubmitSuccess();
         }, 1500);
       } catch (error) {
         // Χρήση του error message από το backend αν υπάρχει
@@ -422,6 +436,22 @@ function CreateRepairForm(props) {
       setErrorAlert(true);
     }
   };
+
+  // Αυτόματος εντοπισμός αλλαγών (πιάνει και Autocomplete/custom handlers)
+  useEffect(() => {
+    try {
+      const current = JSON.stringify(repair);
+      if (!isDirty && current !== initialSnapshotRef.current) {
+        setIsDirty(true);
+        if (onDirtyChange && !hasAnnouncedDirtyRef.current) {
+          hasAnnouncedDirtyRef.current = true;
+          onDirtyChange(true);
+        }
+      }
+    } catch (_) {
+      // αν υπάρξουν κυκλικές αναφορές, αγνόησέ το
+    }
+  }, [repair, isDirty, onDirtyChange]);
 
   const createNewRepair = async (dataApi) => {
     try {

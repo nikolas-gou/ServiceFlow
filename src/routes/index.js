@@ -1,9 +1,9 @@
 import { Navigate } from 'react-router-dom';
 import AnalyticsDashboard from '../components/stats/AnalyticsDashboard';
-import { Typography } from '@mui/material';
 import Overview from '../pages/Overview';
 import CustomersPage from '../pages/CustomersPage';
 import { ConnectionismPage } from '../pages/ConnectionismPage';
+import RepairsPage from '../pages/RepairsPage';
 
 export const routes = [
   {
@@ -24,7 +24,7 @@ export const routes = [
   },
   {
     path: '/dashboard/services',
-    element: <Typography>services</Typography>,
+    element: <RepairsPage />,
   },
   { path: '/dashboard/connections', element: <ConnectionismPage /> },
 ];

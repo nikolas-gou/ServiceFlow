@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Box } from '@mui/material';
 import {
   Save as SaveIcon,
@@ -233,7 +233,7 @@ const NavigationContainer = styled(Box)(({ theme }) => ({
   },
 }));
 
-function EditRepairForm({ repair: initialRepair, onSubmitSuccess }) {
+function EditRepairForm({ repair: initialRepair, onSubmitSuccess, onDirtyChange }) {
   const MB_TO_BYTES = 1000000;
   const MAX_UPLOAD_SIZE_MB = 7.5;
   const { repairs, setRepairs } = useRepairs();
@@ -245,14 +245,21 @@ function EditRepairForm({ repair: initialRepair, onSubmitSuccess }) {
   const [errorAlert, setErrorAlert] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [filesToDelete, setFilesToDelete] = useState([]);
+  const [isDirty, setIsDirty] = useState(false);
+  const initialSnapshotRef = useRef(initialRepair ? JSON.stringify(initialRepair) : '');
 
   useEffect(() => {
     if (initialRepair) {
       setRepair(initialRepair);
+      try { initialSnapshotRef.current = JSON.stringify(initialRepair); } catch (_) {}
     }
   }, [initialRepair]);
 
   const handleInputChange = (e) => {
+    if (!isDirty) {
+      setIsDirty(true);
+      if (onDirtyChange) onDirtyChange(true);
+    }
     const { name, value } = e.target;
     let processedValue = value;
 
@@ -435,6 +442,8 @@ function EditRepairForm({ repair: initialRepair, onSubmitSuccess }) {
 
         setSuccessAlert(true);
         setTimeout(() => {
+          setIsDirty(false);
+          if (onDirtyChange) onDirtyChange(false);
           if (onSubmitSuccess) {
             onSubmitSuccess();
           }
@@ -452,6 +461,19 @@ function EditRepairForm({ repair: initialRepair, onSubmitSuccess }) {
       setErrorAlert(true);
     }
   };
+
+  // Αυτόματος εντοπισμός αλλαγών (πιάνει και Autocomplete/custom handlers)
+  useEffect(() => {
+    try {
+      const current = JSON.stringify(repair);
+      if (!isDirty && current !== initialSnapshotRef.current) {
+        setIsDirty(true);
+        if (onDirtyChange) onDirtyChange(true);
+      }
+    } catch (_) {
+      // ignore stringify errors
+    }
+  }, [repair, isDirty, onDirtyChange]);
 
   const validateImageSize = (images) => {
     const size = uploadSize(images) / MB_TO_BYTES;
