@@ -244,13 +244,24 @@ function CreateRepairForm(props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
   const hasAnnouncedDirtyRef = useRef(false);
-  const initialSnapshotRef = useRef(JSON.stringify(new Repair()));
+  // Θα οριστεί μετά το mount ώστε να ταιριάζει με το αρχικό state
+  const initialSnapshotRef = useRef('');
 
   const MB_TO_BYTES = 1000000;
   const MAX_UPLOAD_SIZE_MB = 7.5;
 
   // context
   const { addRepair } = useRepairs();
+
+  // Καταγραφή του αρχικού snapshot μετά το αρχικό render,
+  // ώστε να μην θεωρηθεί "dirty" χωρίς αλλαγές από τον χρήστη
+  useEffect(() => {
+    try {
+      initialSnapshotRef.current = JSON.stringify(repair);
+    } catch (_) {}
+    // run only once on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Γενική διαχείριση αλλαγών για τα απλά πεδία
   const handleInputChange = (e) => {

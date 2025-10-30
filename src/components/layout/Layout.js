@@ -118,7 +118,7 @@ const Layout = (props) => {
           aria-label="add"
           onClick={handleOpenModal}
           sx={{
-            position: 'absolute',
+            position: 'fixed',
             bottom: 24,
             right: 24,
             zIndex: 1000,

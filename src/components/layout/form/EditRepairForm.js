@@ -251,7 +251,9 @@ function EditRepairForm({ repair: initialRepair, onSubmitSuccess, onDirtyChange 
   useEffect(() => {
     if (initialRepair) {
       setRepair(initialRepair);
-      try { initialSnapshotRef.current = JSON.stringify(initialRepair); } catch (_) {}
+      try {
+        initialSnapshotRef.current = JSON.stringify(initialRepair);
+      } catch (_) {}
     }
   }, [initialRepair]);
 
