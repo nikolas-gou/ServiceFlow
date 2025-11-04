@@ -62,6 +62,7 @@ export default function Repairs() {
     voltType: '',
     kwMin: '',
     kwMax: '',
+    rpm: '',
   });
 
   const [localSearch, setLocalSearch] = useState('');
@@ -194,6 +195,7 @@ export default function Repairs() {
               <CompactTableCell>Μάρκα</CompactTableCell>
               <CompactTableCell>kW</CompactTableCell>
               <CompactTableCell>hp</CompactTableCell>
+              <CompactTableCell>Στροφές</CompactTableCell>
               <CompactTableCell>Τάση</CompactTableCell>
               <CompactTableCell>Αμπέρ</CompactTableCell>
               <CompactTableCell>Φάσεις</CompactTableCell>

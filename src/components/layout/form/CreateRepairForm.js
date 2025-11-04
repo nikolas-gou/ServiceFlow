@@ -30,6 +30,7 @@ import LoadingSave from '../../common/LoadingSave';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import { ImageRepository } from '../../Repositories/ImageRepository';
 import { uploadSize } from '../../Models/Image';
+import { rpm_types_mapping_to_poles, poles_types_mapping_to_rpm } from '../../Models/Motor';
 
 // Styled Components
 const FormContainer = styled(Box)(({ theme }) => ({
@@ -300,6 +301,26 @@ function CreateRepairForm(props) {
             ...prev[parent],
             kw: processedValue,
             hp: processedValue > 0 ? (parseFloat(processedValue) / 0.745699872).toFixed(2) : null, // Μετατροπή kw σε hp
+          },
+        }));
+      } else if (child === 'rpm') {
+        // Όταν αλλάζει η τιμή rpm, θέτουμε το rpm και υπολογίζουμε το poles
+        setRepair((prev) => ({
+          ...prev,
+          [parent]: {
+            ...prev[parent],
+            rpm: processedValue,
+            poles: rpm_types_mapping_to_poles[processedValue],
+          },
+        }));
+      } else if (child === 'poles') {
+        // Όταν αλλάζει η τιμή poles, θέτουμε το poles και υπολογίζουμε το rpm
+        setRepair((prev) => ({
+          ...prev,
+          [parent]: {
+            ...prev[parent],
+            poles: processedValue,
+            rpm: poles_types_mapping_to_rpm[processedValue],
           },
         }));
       } else {

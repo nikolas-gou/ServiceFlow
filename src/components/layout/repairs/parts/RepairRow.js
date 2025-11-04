@@ -132,6 +132,11 @@ export const RepairRow = ({ repair, onView, onEdit, onDelete, zebra }) => {
         </CompactTableCell>
         <CompactTableCell>
           <Typography variant="caption" fontSize="0.75rem">
+            {motor.rpm ? `${motor.rpm}` : '-'}
+          </Typography>
+        </CompactTableCell>
+        <CompactTableCell>
+          <Typography variant="caption" fontSize="0.75rem">
             {volt_types_mapping[motor.volt] || '-'}
           </Typography>
         </CompactTableCell>

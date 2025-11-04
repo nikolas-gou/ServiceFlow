@@ -21,6 +21,7 @@ export class RepairRepository {
    * @param {string} params.voltType - Volt type filter
    * @param {number} params.kwMin - Min kW filter
    * @param {number} params.kwMax - Max kW filter
+   * @param {string} params.rpm - RPM filter
    * @returns {Promise<{data: Array, pagination: Object}>}
    */
   static async getPaginated(params = {}) {

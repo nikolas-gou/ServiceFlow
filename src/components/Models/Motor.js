@@ -95,31 +95,51 @@ export const connectionism_types_mapping = {
   other: 'Άλλο',
 };
 
-export const rpm_types = ['900', '1490', '2900', 'other'];
-export const rpm_types_translated = ['900', '1490', '2900', 'Αλλο'];
-export const rpm_types_mapping = { 900: '900', 1490: '1490', 2900: '2900', other: 'Αλλο' };
+export const rpm_types = ['750', '900', '1490', '2900', 'other'];
+export const rpm_types_translated = ['750', '900', '1490', '2900', 'Αλλο'];
+export const rpm_types_mapping = {
+  750: '750',
+  900: '900',
+  1490: '1490',
+  2900: '2900',
+  other: 'Αλλο',
+};
+export const rpm_types_mapping_to_poles = {
+  750: 8,
+  900: 6,
+  1490: 4,
+  2900: 2,
+  other: 6,
+};
 
-export const poles_types = ['2', '4', '6', '8', '10', '12', 'other'];
-export const poles_types_translated = ['2', '4', '6', '8', '10', '12', 'Άλλο'];
+export const poles_types = ['2', '4', '6', '8', 'other'];
+export const poles_types_translated = ['2', '4', '6', '8', 'Άλλο'];
 export const poles_types_mapping = {
   2: '2',
   4: '4',
   6: '6',
   8: '8',
-  10: '10',
-  12: '12',
   other: 'Άλλο',
 };
+export const poles_types_mapping_to_rpm = {
+  2: 2900,
+  4: 1490,
+  6: 900,
+  8: 750,
+  other: 1490,
+};
 
-export const volt_types = ['230VY', '230VYY', '380VY', '380VYY', 'other'];
+export const volt_types = ['230VY', '230VYY', '380VY', '380VYY', '500VY', '500VYY', 'other'];
 
-export const volt_types_translated = ['230VY', '230VΔ', '380VY', '380VΔ', 'Άλλο'];
+export const volt_types_translated = ['230VY', '230VΔ', '380VY', '380VΔ', '500VY', '500VΔ', 'Άλλο'];
 
 export const volt_types_mapping = {
   '230VY': '230VY',
   '230VYY': '230VΔ',
   '380VY': '380VY',
   '380VYY': '380VΔ',
+  '500VY': '500VY',
+  '500VYY': '500VΔ',
   other: 'Αλλο',
 };
 

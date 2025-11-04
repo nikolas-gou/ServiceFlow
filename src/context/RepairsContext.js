@@ -25,6 +25,7 @@ export const RepairsProvider = ({ children }) => {
     voltType: '',
     kwMin: '',
     kwMax: '',
+    rpm: '',
   });
 
   // Fetch repairs with pagination and filters

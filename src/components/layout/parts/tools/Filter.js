@@ -23,7 +23,12 @@ import {
   Close as CloseIcon,
 } from '@mui/icons-material';
 
-import { volt_types, volt_types_mapping } from '../../../Models/Motor';
+import {
+  volt_types,
+  volt_types_mapping,
+  rpm_types,
+  rpm_types_mapping,
+} from '../../../Models/Motor';
 import { StyledFormControl } from '../../../common/StyledFormComponents';
 
 const FilterButton = styled(IconButton)(({ theme, hasFilters }) => ({
@@ -121,6 +126,7 @@ export default function Filter({ repairs, filteredRepairs, onFiltersChange }) {
     kwMin: '',
     kwMax: '',
     serialNumber: '',
+    rpm: '',
   });
 
   const open = Boolean(anchorEl);
@@ -142,6 +148,7 @@ export default function Filter({ repairs, filteredRepairs, onFiltersChange }) {
   // dummy θα το αλλαξω
   const statuses = [...new Set(repairs?.map((r) => r.repairStatus).filter(Boolean))] || [];
   const voltTypes = volt_types; // Από το volt_types_mapping
+  const rpmTypes = rpm_types; // Από το rpm_types_mapping
 
   const handleFilterChange = (key, value) => {
     const newFilters = { ...filters, [key]: value };
@@ -157,6 +164,7 @@ export default function Filter({ repairs, filteredRepairs, onFiltersChange }) {
       kwMin: '',
       kwMax: '',
       serialNumber: '',
+      rpm: '',
     };
     setFilters(emptyFilters);
     onFiltersChange?.(emptyFilters);
@@ -320,6 +328,23 @@ export default function Filter({ repairs, filteredRepairs, onFiltersChange }) {
               </StyledSelect>
             </StyledFormControl>
 
+            {/* RPM Filter */}
+            <StyledFormControl fullWidth size="small">
+              <InputLabel>Στροφές</InputLabel>
+              <StyledSelect
+                value={filters.rpm}
+                label="Στροφές"
+                onChange={(e) => handleFilterChange('rpm', e.target.value)}
+              >
+                <MenuItem value="">Όλες</MenuItem>
+                {rpmTypes.map((r) => (
+                  <MenuItem key={r} value={r}>
+                    {rpm_types_mapping[r]}
+                  </MenuItem>
+                ))}
+              </StyledSelect>
+            </StyledFormControl>
+
             {/* kW Range Filter */}
             <Box sx={{ display: 'flex', gap: 2 }}>
               <StyledTextField
@@ -389,6 +414,24 @@ export default function Filter({ repairs, filteredRepairs, onFiltersChange }) {
                   <Chip
                     label={`Τάση: ${volt_types_mapping[filters.voltType]}`}
                     onDelete={() => handleFilterChange('voltType', '')}
+                    size="small"
+                    sx={{
+                      backgroundColor: 'rgba(25, 118, 210, 0.08)',
+                      borderColor: 'rgba(25, 118, 210, 0.12)',
+                      color: '#1976d2',
+                      '& .MuiChip-deleteIcon': {
+                        color: '#1976d2',
+                        '&:hover': {
+                          color: '#d32f2f',
+                        },
+                      },
+                    }}
+                  />
+                )}
+                {filters.rpm && (
+                  <Chip
+                    label={`Στροφές: ${rpm_types_mapping[filters.rpm]}`}
+                    onDelete={() => handleFilterChange('rpm', '')}
                     size="small"
                     sx={{
                       backgroundColor: 'rgba(25, 118, 210, 0.08)',
