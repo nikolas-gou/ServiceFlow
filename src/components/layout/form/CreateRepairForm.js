@@ -248,7 +248,7 @@ function CreateRepairForm(props) {
   const initialSnapshotRef = useRef('');
 
   const MB_TO_BYTES = 1000000;
-  const MAX_UPLOAD_SIZE_MB = 7.5;
+  const MAX_UPLOAD_SIZE_MB = 10;
 
   // context
   const { addRepair } = useRepairs();
@@ -358,8 +358,8 @@ function CreateRepairForm(props) {
         break;
       case 4: // Φωτογραφίες
         if (!validateImageSize(repair.images)) {
-          newErrors['images'] = 'Το μέγεθος των φωτογραφιών δεν πρέπει να υπερβαίνει τα 7.5MB';
-          errorMsg = 'Το μέγεθος των φωτογραφιών δεν πρέπει να υπερβαίνει τα 7.5MB';
+          newErrors['images'] = 'Το μέγεθος των φωτογραφιών δεν πρέπει να υπερβαίνει τα 10MB';
+          errorMsg = 'Το μέγεθος των φωτογραφιών δεν πρέπει να υπερβαίνει τα 10MB';
           isValid = false;
         }
         break;
@@ -391,8 +391,8 @@ function CreateRepairForm(props) {
       isValid = false;
     }
     if (!validateImageSize(repair.images)) {
-      allErrors['images'] = 'Το μέγεθος των φωτογραφιών δεν πρέπει να υπερβαίνει τα 7.5MB';
-      errorMsg = 'Το μέγεθος των φωτογραφιών δεν πρέπει να υπερβαίνει τα 7.5MB';
+      allErrors['images'] = 'Το μέγεθος των φωτογραφιών δεν πρέπει να υπερβαίνει τα 10MB';
+      errorMsg = 'Το μέγεθος των φωτογραφιών δεν πρέπει να υπερβαίνει τα 10MB';
       isValid = false;
     }
     setErrors(allErrors);
@@ -667,7 +667,16 @@ function CreateRepairForm(props) {
               transition: 'all 0.3s ease',
             }}
           >
-            {tabValue === 4 && <Photos repair={repair} setRepair={setRepair} />}
+            {tabValue === 4 && (
+              <Photos
+                repair={repair}
+                setRepair={setRepair}
+                onError={(errorMsg) => {
+                  setErrorMessage(errorMsg);
+                  setErrorAlert(true);
+                }}
+              />
+            )}
           </TabContent>
 
           {/* Tab 6: Κόστος & Παράδοση */}

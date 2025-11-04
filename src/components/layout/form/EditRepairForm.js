@@ -235,7 +235,7 @@ const NavigationContainer = styled(Box)(({ theme }) => ({
 
 function EditRepairForm({ repair: initialRepair, onSubmitSuccess, onDirtyChange }) {
   const MB_TO_BYTES = 1000000;
-  const MAX_UPLOAD_SIZE_MB = 7.5;
+  const MAX_UPLOAD_SIZE_MB = 10;
   const { repairs, setRepairs } = useRepairs();
   const [repair, setRepair] = useState(initialRepair || {});
   const [tabValue, setTabValue] = useState(0);
@@ -353,8 +353,8 @@ function EditRepairForm({ repair: initialRepair, onSubmitSuccess, onDirtyChange 
         break;
       case 4: // Φωτογραφίες
         if (!validateImageSize(repair.images)) {
-          newErrors['images'] = 'Το μέγεθος των φωτογραφιών δεν πρέπει να υπερβαίνει τα 7.5MB';
-          errorMsg = 'Το μέγεθος των φωτογραφιών δεν πρέπει να υπερβαίνει τα 7.5MB';
+          newErrors['images'] = 'Το μέγεθος των φωτογραφιών δεν πρέπει να υπερβαίνει τα 10MB';
+          errorMsg = 'Το μέγεθος των φωτογραφιών δεν πρέπει να υπερβαίνει τα 10MB';
           isValid = false;
         }
         break;
@@ -386,8 +386,8 @@ function EditRepairForm({ repair: initialRepair, onSubmitSuccess, onDirtyChange 
       isValid = false;
     }
     if (!validateImageSize(repair.images)) {
-      allErrors['images'] = 'Το μέγεθος των φωτογραφιών δεν πρέπει να υπερβαίνει τα 7.5MB';
-      errorMsg = 'Το μέγεθος των φωτογραφιών δεν πρέπει να υπερβαίνει τα 7.5MB';
+      allErrors['images'] = 'Το μέγεθος των φωτογραφιών δεν πρέπει να υπερβαίνει τα 10MB';
+      errorMsg = 'Το μέγεθος των φωτογραφιών δεν πρέπει να υπερβαίνει τα 10MB';
       isValid = false;
     }
 
@@ -651,7 +651,15 @@ function EditRepairForm({ repair: initialRepair, onSubmitSuccess, onDirtyChange 
             }}
           >
             {tabValue === 4 && (
-              <Photos repair={repair} setRepair={setRepair} setFilesToDelete={setFilesToDelete} />
+              <Photos
+                repair={repair}
+                setRepair={setRepair}
+                setFilesToDelete={setFilesToDelete}
+                onError={(errorMsg) => {
+                  setErrorMessage(errorMsg);
+                  setErrorAlert(true);
+                }}
+              />
             )}
           </TabContent>
 
