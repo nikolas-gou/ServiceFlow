@@ -14,13 +14,16 @@ function StepField(props) {
     '6-8-10',
     '8-12-16',
     '10-14-18',
+    '4-6 / 1-6',
   ];
 
-  // Regex για validation του step field - μόνο αριθμοί με παύλες
+  // Regex για validation του step field - αριθμοί με παύλες, επιπλέον μορφή με "/" (π.χ. 4-6 / 1-6)
   const validateStepPattern = (input) => {
     if (!input) return true; // Άδειο είναι ok
-    const pattern = /^\d+(-\d+)+$/;
-    return pattern.test(input.trim());
+    const trimmed = input.trim();
+    // Pattern: επιτρέπει "4-6" ή "4-6 / 1-6" (με spaces γύρω από το "/")
+    const pattern = /^(\d+(-\d+)+)( \/ (\d+(-\d+)+))?$/;
+    return pattern.test(trimmed);
   };
 
   // Custom handler για το step field με validation
@@ -40,7 +43,9 @@ function StepField(props) {
     if ((props.step_value && validateStepPattern(props.step_value)) || props.step_value == '') {
       setStepError('');
     } else {
-      setStepError('Μη έγκυρη μορφή. Χρησιμοποιήστε μόνο αριθμούς με παύλες (π.χ. 8-10-12)');
+      setStepError(
+        'Μη έγκυρη μορφή. Χρησιμοποιήστε αριθμούς με παύλες (π.χ. 8-10-12) ή με "/" (π.χ. 4-6 / 1-6)',
+      );
     }
   }, [props.step_value]);
 
@@ -60,7 +65,7 @@ function StepField(props) {
               label={props.step_label}
               name={props.step_name}
               variant="outlined"
-              placeholder="π.χ. 8-10-12"
+              placeholder="π.χ. 8-10-12, 4-6 / 1-6"
               onChange={props.handleInputChange}
               error={!!stepError}
               helperText={stepError}

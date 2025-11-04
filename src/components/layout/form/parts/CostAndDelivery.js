@@ -8,7 +8,6 @@ export const CostAndDelivery = (props) => {
       <Grid item xs={12} sm={6}>
         <StyledTextField
           fullWidth
-          required
           label="Εκτιμώμενο Κόστος (€)"
           name="cost"
           type="number"

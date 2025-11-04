@@ -5,7 +5,7 @@ export class Motor {
     this.id = data.id || null;
     this.serialNumber = data.serialNumber || null;
     this.description = data.description || null;
-    this.manufacturer = data.manufacturer || '';
+    this.manufacturer = data.manufacturer || '-';
     this.kw = data.kw || null;
     this.hp = data.hp || null;
     this.rpm = data.rpm || '1490';
