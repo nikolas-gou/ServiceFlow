@@ -7,6 +7,7 @@ import CollectionsIcon from '@mui/icons-material/Collections';
 import StyledButton from '../../../common/StyledButton';
 import { Image } from '../../../Models/Image';
 import config from '../../../../config';
+import { compressImages } from '../../../../utils/imageCompression';
 
 const PhotoUploadContainer = styled(Box)(({ theme }) => ({
   padding: theme.spacing(2),
@@ -71,7 +72,7 @@ const PhotoActions = styled(Box)(({ theme }) => ({
   transition: 'opacity 0.3s ease',
 }));
 
-const Photos = ({ repair, setRepair, setFilesToDelete }) => {
+const Photos = ({ repair, setRepair, setFilesToDelete, onError }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   // reference for hidden input elements
@@ -93,17 +94,28 @@ const Photos = ({ repair, setRepair, setFilesToDelete }) => {
   };
 
   // Handler για την επιλογή φωτογραφίας (είτε από κάμερα είτε από συλλογή)
-  const handlePhotoSelect = (event) => {
+  const handlePhotoSelect = async (event) => {
     const files = event.target.files;
     if (files && files.length > 0) {
       setIsLoading(true);
       try {
-        const newPhotos = Array.from(files).map((file) => {
+        // Μετατροπή σε array
+        const fileArray = Array.from(files);
+
+        // Συμπίεση των εικόνων πριν το upload
+        const compressedFiles = await compressImages(fileArray, {
+          maxWidth: 1920,
+          maxHeight: 1920,
+          quality: 0.8,
+          maxSizeMB: 2, // Μέγιστο 2MB μετά τη συμπίεση
+        });
+
+        const newPhotos = compressedFiles.map((file) => {
           // Δημιουργία URL για προεπισκόπηση
           const previewUrl = URL.createObjectURL(file);
 
           const image = new Image({
-            file, // Το αρχείο για το upload
+            file, // Το συμπιεσμένο αρχείο για το upload
             preview: previewUrl, // URL για προεπισκόπηση στο UI
           });
           image.isNew = true; // Flag για να ξεχωρίζουμε τις νέες φωτογραφίες
@@ -116,6 +128,13 @@ const Photos = ({ repair, setRepair, setFilesToDelete }) => {
         }));
       } catch (error) {
         console.error('Σφάλμα κατά την επεξεργασία των φωτογραφιών:', error);
+        // Καλέστε το onError callback αν υπάρχει, αλλιώς console.error
+        if (onError) {
+          onError(
+            error.message ||
+              'Σφάλμα κατά την επεξεργασία των φωτογραφιών. Παρακαλώ δοκιμάστε ξανά.',
+          );
+        }
       } finally {
         setIsLoading(false);
         // Καθαρισμός του input για να επιτρέπει την επιλογή του ίδιου αρχείου
