@@ -11,11 +11,6 @@ export class MotorRepository {
     return data;
   }
 
-  static async createNewMotor(motor) {
-    const response = await apiCall(config.server, '/api/motors', 'POST', motor);
-    return response.data || {};
-  }
-
   static async getById(id) {
     const response = await apiCall(config.server, `/api/motors/${id}`, 'GET');
     const data = response.data || {};
