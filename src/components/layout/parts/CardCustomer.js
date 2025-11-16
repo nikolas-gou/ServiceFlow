@@ -8,7 +8,7 @@ export const CardCustomer = (props) => {
     { label: 'Τηλέφωνο:', value: props.repair.customer.phone },
     {
       label: 'Τύπος:',
-      value: props.repair.customer.type === 'individual' ? 'Ιδιώτης' : 'Επιχείρηση',
+      value: props.repair.customer.type === 'individual' ? 'Ιδιώτης' : 'Εργοστάσιο',
     },
   ];
 
