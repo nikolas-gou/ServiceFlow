@@ -1,74 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Grid, InputLabel, Select, MenuItem } from '@mui/material';
 import { Customer } from '../../../Models/Customer';
-import { CustomerRepository } from '../../../Repositories/CustomerRepository';
-import { MotorRepository } from '../../../Repositories/MotorRepository';
 import { typeOfMotor, typeOfMotor_translated } from '../../../Models/Motor';
 import {
   StyledTextField,
   StyledAutocomplete,
   StyledFormControl,
 } from '../../../common/StyledFormComponents';
+import { useSuggestedFormValues } from '../../../../context/SuggestedFormValuesContext';
 
 export const BasicInfo = (props) => {
-  const [customers, setCustomers] = useState([]);
-  const [motorBrands, setMotorBrands] = useState([]);
+  const { suggested } = useSuggestedFormValues();
+  const { customer, motor } = suggested;
 
-  const commonTitlesOfMotor = [
-    'Ανεμιστήρας',
-    'Γερανός',
-    'Υπ. Αντλία',
-    'Κώνικο',
-    'Ρότορας',
-    'Στάτης',
-    'Κονφλέρ',
-    'Χλωοκοπτικό',
-  ];
-
-  // Αρχικοποίηση των δεδομένων φόρμας
-  useEffect(() => {
-    loadCustomers();
-    loadMotorBrands();
-  }, []);
-
-  // Φόρτωση πελατών από το repository
-  const loadCustomers = async () => {
-    try {
-      const data = await CustomerRepository.getAll();
-      setCustomers(data || []);
-    } catch (err) {
-      console.error('Σφάλμα φόρτωσης πελατών:', err);
-      setCustomers([]);
-    }
-  };
-
-  const loadMotorBrands = async () => {
-    try {
-      const data = await MotorRepository.getAllBrands();
-      setMotorBrands(data || []);
-    } catch (err) {
-      console.error('Σφάλμα φόρτωσης Κινητήρων:', err);
-      setMotorBrands([]);
-    }
-  };
-
-  // Για το Autocomplete του πελάτη
+  // Manage the list of existing customers
   const handleCustomerChange = (event, newValue) => {
-    props.setRepair((prev) => ({
-      ...prev,
-      customer: {
-        ...prev.customer,
-        name: newValue,
-      },
-    }));
-
-    // αν επιλεξει καποιον που υπαρχει παρε ολα τα στοιχεια
-    if (customers.map((customer) => customer.name).includes(newValue)) {
+    if (newValue && typeof newValue === 'object' && newValue.id) {
+      // If clicked on suggested customer
       props.setRepair((prev) => ({
         ...prev,
-        customer: customers.find((customer) => customer.name == newValue),
+        customer: newValue,
       }));
     } else {
+      // if clicked on "x" icon
       props.setRepair((prev) => ({
         ...prev,
         customer: new Customer(),
@@ -84,18 +38,16 @@ export const BasicInfo = (props) => {
     }
   };
 
-  const handleAutocompleteChange = (event, newValue) => {
-    const id = event.target.getAttribute('id') || '';
+  const handleDescriptionChange = (event, newValue) => {
+    const descriptionValue = typeof newValue === 'string' ? newValue : newValue || '';
 
-    if (id && id.includes('motor.description')) {
-      props.setRepair((prev) => ({
-        ...prev,
-        motor: {
-          ...prev.motor,
-          description: newValue,
-        },
-      }));
-    }
+    props.setRepair((prev) => ({
+      ...prev,
+      motor: {
+        ...prev.motor,
+        description: descriptionValue,
+      },
+    }));
 
     // Καθαρισμός τυχόν σφαλμάτων
     if (props.errors['motor.description']) {
@@ -108,11 +60,13 @@ export const BasicInfo = (props) => {
 
   // Για το Autocomplete του manufacturer
   const handleManufacturerChange = (event, newValue) => {
+    const manufacturerValue = typeof newValue === 'string' ? newValue : newValue || '';
+
     props.setRepair((prev) => ({
       ...prev,
       motor: {
         ...prev.motor,
-        manufacturer: newValue,
+        manufacturer: manufacturerValue,
       },
     }));
 
@@ -130,8 +84,15 @@ export const BasicInfo = (props) => {
       <Grid item xs={12} sm={6}>
         <StyledAutocomplete
           freeSolo
-          options={customers.map((customer) => customer.name) || []}
-          value={props.repair.customer?.name || ''}
+          options={customer.data}
+          getOptionLabel={(option) => option?.name || ''}
+          isOptionEqualToValue={(option, value) => option?.id === value?.id}
+          renderOption={(props, option) => (
+            <li {...props} key={option.id ?? `${option.name}-${props['data-option-index']}`}>
+              {option.name}
+            </li>
+          )}
+          value={props.repair.customer || null}
           onChange={handleCustomerChange}
           renderInput={(params) => (
             <StyledTextField
@@ -188,13 +149,10 @@ export const BasicInfo = (props) => {
       <Grid item xs={12} sm={6}>
         <StyledAutocomplete
           freeSolo
-          id="motor.description"
-          key="motor.description"
-          data-field="motor-description"
-          options={commonTitlesOfMotor || []}
+          options={motor.description.data || []}
           value={props.repair.motor?.description || ''}
-          onChange={handleAutocompleteChange}
-          renderInput={(params, option) => (
+          onChange={handleDescriptionChange}
+          renderInput={(params) => (
             <StyledTextField
               {...params}
               key="motor.description"
@@ -212,7 +170,7 @@ export const BasicInfo = (props) => {
       <Grid item xs={12} sm={6}>
         <StyledAutocomplete
           freeSolo
-          options={motorBrands || []}
+          options={motor.manufacturer.data || []}
           value={props.repair.motor?.manufacturer || ''}
           onChange={handleManufacturerChange}
           renderInput={(params) => (

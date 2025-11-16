@@ -1,32 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Autocomplete, TextField, Chip, Box, Typography, Grid } from '@mui/material';
+import { useSuggestedFormValues } from '../../../../../../context/SuggestedFormValuesContext';
 
 export const CrossSectionField = (props) => {
-  // to-do: θ φτιαξω απο το back να ερχονατι τα 5 πιο συχνα cross..  αλλα και ολα που εχουνε προστεθει
-  const crossSections = [
-    '5/10',
-    '5.3/10',
-    '5.6/10',
-    '6/10',
-    '6.3/10',
-    '6.5/10',
-    '6.7/10',
-    '7/10',
-    '7.5/10',
-    '8/10',
-    '8.5/10',
-    '9/10',
-    '9.5/10',
-    '10/10',
-    '12/10',
-    '12.5/10',
-    '15/10',
-    '16/10',
-    '20/10',
-    '25/10',
-  ];
+  const { suggested } = useSuggestedFormValues();
+  const { motor } = suggested;
+  const [crossSections, setCrossSections] = useState(motor.crossSection.data);
 
-  // Regex για validation - μόνο το format: Χ/10 ή Χ.Χ/10
+  //
+  /**
+   * Regex for validation - Acceptable formats: Χ/10,  Χ.Χ/10, X.XX/10.
+   * @param {*} value
+   * @returns
+   */
   const validateCrossSectionPattern = (value) => {
     // Patterns που δεχόμαστε:
     // 1. Χ/10 (π.χ. 5/10, 12/10)
@@ -53,6 +39,11 @@ export const CrossSectionField = (props) => {
         const currentLinks = Array.isArray(prev.motor.motorCrossSectionLinks)
           ? prev.motor.motorCrossSectionLinks
           : [];
+
+        const isNew = !crossSections.includes(newValue);
+        if (isNew) {
+          setCrossSections([...crossSections, newValue]);
+        }
 
         const newLink = {
           motorID: null,

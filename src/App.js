@@ -6,6 +6,7 @@ import Layout from './components/layout/Layout';
 import { SearchProvider } from './context/SearchContext';
 import { RepairsProvider } from './context/RepairsContext';
 import { routes } from './routes';
+import { SuggestedFormValuesProvider } from './context/SuggestedFormValuesContext';
 
 function App() {
   return (
@@ -14,13 +15,15 @@ function App() {
         <SearchProvider>
           <BrowserRouter>
             <CssBaseline />
-            <Layout>
-              <Routes>
-                {routes.map((route) => (
-                  <Route key={route.path} path={route.path} element={route.element} />
-                ))}
-              </Routes>
-            </Layout>
+            <SuggestedFormValuesProvider>
+              <Layout>
+                <Routes>
+                  {routes.map((route) => (
+                    <Route key={route.path} path={route.path} element={route.element} />
+                  ))}
+                </Routes>
+              </Layout>
+            </SuggestedFormValuesProvider>
           </BrowserRouter>
         </SearchProvider>
       </RepairsProvider>
