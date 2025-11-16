@@ -277,7 +277,9 @@ function CreateRepairForm(props) {
 
     // Μετατροπή σε κεφαλαία αν είναι το πεδίο customer.name
     const processedValue =
-      name === 'customer.name' || name === 'motor.manufacturer' ? value.toUpperCase() : value;
+      name === 'customer.name' || name === 'motor.manufacturer' || name === 'motor.description'
+        ? value.toUpperCase()
+        : value;
 
     if (name.includes('.')) {
       // Διαχείριση ένθετων πεδίων (π.χ. customer.name, motor.manufacturer)

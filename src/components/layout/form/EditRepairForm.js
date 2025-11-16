@@ -237,7 +237,11 @@ const NavigationContainer = styled(Box)(({ theme }) => ({
 function EditRepairForm({ repair: initialRepair, onSubmitSuccess, onDirtyChange }) {
   const MB_TO_BYTES = 1000000;
   const MAX_UPLOAD_SIZE_MB = 10;
+
+  // CONTEXT
   const { repairs, setRepairs } = useRepairs();
+
+  // STATES
   const [repair, setRepair] = useState(initialRepair || {});
   const [tabValue, setTabValue] = useState(0);
   const [errors, setErrors] = useState({});
@@ -273,7 +277,9 @@ function EditRepairForm({ repair: initialRepair, onSubmitSuccess, onDirtyChange 
 
     // Μετατροπή σε κεφαλαία αν είναι το πεδίο customer.name
     processedValue =
-      name === 'customer.name' || name === 'motor.manufacturer' ? value.toUpperCase() : value;
+      name === 'customer.name' || name === 'motor.manufacturer' || name === 'motor.description'
+        ? value.toUpperCase()
+        : value;
 
     if (name.includes('.')) {
       // Διαχείριση ένθετων πεδίων (π.χ. customer.name, motor.manufacturer)
