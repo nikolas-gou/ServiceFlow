@@ -76,3 +76,17 @@ export default function apiCall(host, endpoint = '/', reqMethod = 'get', data = 
       throw error;
     });
 }
+
+/**
+ * Έλεγχος αν το response έχει το αναμενόμενο format
+ * @param {Object} response - Το response από το backend
+ * @returns {Boolean} - True αν το response έχει το αναμενόμενο format, false αν δεν έχει
+ */
+export const isValidFormat = (response) => {
+  // Έλεγχος αν το response έχει το αναμενόμενο format
+  if (!response || typeof response !== 'object') {
+    console.error('Unexpected response format:', response);
+    return false;
+  }
+  return true;
+};
