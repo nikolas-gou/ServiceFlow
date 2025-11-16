@@ -21,9 +21,4 @@ export class MotorRepository {
     const data = response.data || {};
     return new Motor(data);
   }
-
-  static async getAllBrands() {
-    const response = await apiCall(config.server, `/api/motors/brands`, 'GET');
-    return response.data || [];
-  }
 }
