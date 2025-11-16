@@ -15,7 +15,7 @@ export const getWindingConfigMap = (motor) => ({
     color: 'primary',
     icon: <Settings sx={{ fontSize: 16 }} />,
     values: [
-      { label: 'Βήμα:', value: motor.step },
+      { label: 'Βήμα:', value: getStepLabel(motor, 'standard') },
       { label: 'Σπείρες:', value: motor.spiral },
       {
         label: 'Διατομή:',
@@ -23,14 +23,14 @@ export const getWindingConfigMap = (motor) => ({
       },
     ],
   },
-
+  // in progress to new function
   // Τριφασικός κινητήρας - μισή περιέλιξη
   '3-phase-half': {
     title: 'Μισό - Μισό',
     color: 'secondary',
     icon: <Tune sx={{ fontSize: 16 }} />,
     values: [
-      { label: 'Βήμα:', value: motor.halfStep },
+      { label: 'Βήμα:', value: getStepLabel(motor, 'half') },
       { label: 'Σπείρες:', value: motor.halfSpiral },
       {
         label: 'Διατομή:',
@@ -46,7 +46,7 @@ export const getWindingConfigMap = (motor) => ({
       color: 'secondary',
       icon: <Tune sx={{ fontSize: 16 }} />,
       values: [
-        { label: 'Βήμα:', value: motor.halfStep },
+        { label: 'Βήμα:', value: getStepLabel(motor, 'half') },
         { label: 'Σπείρες:', value: motor.halfSpiral },
         {
           label: 'Διατομή:',
@@ -59,7 +59,7 @@ export const getWindingConfigMap = (motor) => ({
       color: 'primary',
       icon: <Settings sx={{ fontSize: 16 }} />,
       values: [
-        { label: 'Βήμα:', value: motor.step },
+        { label: 'Βήμα:', value: getStepLabel(motor, 'standard') },
         { label: 'Σπείρες:', value: motor.spiral },
         {
           label: 'Διατομή:',
@@ -202,4 +202,21 @@ export const getWindingConfigMapByType = (motor, typeString) => {
     case '1-phase-combined':
       return getWindingConfigMap(motor)['1-phase-combined'];
   }
+};
+
+const getStepLabel = (motor, type = 'standard') => {
+  if (motor) {
+    if (type == 'standard') {
+      if (motor.coilsCount && motor.coilsCount > 1) {
+        return `${motor.step} (${motor.coilsCount} μαζί)`;
+      }
+      return motor.step;
+    } else if (type == 'half') {
+      if (motor.halfCoilsCount && motor.halfCoilsCount > 1) {
+        return `${motor.halfStep} (${motor.halfCoilsCount} μαζί)`;
+      }
+      return motor.halfStep;
+    }
+  }
+  return '-';
 };
