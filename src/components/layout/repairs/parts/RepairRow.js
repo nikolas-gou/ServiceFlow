@@ -12,6 +12,7 @@ import {
   typeOfMotor_mapping,
   typeOfVolt_mapping,
   typeOfStep_mapping,
+  rpm_types_mapping,
 } from '../../../Models/Motor';
 import { RepairRepository } from '../../../Repositories/RepairRepository';
 import { DeleteConfirmationModal } from './DeleteConfirmationModal';
@@ -132,7 +133,7 @@ export const RepairRow = ({ repair, onView, onEdit, onDelete, zebra }) => {
         </CompactTableCell>
         <CompactTableCell>
           <Typography variant="caption" fontSize="0.75rem">
-            {motor.rpm ? `${motor.rpm}` : '-'}
+            {motor.rpm ? `${rpm_types_mapping[motor.rpm]}` : '-'}
           </Typography>
         </CompactTableCell>
         <CompactTableCell>
