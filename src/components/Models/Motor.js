@@ -130,15 +130,40 @@ export const poles_types_mapping_to_rpm = {
   other: 1490,
 };
 
-export const volt_types = ['230VY', '230VYY', '380VY', '380VYY', '500VY', '500VYY', 'other'];
+export const volt_types = [
+  '230V',
+  '230VY',
+  '230VYY',
+  '380V',
+  '380VY',
+  '380VYY',
+  '500V',
+  '500VY',
+  '500VYY',
+  'other',
+];
 
-export const volt_types_translated = ['230VY', '230VΔ', '380VY', '380VΔ', '500VY', '500VΔ', 'Άλλο'];
+export const volt_types_translated = [
+  '230V',
+  '230VY',
+  '230VΔ',
+  '380V',
+  '380VY',
+  '380VΔ',
+  '500V',
+  '500VY',
+  '500VΔ',
+  'Άλλο',
+];
 
 export const volt_types_mapping = {
+  '230V': '230V',
   '230VY': '230VY',
   '230VYY': '230VΔ',
+  '380V': '380V',
   '380VY': '380VY',
   '380VYY': '380VΔ',
+  '500V': '500V',
   '500VY': '500VY',
   '500VYY': '500VΔ',
   other: 'Αλλο',
