@@ -1,6 +1,6 @@
 import React from 'react';
 import { Settings, Tune } from '@mui/icons-material';
-import { getMotorCrossSectionsByType, formatCrossSections } from '../components/Models/Motor';
+import { getDisplayCrossSectionsValue } from '../components/Models/Motor';
 
 /**
  * It contains specific configs that are different based on the motor type.
@@ -19,7 +19,7 @@ export const getWindingConfigMap = (motor) => ({
       { label: 'Σπείρες:', value: motor.spiral },
       {
         label: 'Διατομή:',
-        value: formatCrossSections(getMotorCrossSectionsByType(motor, ['standard'])),
+        value: getDisplayCrossSectionsValue(motor.motorCrossSectionLinks || [], 'standard'),
       },
     ],
   },
@@ -34,7 +34,7 @@ export const getWindingConfigMap = (motor) => ({
       { label: 'Σπείρες:', value: motor.halfSpiral },
       {
         label: 'Διατομή:',
-        value: formatCrossSections(getMotorCrossSectionsByType(motor, ['half'])),
+        value: getDisplayCrossSectionsValue(motor.motorCrossSectionLinks || [], 'half'),
       },
     ],
   },
@@ -50,7 +50,7 @@ export const getWindingConfigMap = (motor) => ({
         { label: 'Σπείρες:', value: motor.halfSpiral },
         {
           label: 'Διατομή:',
-          value: formatCrossSections(getMotorCrossSectionsByType(motor, ['half'])),
+          value: getDisplayCrossSectionsValue(motor.motorCrossSectionLinks || [], 'half'),
         },
       ],
     },
@@ -63,7 +63,7 @@ export const getWindingConfigMap = (motor) => ({
         { label: 'Σπείρες:', value: motor.spiral },
         {
           label: 'Διατομή:',
-          value: formatCrossSections(getMotorCrossSectionsByType(motor, ['standard'])),
+          value: getDisplayCrossSectionsValue(motor.motorCrossSectionLinks || [], 'standard'),
         },
       ],
     },
@@ -80,7 +80,7 @@ export const getWindingConfigMap = (motor) => ({
         { label: 'Σπείρες:', value: motor.spiral },
         {
           label: 'Διατομή:',
-          value: formatCrossSections(getMotorCrossSectionsByType(motor, ['main_standard'])),
+          value: getDisplayCrossSectionsValue(motor.motorCrossSectionLinks || [], 'main_standard'),
         },
       ],
     },
@@ -93,7 +93,10 @@ export const getWindingConfigMap = (motor) => ({
         { label: 'Σπείρες:', value: motor.helperSpiral },
         {
           label: 'Διατομή:',
-          value: formatCrossSections(getMotorCrossSectionsByType(motor, ['helper_standard'])),
+          value: getDisplayCrossSectionsValue(
+            motor.motorCrossSectionLinks || [],
+            'helper_standard',
+          ),
         },
       ],
     },
@@ -110,7 +113,7 @@ export const getWindingConfigMap = (motor) => ({
         { label: 'Σπείρες:', value: motor.halfSpiral },
         {
           label: 'Διατομή:',
-          value: formatCrossSections(getMotorCrossSectionsByType(motor, ['main_half'])),
+          value: getDisplayCrossSectionsValue(motor.motorCrossSectionLinks || [], 'main_half'),
         },
       ],
     },
@@ -123,7 +126,7 @@ export const getWindingConfigMap = (motor) => ({
         { label: 'Σπείρες:', value: motor.helperHalfSpiral },
         {
           label: 'Διατομή:',
-          value: formatCrossSections(getMotorCrossSectionsByType(motor, ['helper_half'])),
+          value: getDisplayCrossSectionsValue(motor.motorCrossSectionLinks || [], 'helper_half'),
         },
       ],
     },
@@ -143,7 +146,7 @@ export const getWindingConfigMap = (motor) => ({
         { label: 'Σπείρες:', value: motor.halfSpiral },
         {
           label: 'Διατομή:',
-          value: formatCrossSections(getMotorCrossSectionsByType(motor, ['main_half'])),
+          value: getDisplayCrossSectionsValue(motor.motorCrossSectionLinks || [], 'main_half'),
         },
       ],
       rightValues: [
@@ -151,7 +154,7 @@ export const getWindingConfigMap = (motor) => ({
         { label: 'Σπείρες:', value: motor.spiral },
         {
           label: 'Διατομή:',
-          value: formatCrossSections(getMotorCrossSectionsByType(motor, ['main_standard'])),
+          value: getDisplayCrossSectionsValue(motor.motorCrossSectionLinks || [], 'main_standard'),
         },
       ],
     },
@@ -166,7 +169,7 @@ export const getWindingConfigMap = (motor) => ({
         { label: 'Σπείρες:', value: motor.helperHalfSpiral },
         {
           label: 'Διατομή:',
-          value: formatCrossSections(getMotorCrossSectionsByType(motor, ['helper_half'])),
+          value: getDisplayCrossSectionsValue(motor.motorCrossSectionLinks || [], 'helper_half'),
         },
       ],
       rightValues: [
@@ -174,7 +177,10 @@ export const getWindingConfigMap = (motor) => ({
         { label: 'Σπείρες:', value: motor.helperSpiral },
         {
           label: 'Διατομή:',
-          value: formatCrossSections(getMotorCrossSectionsByType(motor, ['helper_standard'])),
+          value: getDisplayCrossSectionsValue(
+            motor.motorCrossSectionLinks || [],
+            'helper_standard',
+          ),
         },
       ],
     },

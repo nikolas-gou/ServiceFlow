@@ -1,3 +1,4 @@
+import React from 'react';
 import { MotorCrossSectionLinks } from './MotorCrossSectionLinks';
 
 export class Motor {
@@ -8,7 +9,7 @@ export class Motor {
     this.manufacturer = data.manufacturer || '-';
     this.kw = data.kw || null;
     this.hp = data.hp || null;
-    this.rpm = data.rpm || '1490';
+    this.rpm = data.rpm || 'other';
     this.step = data.step || null;
     this.halfStep = data.halfStep || null;
     this.helperStep = data.helperStep || null;
@@ -20,7 +21,7 @@ export class Motor {
     this.connectionism = data.connectionism || 'other';
     this.volt = data.volt || '380VY';
     this.amps = data.amps || null;
-    this.poles = data.poles || '6';
+    this.poles = data.poles || 'other';
     this.coilsCount = data.coilsCount || 1;
     this.halfCoilsCount = data.halfCoilsCount || 1;
     this.helperCoilsCount = data.helperCoilsCount || 1;
@@ -28,7 +29,7 @@ export class Motor {
     this.typeOfStep = data.typeOfStep || 'standard';
     this.typeOfMotor = data.typeOfMotor || 'el_motor';
     this.typeOfVolt = data.typeOfVolt || '3-phase';
-    this.createdAt = data.createdAt || new Date();
+    this.createdAt = data.createdAt || null;
     this.customerID = data.customerID || null;
     this.motorCrossSectionLinks = Array.isArray(data.motorCrossSectionLinks)
       ? data.motorCrossSectionLinks.map((item) => new MotorCrossSectionLinks(item))
@@ -102,7 +103,7 @@ export const rpm_types_mapping = {
   900: '900',
   1490: '1490',
   2900: '2900',
-  other: 'Αλλο',
+  other: 'Άλλο',
 };
 export const rpm_types_mapping_to_poles = {
   750: 8,
@@ -196,9 +197,38 @@ export const getMotorCrossSectionsByType = (motor, types) => {
 };
 
 // Helper function για σωστή εμφάνιση διατομών
-export const formatCrossSections = (arr) => {
-  if (!arr || arr.length === 0) return '-';
-  return arr.join(' + ');
+export const getDisplayCrossSectionsValue = (crossSections, type = 'standard') => {
+  const links = crossSections || [];
+  if (links.length === 0) return '';
+  let color = type.includes('helper') ? '#c62828' : '#ff9800';
+
+  // Φιλτράρουμε μόνο τα links που ανήκουν στον συγκεκριμένο τύπο
+  const filteredLinks = links.filter((link) => link.type === type);
+
+  if (filteredLinks.length === 0) return '';
+
+  const grouped = filteredLinks.reduce((acc, link) => {
+    const section = link.crossSection;
+    acc[section] = (acc[section] || 0) + 1;
+    return acc;
+  }, {});
+
+  return Object.entries(grouped)
+    .map(([section, count], index) => {
+      if (count > 1) {
+        return (
+          <span key={`${section}-${count}`}>
+            <span style={{ color: color, fontWeight: 'bold', fontSize: '1.1em' }}>{count}x</span>{' '}
+            {section}
+          </span>
+        );
+      }
+      return <span key={section}>{section}</span>;
+    })
+    .reduce((acc, element, index, array) => {
+      if (index === 0) return [element];
+      return [...acc, ' + ', element];
+    }, []);
 };
 
 export const cleanDetailsWindingOnVoltStepChange = (motor) => {
