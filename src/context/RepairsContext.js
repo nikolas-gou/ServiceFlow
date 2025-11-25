@@ -28,6 +28,12 @@ export const RepairsProvider = ({ children }) => {
     rpm: '',
   });
 
+  // Sorting state
+  const [sorting, setSorting] = useState({
+    sortBy: 'is_arrived', // default
+    sortOrder: 'DESC', // uppercase για backend
+  });
+
   // Fetch repairs with pagination and filters
   const getRepairs = useCallback(async () => {
     try {
@@ -38,6 +44,8 @@ export const RepairsProvider = ({ children }) => {
         page: pagination.currentPage,
         perPage: pagination.perPage,
         ...filters,
+        sortBy: sorting.sortBy,
+        sortOrder: sorting.sortOrder,
       };
 
       // Remove empty filters
@@ -57,7 +65,7 @@ export const RepairsProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  }, [pagination.currentPage, pagination.perPage, filters]);
+  }, [pagination.currentPage, pagination.perPage, filters, sorting]);
 
   // Fetch repairs when dependencies change
   useEffect(() => {
@@ -79,6 +87,12 @@ export const RepairsProvider = ({ children }) => {
   const updateFilters = (newFilters) => {
     setFilters(newFilters);
     setPagination((prev) => ({ ...prev, currentPage: 1 })); // Reset to page 1 when filters change
+  };
+
+  // Update sorting (resets to page 1)
+  const updateSorting = (newSorting) => {
+    setSorting(newSorting);
+    setPagination((prev) => ({ ...prev, currentPage: 1 })); // Reset to page 1 when sorting changes
   };
 
   const addRepair = (repair) => {
@@ -111,6 +125,8 @@ export const RepairsProvider = ({ children }) => {
         setPerPage,
         filters,
         updateFilters,
+        sorting,
+        updateSorting,
       }}
     >
       {children}

@@ -11,6 +11,7 @@ import {
   Typography,
   styled,
   Divider,
+  TableSortLabel,
 } from '@mui/material';
 import { useRepairs } from '../../../context/RepairsContext';
 import Search from '../Search';
@@ -49,6 +50,8 @@ export default function Repairs() {
     filters: contextFilters,
     updateFilters,
     deleteRepair,
+    sorting,
+    updateSorting,
   } = useRepairs();
 
   // Modal state
@@ -115,6 +118,20 @@ export default function Repairs() {
   const handleEditRepair = (repair) => {
     setSelectedRepair(repair);
     setEditModalOpen(true);
+  };
+
+  const onClickSortingTable = (columnName) => {
+    if (columnName !== sorting.sortBy) {
+      updateSorting({
+        sortBy: columnName,
+        sortOrder: 'ASC', // uppercase για backend
+      });
+    } else {
+      updateSorting({
+        sortBy: columnName,
+        sortOrder: sorting.sortOrder === 'ASC' ? 'DESC' : 'ASC',
+      });
+    }
   };
 
   return (
@@ -201,7 +218,17 @@ export default function Repairs() {
               <CompactTableCell>Φάσεις</CompactTableCell>
               <CompactTableCell>Τύπος</CompactTableCell>
               {/* <CompactTableCell>Κατάσταση</CompactTableCell> */}
-              <CompactTableCell>Παραλαβή</CompactTableCell>
+              <CompactTableCell>
+                <TableSortLabel
+                  active={sorting.sortBy === 'is_arrived'}
+                  onClick={() => onClickSortingTable('is_arrived')}
+                  direction={
+                    sorting.sortBy === 'is_arrived' ? sorting.sortOrder.toLowerCase() : 'asc'
+                  }
+                >
+                  Ημ. Παραλαβής
+                </TableSortLabel>
+              </CompactTableCell>
               <CompactTableCell width="50px">Προβολή</CompactTableCell>
             </TableRow>
           </TableHead>
