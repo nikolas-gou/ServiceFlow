@@ -98,6 +98,7 @@ export const connectionism_types_mapping = {
 
 export const rpm_types = ['750', '900', '1490', '2900', 'other'];
 export const rpm_types_translated = ['750', '900', '1490', '2900', 'Αλλο'];
+// πιθανο ελεγχο στις τιμες 750 || "750"κτλ..
 export const rpm_types_mapping = {
   750: '750',
   900: '900',
@@ -110,7 +111,7 @@ export const rpm_types_mapping_to_poles = {
   900: 6,
   1490: 4,
   2900: 2,
-  other: 6,
+  other: 'other',
 };
 
 export const poles_types = ['2', '4', '6', '8', 'other'];
@@ -127,7 +128,7 @@ export const poles_types_mapping_to_rpm = {
   4: 1490,
   6: 900,
   8: 750,
-  other: 1490,
+  other: 'other',
 };
 
 export const volt_types = [
