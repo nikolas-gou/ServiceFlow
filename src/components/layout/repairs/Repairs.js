@@ -205,7 +205,15 @@ export default function Repairs() {
           <TableHead>
             <TableRow>
               {/* only for testing */}
-              <CompactTableCell>ID</CompactTableCell>
+              <CompactTableCell>
+                <TableSortLabel
+                  active={sorting.sortBy === 'id'}
+                  onClick={() => onClickSortingTable('id')}
+                  direction={sorting.sortBy === 'id' ? sorting.sortOrder.toLowerCase() : 'asc'}
+                >
+                  ID
+                </TableSortLabel>
+              </CompactTableCell>
               <CompactTableCell>S/N</CompactTableCell>
               <CompactTableCell>Πελάτης</CompactTableCell>
               <CompactTableCell>Περιγραφή Κινητήρα</CompactTableCell>
