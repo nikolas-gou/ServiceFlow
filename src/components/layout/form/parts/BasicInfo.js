@@ -214,7 +214,7 @@ export const BasicInfo = (props) => {
           label="Ημερομηνία Παραλαβής"
           name="isArrived"
           type="date"
-          value={props.repair?.isArrived || ''}
+          value={props.repair?.isArrived || new Date().toISOString().split('T')[0]}
           onChange={props.handleInputChange}
           InputLabelProps={{
             shrink: true,
