@@ -1,5 +1,5 @@
 /**
- * Utility functions for date formatting and manipulation
+ * Utility functions for date formatting
  */
 
 /**
