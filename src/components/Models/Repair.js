@@ -11,9 +11,9 @@ export class Repair {
     this.repairStatus = data.repairStatus || 'in-progress';
     this.description = data.description || '';
     this.cost = data.cost || null;
-    this.createdAt = data.createdAt || new Date();
-    this.isArrived = data.isArrived || new Date().toISOString().split('T')[0];
-    this.estimatedIsComplete = data.estimatedIsComplete || new Date().toISOString().split('T')[0];
+    this.createdAt = data.createdAt || null;
+    this.isArrived = data.isArrived || null;
+    this.estimatedIsComplete = data.estimatedIsComplete || null;
     this.deletedAt = data.deletedAt || null;
     this.customer = data.customer ? new Customer(data.customer) : new Customer();
     this.motor = data.motor ? new Motor(data.motor) : new Motor();
@@ -31,7 +31,7 @@ export class Repair {
       motorID: this.motorID,
       customerID: this.customerID,
       repairStatus: this.repairStatus,
-      createdAt: this.createdAt,
+      createdAt: this.createdAt instanceof Date ? this.createdAt.toISOString() : this.createdAt,
       isArrived: this.isArrived,
       estimatedIsComplete: this.estimatedIsComplete,
       description: this.description,
