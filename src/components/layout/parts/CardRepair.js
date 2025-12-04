@@ -1,21 +1,18 @@
 import React from 'react';
 import { Build } from '@mui/icons-material';
 import BoxInfoDisplay from '../../common/box/main/EnhancedMotorRepairDisplay/BoxInfoDisplay';
+import { formatDateNumeric } from '../../../utils/dateUtils';
 
 export const CardRepair = (props) => {
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('el-GR');
-  };
-
   const repairData = [
     { label: 'Κόστος:', value: `€${props.repair.cost || '0.00'}` },
     {
       label: 'Παραλαβή:',
-      value: props.repair.isArrived ? formatDate(props.repair.isArrived) : '-',
+      value: formatDateNumeric(props.repair.isArrived),
     },
     {
       label: 'Εκτίμηση:',
-      value: props.repair.estimatedIsComplete ? formatDate(props.repair.estimatedIsComplete) : '-',
+      value: formatDateNumeric(props.repair.estimatedIsComplete),
     },
   ];
 

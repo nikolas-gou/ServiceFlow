@@ -15,6 +15,7 @@ import {
   Stack,
   Divider,
 } from '@mui/material';
+import { formatDateTimeForDisplay } from '../../../../utils/dateUtils';
 import {
   Close as CloseIcon,
   Person,
@@ -175,13 +176,7 @@ export const CustomerDetailModal = ({ open, customer, onClose }) => {
 
   const formatDate = (dateString) => {
     if (!dateString) return 'Δεν έχει οριστεί';
-    return new Date(dateString).toLocaleDateString('el-GR', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
+    return formatDateTimeForDisplay(dateString);
   };
 
   const renderHeader = () => (

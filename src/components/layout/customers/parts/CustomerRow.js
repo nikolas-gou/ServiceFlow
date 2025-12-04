@@ -1,6 +1,7 @@
 import React from 'react';
 import { Typography, Chip, IconButton, styled, TableCell, TableRow, Tooltip } from '@mui/material';
 import { Visibility as VisibilityIcon } from '@mui/icons-material';
+import { formatDateNumeric } from '../../../../utils/dateUtils';
 
 // Styled components για compact εμφάνιση
 const CompactTableCell = styled(TableCell)(({ theme }) => ({
@@ -88,7 +89,7 @@ export const CustomerRow = ({ customer, index, onOpenModal, zebra }) => {
 
       <CompactTableCell>
         <Typography variant="caption" fontSize="0.75rem">
-          {customer.createdAt ? new Date(customer.createdAt).toLocaleDateString('el-GR') : '-'}
+          {formatDateNumeric(customer.createdAt)}
         </Typography>
       </CompactTableCell>
 

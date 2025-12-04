@@ -16,6 +16,7 @@ import {
 } from '../../../Models/Motor';
 import { RepairRepository } from '../../../Repositories/RepairRepository';
 import { DeleteConfirmationModal } from './DeleteConfirmationModal';
+import { formatDateNumeric } from '../../../../utils/dateUtils';
 
 // Styled components για compact εμφάνιση
 const CompactTableCell = styled(TableCell)(({ theme }) => ({
@@ -175,7 +176,7 @@ export const RepairRow = ({ repair, onView, onEdit, onDelete, zebra }) => {
         </CompactTableCell> */}
         <CompactTableCell>
           <Typography variant="caption" color="text.secondary" fontSize="0.7rem">
-            {repair.isArrived || '-'}
+            {formatDateNumeric(repair.isArrived)}
           </Typography>
         </CompactTableCell>
         <CompactTableCell sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
