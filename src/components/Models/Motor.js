@@ -37,7 +37,7 @@ export class Motor {
   }
 
   isValid() {
-    return this.manufacturer.trim() !== '' && this.manufacturer.trim() !== '';
+    return this.manufacturer.trim() !== '';
   }
 
   toJSON() {
