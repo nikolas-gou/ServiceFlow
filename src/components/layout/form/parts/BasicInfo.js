@@ -13,6 +13,21 @@ export const BasicInfo = (props) => {
   const { suggested } = useSuggestedFormValues();
   const { customer, motor } = suggested;
 
+  const successStyle = {
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': {
+        borderColor: '#2e7d32', // Πράσινο χρώμα
+        borderWidth: '2px',
+      },
+      '&:hover fieldset': {
+        borderColor: '#1b5e20',
+      },
+    },
+    '& .MuiInputLabel-root': {
+      color: '#2e7d32',
+    },
+  };
+
   // Manage the list of existing customers
   const handleCustomerChange = (event, newValue) => {
     if (newValue && typeof newValue === 'object' && newValue.id) {
@@ -98,10 +113,27 @@ export const BasicInfo = (props) => {
             <StyledTextField
               {...params}
               required
+              sx={props.repair.customer?.id ? successStyle : null}
               label="Πελάτης"
               name="customer.name"
               variant="outlined"
-              onChange={(e) => props.handleInputChange(e)}
+              onChange={(e) => {
+                const value = e.target.value.toUpperCase();
+
+                // 1. Βρες αν υπάρχει έστω και ένας πελάτης με αυτό το όνομα
+                const foundCustomer = customer.data.find((c) => c.name.toUpperCase() === value);
+                if (foundCustomer) {
+                  // Αν βρέθηκε, ενημέρωσε τα στοιχεία ΜΙΑ φορά
+                  handleCustomerChange(e, foundCustomer);
+                } else {
+                  // Αν ΔΕΝ βρέθηκε κανείς, τότε μόνο κάνε το reset
+                  props.setRepair((prev) => ({
+                    ...prev,
+                    customer: { ...new Customer(), name: value },
+                  }));
+                  props.handleInputChange(e);
+                }
+              }}
               error={props.hasError('customer.name')}
               helperText={props.getErrorMessage('customer.name')}
             />
@@ -109,7 +141,7 @@ export const BasicInfo = (props) => {
         />
       </Grid>
       <Grid item xs={12} sm={6}>
-        <StyledFormControl fullWidth>
+        <StyledFormControl fullWidth sx={props.repair.customer?.id ? successStyle : null}>
           <InputLabel id="type-select-label">Τύπος</InputLabel>
           <Select
             labelId="type-select-label"
@@ -127,6 +159,7 @@ export const BasicInfo = (props) => {
       <Grid item xs={12} sm={6}>
         <StyledTextField
           fullWidth
+          sx={props.repair.customer?.id ? successStyle : null}
           label="Τηλέφωνο"
           name="customer.phone"
           variant="outlined"
@@ -139,6 +172,7 @@ export const BasicInfo = (props) => {
       <Grid item xs={12} sm={6}>
         <StyledTextField
           fullWidth
+          sx={props.repair.customer?.id ? successStyle : null}
           label="Email"
           name="customer.email"
           variant="outlined"

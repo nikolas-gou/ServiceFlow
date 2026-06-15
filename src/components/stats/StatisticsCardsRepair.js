@@ -1,14 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Grid } from '@mui/material';
-import {
-  TrendingUp,
-  TrendingDown,
-  ShowChart,
-  People,
-  Build,
-  Euro,
-  Warning,
-} from '@mui/icons-material';
+import { ShowChart, People, Build, Euro, Warning } from '@mui/icons-material';
 import { Chart as ChartJS, LineElement, PointElement, LinearScale, CategoryScale } from 'chart.js';
 import { useLocation } from 'react-router-dom';
 import LoadingCard from '../common/LoadingCard';
@@ -16,12 +8,7 @@ import { StatisticRepository } from '../Repositories/StatisticRepository';
 import { StatisticCard } from './parts/StatisticCard';
 import { useErrorSnackbar } from '../../hooks/useErrorSnackbar';
 import { safeStatValue, safeDataArray, getStandardErrorMessage } from '../../utils/errorHandling';
-import {
-  calculateTrend,
-  formatValue,
-  getSafeDataArray,
-  getTrendColor,
-} from '../../utils/statistics';
+import { calculateTrend, formatValue } from '../../utils/statistics';
 import StyledSnackbar from '../common/StyledSnackbar';
 
 ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale);

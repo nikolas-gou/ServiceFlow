@@ -589,8 +589,8 @@ function CreateRepairForm(props) {
                 tabValue === 0
                   ? 'translateX(0)'
                   : tabValue > 0
-                  ? 'translateX(-20px)'
-                  : 'translateX(20px)',
+                    ? 'translateX(-20px)'
+                    : 'translateX(20px)',
               opacity: tabValue === 0 ? 1 : 0,
               transition: 'all 0.3s ease',
             }}
@@ -616,8 +616,8 @@ function CreateRepairForm(props) {
                 tabValue === 1
                   ? 'translateX(0)'
                   : tabValue > 1
-                  ? 'translateX(-20px)'
-                  : 'translateX(20px)',
+                    ? 'translateX(-20px)'
+                    : 'translateX(20px)',
               opacity: tabValue === 1 ? 1 : 0,
               transition: 'all 0.3s ease',
             }}
@@ -639,8 +639,8 @@ function CreateRepairForm(props) {
                 tabValue === 2
                   ? 'translateX(0)'
                   : tabValue > 2
-                  ? 'translateX(-20px)'
-                  : 'translateX(20px)',
+                    ? 'translateX(-20px)'
+                    : 'translateX(20px)',
               opacity: tabValue === 2 ? 1 : 0,
               transition: 'all 0.3s ease',
             }}
@@ -662,8 +662,8 @@ function CreateRepairForm(props) {
                 tabValue === 3
                   ? 'translateX(0)'
                   : tabValue > 3
-                  ? 'translateX(-20px)'
-                  : 'translateX(20px)',
+                    ? 'translateX(-20px)'
+                    : 'translateX(20px)',
               opacity: tabValue === 3 ? 1 : 0,
               transition: 'all 0.3s ease',
             }}
