@@ -6,9 +6,8 @@ import {
   Select,
   MenuItem,
   styled,
-  useTheme,
-  useMediaQuery,
 } from '@mui/material';
+import useResponsive from '../../../hooks/useResponsive';
 import {
   FirstPage as FirstPageIcon,
   LastPage as LastPageIcon,
@@ -123,9 +122,7 @@ export default function PaginationComponent({
   onItemsPerPageChange,
   showItemsPerPage = true,
 }) {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const isTablet = useMediaQuery(theme.breakpoints.down('md'));
+  const { isMobile, isTablet } = useResponsive();
 
   // Υπολογισμός των σελίδων που θα εμφανίζονται
   const getPageNumbers = () => {

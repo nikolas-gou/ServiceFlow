@@ -1,5 +1,6 @@
 const config = {
-  server: 'http://192.168.2.240:8000', //home wifi
+  // server: 'http://192.168.2.240:8000', //home wifi
+  server: 'http://localhost:8000', //home wifi
   dateFormat: 'el-GR',
 };
 

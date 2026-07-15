@@ -1,54 +1,34 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Box, Fab, useMediaQuery } from '@mui/material';
+import { Box, Fab } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import SideBar from './sidebar/SideBar';
 import TopAppBar from './TopAppBar';
 import { ModalRepairForm } from './form/parts/ModalRepairForm';
 import { ModalConnectionForm } from './form/parts/ModalConnectionForm';
-
-const drawerWidth = 250;
+import useResponsive from '../../hooks/useResponsive';
 
 const Layout = (props) => {
   const [openModal, setOpenModal] = useState(false);
-  const [tabletOpen, setTabletOpen] = useState(false);
+  const { isLargeScreen } = useResponsive();
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(!isLargeScreen);
   const location = useLocation();
   const [root, parent, child] = location.pathname.split('/');
-  // Ο σκοπος μου ειναι πχ σε 13αρι λαπτοπ να ειναι στα ορια απο εκει και κατω να κλεινει(κυριως για χρηση tablet)
-  const isLargeScreen = useMediaQuery('(min-width: 1366px)');
 
   const handleOpenModal = () => {
     setOpenModal(true);
   };
 
-  const handleTabletToggle = () => {
-    setTabletOpen(!tabletOpen);
+  const handleToggleCollapse = () => {
+    setSidebarCollapsed(!sidebarCollapsed);
   };
 
-  const renderSidebar = () => {
-    if (!isLargeScreen) {
-      return (
-        <>
-          <SideBar
-            tabletOpen={tabletOpen}
-            isLargeScreen={isLargeScreen}
-            onClose={handleTabletToggle}
-          />
-        </>
-      );
-    }
-    return (
-      <Box
-        sx={{
-          width: drawerWidth,
-          minWidth: drawerWidth,
-          flexShrink: 0,
-        }}
-      >
-        <SideBar isLargeScreen={isLargeScreen} onClose={handleTabletToggle} />
-      </Box>
-    );
-  };
+  const renderSidebar = () => (
+    <SideBar
+      collapsed={sidebarCollapsed}
+      onToggleCollapse={handleToggleCollapse}
+    />
+  );
 
   const typeOfModal = () => {
     if (
@@ -69,7 +49,6 @@ const Layout = (props) => {
       sx={{
         display: 'flex',
         height: '100vh',
-        // background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
       }}
     >
       {/* Sidebar */}
@@ -85,7 +64,7 @@ const Layout = (props) => {
           position: 'relative',
         }}
       >
-        <TopAppBar onMenuClick={handleTabletToggle} isLargeScreen={isLargeScreen} />
+        <TopAppBar />
         {/* Scrollable Content */}
         <Box
           sx={{
