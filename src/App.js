@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './components/layout/Layout';
 import { SearchProvider } from './context/SearchContext';
 import { RepairsProvider } from './context/RepairsContext';
+import { ConnectionsProvider } from './context/ConnectionsContext';
 import { routes } from './routes';
 import { SuggestedFormValuesProvider } from './context/SuggestedFormValuesContext';
 
@@ -12,7 +13,8 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <RepairsProvider>
-        <SearchProvider>
+        <ConnectionsProvider>
+          <SearchProvider>
           <BrowserRouter>
             <CssBaseline />
             <SuggestedFormValuesProvider>
@@ -25,7 +27,8 @@ function App() {
               </Layout>
             </SuggestedFormValuesProvider>
           </BrowserRouter>
-        </SearchProvider>
+          </SearchProvider>
+        </ConnectionsProvider>
       </RepairsProvider>
     </ThemeProvider>
   );

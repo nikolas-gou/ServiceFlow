@@ -1,41 +1,127 @@
-import { createContext, useContext, useState, useEffect } from 'react';
-import { RepairRepository } from '../components/Repositories/RepairRepository';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { ConnectionRepository } from '../components/Repositories/ConnectionRepository';
 
-const RepairsContext = createContext();
+const ConnectionsContext = createContext();
 
-export const RepairsProvider = ({ children }) => {
-  const [repairs, setRepairs] = useState([]);
+export const ConnectionsProvider = ({ children }) => {
+  const [connections, setConnections] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const getRepairs = async () => {
-    // try {
-    //   const data = await RepairRepository.getAll();
-    //   setRepairs(data);
-    // } catch (err) {
-    //   console.error('Error fetching repairs:', err);
-    // }
-  };
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    perPage: localStorage.getItem('connectionsPerPage') || 10,
+    totalItems: 0,
+    totalPages: 0,
+    hasNextPage: false,
+    hasPrevPage: false,
+  });
+
+  const [filters, setFilters] = useState({
+    search: '',
+    connectionType: '',
+    poles: '',
+    rpm: '',
+    typeOfVolt: '',
+  });
+
+  const [sorting, setSorting] = useState({
+    sortBy: 'created_at',
+    sortOrder: 'DESC',
+  });
+
+  const getConnections = useCallback(async () => {
+    try {
+      setLoading(true);
+
+      const params = {
+        page: pagination.currentPage,
+        perPage: pagination.perPage,
+        ...filters,
+        sortBy: sorting.sortBy,
+        sortOrder: sorting.sortOrder,
+      };
+
+      Object.keys(params).forEach((key) => {
+        if (params[key] === '' || params[key] === null || params[key] === undefined) {
+          delete params[key];
+        }
+      });
+
+      const result = await ConnectionRepository.getPaginated(params);
+
+      setConnections(result.data);
+      setPagination(result.pagination);
+    } catch (err) {
+      console.error('Error fetching connections:', err);
+      setConnections([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [pagination.currentPage, pagination.perPage, filters, sorting]);
 
   useEffect(() => {
-    // getRepairs();
-    console.log('ok');
-  }, []);
+    getConnections();
+  }, [getConnections]);
 
-  const addRepair = (repair) => {
-    // Βεβαιώνουμε ότι το repair είναι object και όχι array
-    if (Array.isArray(repair)) {
-      setRepairs((prev) => [...repair, ...prev]);
-    } else {
-      setRepairs((prev) => [repair, ...prev]);
-    }
+  const setPage = (page) => {
+    setPagination((prev) => ({ ...prev, currentPage: page }));
+  };
+
+  const setPerPage = (perPage) => {
+    setPagination((prev) => ({ ...prev, perPage, currentPage: 1 }));
+    localStorage.setItem('connectionsPerPage', perPage);
+  };
+
+  const updateFilters = (newFilters) => {
+    setFilters(newFilters);
+    setPagination((prev) => ({ ...prev, currentPage: 1 }));
+  };
+
+  const updateSorting = (newSorting) => {
+    setSorting(newSorting);
+    setPagination((prev) => ({ ...prev, currentPage: 1 }));
+  };
+
+  const addConnection = async (connection) => {
+    const result = await ConnectionRepository.createConnection(connection);
+    getConnections();
+    return result;
+  };
+
+  const updateConnection = async (connectionId, data) => {
+    const result = await ConnectionRepository.updateConnection(connectionId, data);
+    getConnections();
+    return result;
+  };
+
+  const deleteConnection = async (connectionId) => {
+    const result = await ConnectionRepository.deleteConnection(connectionId);
+    getConnections();
+    return result;
   };
 
   return (
-    <RepairsContext.Provider value={{ repairs, setRepairs, addRepair, getRepairs, loading }}>
+    <ConnectionsContext.Provider
+      value={{
+        connections,
+        setConnections,
+        addConnection,
+        updateConnection,
+        deleteConnection,
+        getConnections,
+        loading,
+        pagination,
+        setPage,
+        setPerPage,
+        filters,
+        updateFilters,
+        sorting,
+        updateSorting,
+      }}
+    >
       {children}
-    </RepairsContext.Provider>
+    </ConnectionsContext.Provider>
   );
 };
 
-// Custom hook για cleaner χρήση
-export const useConnections = () => useContext(RepairsContext);
+export const useConnections = () => useContext(ConnectionsContext);
