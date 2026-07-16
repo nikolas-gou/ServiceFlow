@@ -1,13 +1,9 @@
-import { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { RepairRepository } from '../components/Repositories/RepairRepository';
+import { createContext, useContext, useState, useCallback } from 'react';
+import { useRepairsQuery, useCreateRepair, useUpdateRepair, useSoftDeleteRepair } from '../hooks/useRepairs';
 
 const RepairsContext = createContext();
 
 export const RepairsProvider = ({ children }) => {
-  const [repairs, setRepairs] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  // Pagination state
   const [pagination, setPagination] = useState({
     currentPage: 1,
     perPage: localStorage.getItem('perPage') || 10,
@@ -17,7 +13,6 @@ export const RepairsProvider = ({ children }) => {
     hasPrevPage: false,
   });
 
-  // Filters state
   const [filters, setFilters] = useState({
     search: '',
     manufacturer: '',
@@ -28,99 +23,71 @@ export const RepairsProvider = ({ children }) => {
     rpm: '',
   });
 
-  // Sorting state
   const [sorting, setSorting] = useState({
-    sortBy: 'is_arrived', // default
-    sortOrder: 'DESC', // uppercase για backend
+    sortBy: 'is_arrived',
+    sortOrder: 'DESC',
   });
 
-  // Fetch repairs with pagination and filters
-  const getRepairs = useCallback(async () => {
-    try {
-      setLoading(true);
+  const params = {
+    page: pagination.currentPage,
+    perPage: pagination.perPage,
+    ...filters,
+    sortBy: sorting.sortBy,
+    sortOrder: sorting.sortOrder,
+  };
 
-      // Build params object
-      const params = {
-        page: pagination.currentPage,
-        perPage: pagination.perPage,
-        ...filters,
-        sortBy: sorting.sortBy,
-        sortOrder: sorting.sortOrder,
-      };
+  const { data: result, isLoading } = useRepairsQuery(params);
+  const createRepairMutation = useCreateRepair();
+  const updateRepairMutation = useUpdateRepair();
+  const softDeleteMutation = useSoftDeleteRepair();
 
-      // Remove empty filters
-      Object.keys(params).forEach((key) => {
-        if (params[key] === '' || params[key] === null || params[key] === undefined) {
-          delete params[key];
-        }
-      });
+  const repairs = result?.data || [];
+  const paginationMeta = result?.pagination || pagination;
 
-      const result = await RepairRepository.getPaginated(params);
-
-      setRepairs(result.data);
-      setPagination(result.pagination);
-    } catch (err) {
-      console.error('Error fetching repairs:', err);
-      setRepairs([]);
-    } finally {
-      setLoading(false);
-    }
-  }, [pagination.currentPage, pagination.perPage, filters, sorting]);
-
-  // Fetch repairs when dependencies change
-  useEffect(() => {
-    getRepairs();
-  }, [getRepairs]);
-
-  // Update page number
   const setPage = (page) => {
     setPagination((prev) => ({ ...prev, currentPage: page }));
   };
 
-  // Update items per page
   const setPerPage = (perPage) => {
-    setPagination((prev) => ({ ...prev, perPage, currentPage: 1 })); // Reset to page 1
+    setPagination((prev) => ({ ...prev, perPage, currentPage: 1 }));
     localStorage.setItem('perPage', perPage);
   };
 
-  // Update filters (resets to page 1)
   const updateFilters = (newFilters) => {
     setFilters(newFilters);
-    setPagination((prev) => ({ ...prev, currentPage: 1 })); // Reset to page 1 when filters change
+    setPagination((prev) => ({ ...prev, currentPage: 1 }));
   };
 
-  // Update sorting (resets to page 1)
   const updateSorting = (newSorting) => {
     setSorting(newSorting);
-    setPagination((prev) => ({ ...prev, currentPage: 1 })); // Reset to page 1 when sorting changes
+    setPagination((prev) => ({ ...prev, currentPage: 1 }));
   };
 
-  const addRepair = (repair) => {
-    // After adding a repair, refresh the list
-    getRepairs();
-  };
+  const addRepair = useCallback(() => {}, []);
 
-  const updateRepair = (updatedRepair) => {
-    // After updating a repair, refresh the list
-    getRepairs();
-  };
+  const updateRepair = useCallback(async (id, data) => {
+    await updateRepairMutation.mutateAsync({ id, data });
+  }, [updateRepairMutation]);
 
-  const deleteRepair = (repairId) => {
-    // After deleting a repair, refresh the list
-    getRepairs();
-  };
+  const deleteRepair = useCallback(async (repairId) => {
+    await softDeleteMutation.mutateAsync(repairId);
+  }, [softDeleteMutation]);
+
+  const getRepairs = useCallback(async () => {
+    // React Query handles refetching automatically
+  }, []);
 
   return (
     <RepairsContext.Provider
       value={{
         repairs,
-        setRepairs,
+        setRepairs: () => {},
         addRepair,
         updateRepair,
         deleteRepair,
         getRepairs,
-        loading,
-        pagination,
+        loading: isLoading,
+        pagination: paginationMeta,
         setPage,
         setPerPage,
         filters,
@@ -134,5 +101,4 @@ export const RepairsProvider = ({ children }) => {
   );
 };
 
-// Custom hook για cleaner χρήση
 export const useRepairs = () => useContext(RepairsContext);

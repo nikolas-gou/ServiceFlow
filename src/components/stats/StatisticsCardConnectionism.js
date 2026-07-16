@@ -1,24 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Box, Grid } from '@mui/material';
 import { Cable, Link, DeviceHub, Hub } from '@mui/icons-material';
 import { Chart as ChartJS, LineElement, PointElement, LinearScale, CategoryScale } from 'chart.js';
-import { useLocation } from 'react-router-dom';
 import LoadingCard from '../common/LoadingCard';
-import { StatisticRepository } from '../Repositories/StatisticRepository';
+import { useConnectionismStats } from '../../hooks/useStatistics';
 import { StatisticCard } from './parts/StatisticCard';
-import {
-  calculateTrend,
-  formatValue,
-  getSafeDataArray,
-  getTrendColor,
-} from '../../utils/statistics';
+import { calculateTrend, formatValue, getSafeDataArray } from '../../utils/statistics';
 
 ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale);
 
 export default function StatisticsCardConnectionism() {
-  const location = useLocation();
-  const [statistics, setStatistics] = useState({});
-  const [loading, setLoading] = useState(true);
+  const { data: statistics = {}, isLoading } = useConnectionismStats();
 
   const getStatsConfig = () => {
     const simpleTrend = calculateTrend(statistics.monthlySimpleTrends);
@@ -62,25 +54,7 @@ export default function StatisticsCardConnectionism() {
     ];
   };
 
-  useEffect(() => {
-    loadStatistics();
-  }, [location]);
-
-  const loadStatistics = async () => {
-    setLoading(true);
-    try {
-      const response = await StatisticRepository.getConnectionismStatistics();
-
-      setStatistics(response || {});
-    } catch (err) {
-      console.error('Σφάλμα φόρτωσης στατιστικών:', err);
-      setStatistics({});
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading) {
+  if (isLoading) {
     return (
       <Box sx={{ p: 1.5, mb: 1.5 }}>
         <Grid container spacing={2.5}>

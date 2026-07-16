@@ -14,7 +14,7 @@ import {
   typeOfStep_mapping,
   rpm_types_mapping,
 } from '../../../Models/Motor';
-import { RepairRepository } from '../../../Repositories/RepairRepository';
+import { useSoftDeleteRepair } from '../../../../hooks/useRepairs';
 import { DeleteConfirmationModal } from './DeleteConfirmationModal';
 import { formatDateNumeric } from '../../../../utils/dateUtils';
 
@@ -42,10 +42,11 @@ const CompactTableRow = styled(TableRow)(({ theme }) => ({
   transition: 'all 0.2s ease',
 }));
 
-export const RepairRow = ({ repair, onView, onEdit, onDelete, zebra }) => {
+export const RepairRow = ({ repair, onView, onEdit, zebra }) => {
   const motor = repair?.motor || {};
   const customer = repair?.customer || {};
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const softDeleteMutation = useSoftDeleteRepair();
 
   const handleDeleteClick = (e) => {
     e.stopPropagation();
@@ -64,14 +65,10 @@ export const RepairRow = ({ repair, onView, onEdit, onDelete, zebra }) => {
 
   const handleDeleteConfirm = async () => {
     try {
-      await RepairRepository.softDelete(repair.id);
-      if (onDelete) {
-        onDelete(repair.id);
-      }
+      await softDeleteMutation.mutateAsync(repair.id);
       setDeleteModalOpen(false);
     } catch (error) {
       console.error('Error soft deleting repair:', error);
-      // You might want to show an error message to the user here
     }
   };
 

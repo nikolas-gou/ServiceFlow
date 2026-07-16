@@ -1,11 +1,8 @@
-import config from '../../config';
-import apiCall from '../../utils/apiCall';
-import { CommonFault } from '../Models/CommonFault';
+import api from '../../utils/api';
 
 export class CommonFaultRepository {
   static async getAll() {
-    const response = await apiCall(config.server, '/api/common_faults', 'GET');
-    const data = response.data || [];
-    return data;
+    const { data: response } = await api.get('/api/common_faults');
+    return response.data || [];
   }
 }

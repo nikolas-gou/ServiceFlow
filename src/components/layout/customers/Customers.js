@@ -13,7 +13,7 @@ import {
   Divider,
 } from '@mui/material';
 import { useSearch } from '../../../context/SearchContext';
-import { CustomerRepository } from '../../Repositories/CustomerRepository';
+import { useCustomers } from '../../../hooks/useCustomers';
 import Search from '../Search';
 import { CustomerDetailModal } from './parts/CustomerDetailModal';
 import { CustomerRow } from './parts/CustomerRow';
@@ -40,8 +40,7 @@ const CompactTableCell = styled(TableCell)(({ theme }) => ({
 // Main Customers Component
 export default function Customers() {
   const { searchQuery } = useSearch();
-  const [customers, setCustomers] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { data: customers = [], isLoading: loading } = useCustomers();
 
   // Modal state
   const [modalOpen, setModalOpen] = useState(false);
@@ -69,23 +68,6 @@ export default function Customers() {
     setModalOpen(false);
     setSelectedCustomer(null);
   };
-
-  // Φόρτωση πελατών από το repository
-  const getCustomers = async () => {
-    setLoading(true);
-    try {
-      const data = await CustomerRepository.getAll();
-      setCustomers(data);
-    } catch (err) {
-      console.error('Σφάλμα φόρτωσης πελατών:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  React.useEffect(() => {
-    getCustomers();
-  }, []);
 
   // Φιλτράρισμα με βάση το search και τα filters
   const filteredCustomers = customers.filter((customer) => {

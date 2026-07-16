@@ -1,44 +1,20 @@
-// repositories/RepairRepository.js
-import config from '../../config';
-import { Repair } from '../Models/Repair';
-import apiCall from '../../utils/apiCall';
+import api from '../../utils/api';
 
 export class RepairRepository {
   static async getAll() {
-    const response = await apiCall(config.server, '/api/repairs', 'GET');
-    const data = response.data || [];
-    return data;
+    const { data: response } = await api.get('/api/repairs');
+    return response.data || [];
   }
 
-  /**
-   * Get paginated repairs with filters
-   * @param {Object} params - Pagination and filter parameters
-   * @param {number} params.page - Page number
-   * @param {number} params.perPage - Items per page
-   * @param {string} params.search - Search query
-   * @param {string} params.manufacturer - Manufacturer filter
-   * @param {string} params.status - Status filter
-   * @param {string} params.voltType - Volt type filter
-   * @param {number} params.kwMin - Min kW filter
-   * @param {number} params.kwMax - Max kW filter
-   * @param {string} params.rpm - RPM filter
-   * @returns {Promise<{data: Array, pagination: Object}>}
-   */
   static async getPaginated(params = {}) {
-    // Build query string from params
-    const queryParams = new URLSearchParams();
-
+    const cleanParams = {};
     Object.entries(params).forEach(([key, value]) => {
       if (value !== null && value !== undefined && value !== '') {
-        queryParams.append(key, value);
+        cleanParams[key] = value;
       }
     });
 
-    const queryString = queryParams.toString();
-    const url = `/api/repairs${queryString ? `?${queryString}` : ''}`;
-
-    const response = await apiCall(config.server, url, 'GET');
-
+    const { data: response } = await api.get('/api/repairs', { params: cleanParams });
     return {
       data: response.data || [],
       pagination: response.pagination || {
@@ -53,27 +29,27 @@ export class RepairRepository {
   }
 
   static async getRepairById(repairId) {
-    const response = await apiCall(config.server, `/api/repairs/${repairId}`, 'GET');
+    const { data: response } = await api.get(`/api/repairs/${repairId}`);
     return response.data || {};
   }
 
   static async getStats() {
-    const response = await apiCall(config.server, '/api/statsOfRepair', 'GET');
+    const { data: response } = await api.get('/api/statsOfRepair');
     return response.data || {};
   }
 
   static async createNewRepair(repair) {
-    const response = await apiCall(config.server, '/api/repairs', 'POST', repair);
+    const { data: response } = await api.post('/api/repairs', repair);
     return response.data || {};
   }
 
   static async softDelete(repairId) {
-    const response = await apiCall(config.server, `/api/repairs/${repairId}/soft-delete`, 'PATCH');
+    const { data: response } = await api.patch(`/api/repairs/${repairId}/soft-delete`);
     return response.data || {};
   }
 
   static async updateRepair(repairId, data) {
-    const response = await apiCall(config.server, `/api/repairs/${repairId}`, 'PUT', data);
+    const { data: response } = await api.put(`/api/repairs/${repairId}`, data);
     return response.data || {};
   }
 }

@@ -23,7 +23,6 @@ import { DetailsWinding } from './parts/DetailsWinding';
 import { Issues } from './parts/Issues';
 import { CostAndDelivery } from './parts/CostAndDelivery';
 import Photos from './parts/Photos';
-import { useRepairs } from '../../../context/RepairsContext';
 import StyledSnackbar from '../../common/StyledSnackbar';
 import StyledButton from '../../common/StyledButton';
 import LoadingSave from '../../common/LoadingSave';
@@ -252,8 +251,6 @@ function CreateRepairForm(props) {
   const MAX_UPLOAD_SIZE_MB = 10;
 
   // context
-  const { addRepair } = useRepairs();
-
   // Καταγραφή του αρχικού snapshot μετά το αρχικό render,
   // ώστε να μην θεωρηθεί "dirty" χωρίς αλλαγές από τον χρήστη
   useEffect(() => {
@@ -501,9 +498,7 @@ function CreateRepairForm(props) {
       // 3. Fetch το repair ΞΑΝΑ για να πάρουμε τις φωτογραφίες
       const updatedRepair = await RepairRepository.getRepairById(response.id);
 
-      // Προσθήκη στο state και context με τις φωτογραφίες
       setRepair(updatedRepair);
-      addRepair(updatedRepair);
     } catch (err) {
       throw err; // Re-throw για τη διαχείριση στο handleSubmit
     }

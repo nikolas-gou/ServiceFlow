@@ -1,22 +1,18 @@
-// repositories/CustomerRepository.js
-import config from '../../config';
-import apiCall from '../../utils/apiCall';
+import api from '../../utils/api';
 
 export class CustomerRepository {
   static async getAll() {
-    const response = await apiCall(config.server, '/api/customers', 'GET');
-    // Το backend επιστρέφει ήδη formatted data
-    const data = response.data || [];
-    return data;
+    const { data: response } = await api.get('/api/customers');
+    return response.data || [];
   }
 
   static async createNewCustomer(customer) {
-    const response = await apiCall(config.server, '/api/customers', 'POST', customer);
+    const { data: response } = await api.post('/api/customers', customer);
     return response.data || {};
   }
 
   static async listOfNames() {
-    const response = await apiCall(config.server, '/api/customers', 'GET');
+    const { data: response } = await api.get('/api/customers');
     const data = response.data || [];
     return data.map((customer) => customer.name);
   }

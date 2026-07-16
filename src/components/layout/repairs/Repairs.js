@@ -49,7 +49,6 @@ export default function Repairs() {
     setPerPage,
     filters: contextFilters,
     updateFilters,
-    deleteRepair,
     sorting,
     updateSorting,
   } = useRepairs();
@@ -69,12 +68,6 @@ export default function Repairs() {
   });
 
   const [localSearch, setLocalSearch] = useState('');
-
-  // Handle repair deletion
-  const handleDelete = (repairId) => {
-    // todo: is right the proccess of deletion?
-    deleteRepair(repairId);
-  };
 
   const handleFiltersChange = (newFilters) => {
     setLocalFilters(newFilters);
@@ -248,7 +241,6 @@ export default function Repairs() {
                 index={(pagination.currentPage - 1) * pagination.perPage + index}
                 onView={handleViewRepair}
                 onEdit={handleEditRepair}
-                onDelete={handleDelete}
                 zebra={index % 2 === 0}
               />
             ))}

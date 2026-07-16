@@ -1,12 +1,9 @@
-import { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { ConnectionRepository } from '../components/Repositories/ConnectionRepository';
+import { createContext, useContext, useState, useCallback } from 'react';
+import { useConnectionsQuery, useCreateConnection, useUpdateConnection, useDeleteConnection } from '../hooks/useConnections';
 
 const ConnectionsContext = createContext();
 
 export const ConnectionsProvider = ({ children }) => {
-  const [connections, setConnections] = useState([]);
-  const [loading, setLoading] = useState(true);
-
   const [pagination, setPagination] = useState({
     currentPage: 1,
     perPage: localStorage.getItem('connectionsPerPage') || 10,
@@ -29,39 +26,21 @@ export const ConnectionsProvider = ({ children }) => {
     sortOrder: 'DESC',
   });
 
-  const getConnections = useCallback(async () => {
-    try {
-      setLoading(true);
+  const params = {
+    page: pagination.currentPage,
+    perPage: pagination.perPage,
+    ...filters,
+    sortBy: sorting.sortBy,
+    sortOrder: sorting.sortOrder,
+  };
 
-      const params = {
-        page: pagination.currentPage,
-        perPage: pagination.perPage,
-        ...filters,
-        sortBy: sorting.sortBy,
-        sortOrder: sorting.sortOrder,
-      };
+  const { data: result, isLoading } = useConnectionsQuery(params);
+  const createConnectionMutation = useCreateConnection();
+  const updateConnectionMutation = useUpdateConnection();
+  const deleteConnectionMutation = useDeleteConnection();
 
-      Object.keys(params).forEach((key) => {
-        if (params[key] === '' || params[key] === null || params[key] === undefined) {
-          delete params[key];
-        }
-      });
-
-      const result = await ConnectionRepository.getPaginated(params);
-
-      setConnections(result.data);
-      setPagination(result.pagination);
-    } catch (err) {
-      console.error('Error fetching connections:', err);
-      setConnections([]);
-    } finally {
-      setLoading(false);
-    }
-  }, [pagination.currentPage, pagination.perPage, filters, sorting]);
-
-  useEffect(() => {
-    getConnections();
-  }, [getConnections]);
+  const connections = result?.data || [];
+  const paginationMeta = result?.pagination || pagination;
 
   const setPage = (page) => {
     setPagination((prev) => ({ ...prev, currentPage: page }));
@@ -82,35 +61,33 @@ export const ConnectionsProvider = ({ children }) => {
     setPagination((prev) => ({ ...prev, currentPage: 1 }));
   };
 
-  const addConnection = async (connection) => {
-    const result = await ConnectionRepository.createConnection(connection);
-    getConnections();
-    return result;
-  };
+  const addConnection = useCallback(async (connection) => {
+    await createConnectionMutation.mutateAsync(connection);
+  }, [createConnectionMutation]);
 
-  const updateConnection = async (connectionId, data) => {
-    const result = await ConnectionRepository.updateConnection(connectionId, data);
-    getConnections();
-    return result;
-  };
+  const updateConnection = useCallback(async (connectionId, data) => {
+    await updateConnectionMutation.mutateAsync({ id: connectionId, data });
+  }, [updateConnectionMutation]);
 
-  const deleteConnection = async (connectionId) => {
-    const result = await ConnectionRepository.deleteConnection(connectionId);
-    getConnections();
-    return result;
-  };
+  const deleteConnection = useCallback(async (connectionId) => {
+    await deleteConnectionMutation.mutateAsync(connectionId);
+  }, [deleteConnectionMutation]);
+
+  const getConnections = useCallback(async () => {
+    // React Query handles refetching automatically
+  }, []);
 
   return (
     <ConnectionsContext.Provider
       value={{
         connections,
-        setConnections,
+        setConnections: () => {},
         addConnection,
         updateConnection,
         deleteConnection,
         getConnections,
-        loading,
-        pagination,
+        loading: isLoading,
+        pagination: paginationMeta,
         setPage,
         setPerPage,
         filters,

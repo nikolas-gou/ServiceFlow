@@ -1,26 +1,20 @@
-import config from '../../config';
-import apiCall from '../../utils/apiCall';
+import api from '../../utils/api';
 
 export class ConnectionRepository {
   static async getAll() {
-    const response = await apiCall(config.server, '/api/connections', 'GET');
+    const { data: response } = await api.get('/api/connections');
     return response.data || [];
   }
 
   static async getPaginated(params = {}) {
-    const queryParams = new URLSearchParams();
-
+    const cleanParams = {};
     Object.entries(params).forEach(([key, value]) => {
       if (value !== null && value !== undefined && value !== '') {
-        queryParams.append(key, value);
+        cleanParams[key] = value;
       }
     });
 
-    const queryString = queryParams.toString();
-    const url = `/api/connections${queryString ? `?${queryString}` : ''}`;
-
-    const response = await apiCall(config.server, url, 'GET');
-
+    const { data: response } = await api.get('/api/connections', { params: cleanParams });
     return {
       data: response.data || [],
       pagination: response.pagination || {
@@ -35,22 +29,22 @@ export class ConnectionRepository {
   }
 
   static async getConnectionById(connectionId) {
-    const response = await apiCall(config.server, `/api/connections/${connectionId}`, 'GET');
+    const { data: response } = await api.get(`/api/connections/${connectionId}`);
     return response.data || {};
   }
 
   static async createConnection(connection) {
-    const response = await apiCall(config.server, '/api/connections', 'POST', connection);
+    const { data: response } = await api.post('/api/connections', connection);
     return response.data || {};
   }
 
   static async updateConnection(connectionId, data) {
-    const response = await apiCall(config.server, `/api/connections/${connectionId}`, 'PUT', data);
+    const { data: response } = await api.put(`/api/connections/${connectionId}`, data);
     return response.data || {};
   }
 
   static async deleteConnection(connectionId) {
-    const response = await apiCall(config.server, `/api/connections/${connectionId}`, 'DELETE');
+    const { data: response } = await api.delete(`/api/connections/${connectionId}`);
     return response.data || {};
   }
 }

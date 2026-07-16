@@ -1,10 +1,9 @@
-import config from '../../config';
-import apiCall, { isValidFormat } from '../../utils/apiCall';
+import api from '../../utils/api';
 
 export class SuggestedRepository {
   static async getSuggested() {
     try {
-      const response = await apiCall(config.server, '/api/suggested/form-values', 'GET');
+      const { data: response } = await api.get('/api/suggested/form-values');
       return SuggestedRepository.normalizeResponse(response);
     } catch (error) {
       console.error('Error fetching suggested cross sections:', error);
@@ -13,7 +12,7 @@ export class SuggestedRepository {
   }
 
   static normalizeResponse(response) {
-    if (!isValidFormat(response)) {
+    if (!response || typeof response !== 'object') {
       console.error('Unexpected response format:', response);
       return SuggestedRepository.emptyResult('Unexpected response format');
     }

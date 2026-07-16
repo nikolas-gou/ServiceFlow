@@ -1,37 +1,31 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Box, Grid } from '@mui/material';
 import { ShowChart, People, Build, Euro, Warning } from '@mui/icons-material';
 import { Chart as ChartJS, LineElement, PointElement, LinearScale, CategoryScale } from 'chart.js';
-import { useLocation } from 'react-router-dom';
 import LoadingCard from '../common/LoadingCard';
-import { StatisticRepository } from '../Repositories/StatisticRepository';
+import { useDashboardStats } from '../../hooks/useStatistics';
 import { StatisticCard } from './parts/StatisticCard';
 import { useErrorSnackbar } from '../../hooks/useErrorSnackbar';
-import { safeStatValue, safeDataArray, getStandardErrorMessage } from '../../utils/errorHandling';
+import { safeStatValue, safeDataArray } from '../../utils/errorHandling';
 import { calculateTrend, formatValue } from '../../utils/statistics';
 import StyledSnackbar from '../common/StyledSnackbar';
 
 ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale);
 
 export default function StatisticsCardsRepair() {
-  const location = useLocation();
-  const [statistics, setStatistics] = useState({});
-  const [loading, setLoading] = useState(true);
+  const { data: statistics = {}, isLoading } = useDashboardStats();
 
-  // Χρήση του custom hook για error snackbar
   const { showErrorToast, errorMessage, handleCloseErrorToast } = useErrorSnackbar(
     statistics,
     safeStatValue,
   );
 
   const getStatsConfig = () => {
-    // Ασφαλή εξαγωγή δεδομένων με error handling
     const repairData = safeStatValue(statistics.repair?.totalRepairs);
     const customerData = safeStatValue(statistics.customer?.totalCustomers);
     const motorData = safeStatValue(statistics.motor?.totalMotors);
     const revenueData = safeStatValue(statistics.revenue?.yearlyRevenue);
 
-    // Ασφαλή trends με fallback σε άδεια arrays
     const repairTrend = calculateTrend(safeDataArray(statistics.repair?.trends?.monthlyTrends));
     const customerTrend = calculateTrend(safeDataArray(statistics.customer?.trends?.monthlyTrends));
     const motorTrend = calculateTrend(safeDataArray(statistics.motor?.trends?.monthlyTrends));
@@ -85,24 +79,7 @@ export default function StatisticsCardsRepair() {
     ];
   };
 
-  useEffect(() => {
-    loadStatistics();
-  }, [location]);
-
-  const loadStatistics = async () => {
-    setLoading(true);
-    try {
-      const response = await StatisticRepository.getDashboard();
-      setStatistics(response || {});
-    } catch (err) {
-      console.error(getStandardErrorMessage('dashboard', err));
-      setStatistics({});
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading) {
+  if (isLoading) {
     return (
       <Box sx={{ p: 1.5, mb: 1.5 }}>
         <Grid container spacing={2.5}>
@@ -130,7 +107,6 @@ export default function StatisticsCardsRepair() {
         </Grid>
       </Box>
 
-      {/* Error Snackbar */}
       <StyledSnackbar
         open={showErrorToast}
         onClose={handleCloseErrorToast}

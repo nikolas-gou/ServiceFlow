@@ -1,29 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Box, Grid } from '@mui/material';
 import { People, Business, Person, Euro, Warning } from '@mui/icons-material';
 import { Chart as ChartJS, LineElement, PointElement, LinearScale, CategoryScale } from 'chart.js';
-import { useLocation } from 'react-router-dom';
 import LoadingCard from '../common/LoadingCard';
-import { StatisticRepository } from '../Repositories/StatisticRepository';
+import { useCustomerStats } from '../../hooks/useStatistics';
 import { StatisticCard } from './parts/StatisticCard';
 import { useErrorSnackbar } from '../../hooks/useErrorSnackbar';
-import { safeStatValue, safeDataArray, getStandardErrorMessage } from '../../utils/errorHandling';
-import {
-  calculateTrend,
-  formatValue,
-  getSafeDataArray,
-  getTrendColor,
-} from '../../utils/statistics';
+import { safeStatValue, safeDataArray } from '../../utils/errorHandling';
+import { calculateTrend, formatValue } from '../../utils/statistics';
 import StyledSnackbar from '../common/StyledSnackbar';
 
 ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale);
 
 export default function StatisticsCardsCustomer() {
-  const location = useLocation();
-  const [statistics, setStatistics] = useState({});
-  const [loading, setLoading] = useState(true);
+  const { data: statistics = {}, isLoading } = useCustomerStats();
 
-  // Χρήση του custom hook για error snackbar
   const { showErrorToast, errorMessage, handleCloseErrorToast } = useErrorSnackbar(
     statistics,
     safeStatValue,
@@ -36,7 +27,6 @@ export default function StatisticsCardsCustomer() {
     );
     const factoryTrend = calculateTrend(safeDataArray(statistics.trends?.monthlyFactoryTrends));
 
-    // Παίρνουμε τον καλύτερο πελάτη - ελέγχουμε πρώτα για error
     const topCustomersResult = safeStatValue(statistics.topCustomersByRevenue);
     const topCustomer =
       !topCustomersResult.isError && Array.isArray(statistics.topCustomersByRevenue)
@@ -47,7 +37,6 @@ export default function StatisticsCardsCustomer() {
     const individualData = safeStatValue(statistics.customerTypes?.individual);
     const factoryData = safeStatValue(statistics.customerTypes?.factory);
 
-    // Για topCustomer, ελέγχουμε πρώτα αν τα topCustomersByRevenue είχαν error
     const topCustomerData = topCustomersResult.isError
       ? {
           value: 'Μη διαθέσιμο',
@@ -120,26 +109,7 @@ export default function StatisticsCardsCustomer() {
     ];
   };
 
-  useEffect(() => {
-    loadStatistics();
-  }, [location]);
-
-  const loadStatistics = async () => {
-    setLoading(true);
-    try {
-      const response = await StatisticRepository.getCustomerStatistics();
-
-      // Διόρθωση: το StatisticRepository επιστρέφει ήδη τα δεδομένα, όχι response.data
-      setStatistics(response || {});
-    } catch (err) {
-      console.error(getStandardErrorMessage('πελατών', err));
-      setStatistics({});
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading) {
+  if (isLoading) {
     return (
       <Box sx={{ p: 1.5, mb: 1.5 }}>
         <Grid container spacing={2.5}>
@@ -167,7 +137,6 @@ export default function StatisticsCardsCustomer() {
         </Grid>
       </Box>
 
-      {/* Error Snackbar */}
       <StyledSnackbar
         open={showErrorToast}
         onClose={handleCloseErrorToast}

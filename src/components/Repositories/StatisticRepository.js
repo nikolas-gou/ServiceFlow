@@ -1,31 +1,18 @@
-// repositories/StatisticRepository.js
-import config from '../../config';
-import apiCall from '../../utils/apiCall';
+import api from '../../utils/api';
 
-/**
- * Repository για όλες τις στατιστικές κλήσεις API
- */
 export class StatisticRepository {
-  /**
-   * Ολοκληρωμένα δεδομένα dashboard (όλα μαζί)
-   * @returns {Promise<Object>} Complete dashboard data
-   */
   static async getDashboard() {
-    const response = await apiCall(config.server, '/api/statistics/dashboard', 'GET');
+    const { data: response } = await api.get('/api/statistics/dashboard');
     return response.data || {};
   }
 
-  /**
-   * Στατιστικά πελατών - ολοκληρωμένα δεδομένα
-   * @returns {Promise<Object>} Customer statistics data
-   */
   static async getCustomerStatistics() {
-    const response = await apiCall(config.server, '/api/statistics/customers', 'GET');
+    const { data: response } = await api.get('/api/statistics/customers');
     return response.data || {};
   }
 
   static async getConnectionismStatistics() {
-    const response = await apiCall(config.server, '/api/statistics/connectionism', 'GET');
+    const { data: response } = await api.get('/api/statistics/connectionism');
     return response.data || {};
   }
 }

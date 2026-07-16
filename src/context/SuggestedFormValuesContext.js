@@ -1,7 +1,7 @@
-import { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { SuggestedRepository } from '../components/Repositories/SuggestedRepository';
+import { createContext, useContext } from 'react';
+import { useSuggestedFormValues as useSuggestedFormValuesQuery } from '../hooks/useSuggestedFormValues';
 
-const initialState = {
+const defaultSuggested = {
   motor: {
     crossSection: { data: [], error: null, details: null },
     manufacturer: { data: [], error: null, details: null },
@@ -13,46 +13,24 @@ const initialState = {
 };
 
 const SuggestedFormValuesContext = createContext({
-  suggested: initialState,
-  loading: false,
+  suggested: defaultSuggested,
   refresh: async () => {},
+  loading: false,
 });
 
 export const SuggestedFormValuesProvider = ({ children }) => {
-  const [suggested, setSuggested] = useState(initialState);
-  const [loading, setLoading] = useState(true);
+  const { data: rawResult, isLoading, refetch } = useSuggestedFormValuesQuery();
 
-  const getSuggested = useCallback(async () => {
-    try {
-      setLoading(true);
-
-      const { data, meta } = await SuggestedRepository.getSuggested();
-      setSuggested({
-        motor: data.motor,
-        customer: data.customer,
-        meta,
-      });
-    } catch (err) {
-      console.error('Error fetching suggested form values:', err);
-      setSuggested(initialState);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  // Fetch suggested when dependencies change
-  useEffect(() => {
-    getSuggested();
-  }, [getSuggested]);
+  const suggested = rawResult
+    ? {
+        motor: rawResult.data?.motor || defaultSuggested.motor,
+        customer: rawResult.data?.customer || defaultSuggested.customer,
+        meta: rawResult.meta || defaultSuggested.meta,
+      }
+    : defaultSuggested;
 
   return (
-    <SuggestedFormValuesContext.Provider
-      value={{
-        suggested,
-        refresh: getSuggested,
-        loading,
-      }}
-    >
+    <SuggestedFormValuesContext.Provider value={{ suggested, refresh: refetch, loading: isLoading }}>
       {children}
     </SuggestedFormValuesContext.Provider>
   );

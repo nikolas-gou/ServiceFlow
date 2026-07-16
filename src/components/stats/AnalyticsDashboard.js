@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Grid, Typography, styled, CircularProgress, Tabs, Tab } from '@mui/material';
-import { AllInclusive, Build, Memory, People, Warning } from '@mui/icons-material';
-import { StatisticRepository } from '../Repositories/StatisticRepository';
+import React, { useState } from 'react';
+import { Box, Grid, styled, Tabs, Tab } from '@mui/material';
+import { AllInclusive, Build, Memory, People } from '@mui/icons-material';
+import { useDashboardStats } from '../../hooks/useStatistics';
 import { CustomerStatisticsModal } from './CustomerStatisticsModal';
 import { MotorStatisticsModal } from './MotorStatisticsModal';
 import LoadingCard from '../common/LoadingCard';
 import { useErrorSnackbar } from '../../hooks/useErrorSnackbar';
-import { getStandardErrorMessage, safeStatValue } from '../../utils/errorHandling';
+import { safeStatValue } from '../../utils/errorHandling';
 import { AnalyticsCard } from './parts/AnalyticsCard';
 import { AllCategoryCards } from './cards/AllCategoryCards';
 import { MotorCardsData } from './cards/MotorCardsData';
@@ -14,7 +14,6 @@ import { CustomerCardsData } from './cards/CustomerCardsData';
 import { RepairCardsData } from './cards/RepairCardsData';
 import StyledSnackbar from '../common/StyledSnackbar';
 
-// Styled Components
 const StyledTabs = styled(Tabs)(({ theme }) => ({
   background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
   borderRadius: '16px 16px 0 0',
@@ -67,23 +66,17 @@ const TabContent = styled(Box)(({ theme }) => ({
   padding: theme.spacing(3),
 }));
 
-/**
- * Main Analytics Dashboard Component
- */
 export default function AnalyticsDashboard() {
-  const [loading, setLoading] = useState(true);
-  const [analyticsData, setAnalyticsData] = useState({});
+  const { data: analyticsData = {}, isLoading } = useDashboardStats();
   const [activeTab, setActiveTab] = useState(0);
   const [customerModalOpen, setCustomerModalOpen] = useState(false);
   const [motorModalOpen, setMotorModalOpen] = useState(false);
 
-  // Χρήση του custom hook για error snackbar
   const { showErrorToast, errorMessage, handleCloseErrorToast } = useErrorSnackbar(
     analyticsData,
     safeStatValue,
   );
 
-  // Tab configuration
   const tabs = [
     { label: 'Όλα', icon: <AllInclusive />, value: 0 },
     { label: 'Επισκευές', icon: <Build />, value: 1 },
@@ -91,25 +84,6 @@ export default function AnalyticsDashboard() {
     { label: 'Πελάτες', icon: <People />, value: 3 },
   ];
 
-  // Load analytics data
-  useEffect(() => {
-    loadAnalyticsData();
-  }, []);
-
-  const loadAnalyticsData = async () => {
-    setLoading(true);
-    try {
-      const data = await StatisticRepository.getDashboard();
-      setAnalyticsData(data || {});
-    } catch (err) {
-      console.error(getStandardErrorMessage('dashboard', err));
-      setAnalyticsData({});
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Get filtered cards based on category
   const getFilteredCards = (category) => {
     switch (category) {
       case 'main':
@@ -125,30 +99,27 @@ export default function AnalyticsDashboard() {
     }
   };
 
-  // Handle tab change
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
   };
 
-  // Get cards based on active tab
   const getCardsForActiveTab = () => {
     switch (activeTab) {
-      case 0: // Όλα
+      case 0:
         return getFilteredCards('main');
-      case 1: // Επισκευές
+      case 1:
         return getFilteredCards('repairs');
-      case 2: // Κινητήρες
+      case 2:
         return getFilteredCards('motors');
-      case 3: // Πελάτες
+      case 3:
         return getFilteredCards('customers');
       default:
         return [];
     }
   };
 
-  // Render content based on active tab
   const renderTabContent = () => {
-    if (loading) {
+    if (isLoading) {
       return <LoadingCard />;
     }
 
@@ -191,7 +162,6 @@ export default function AnalyticsDashboard() {
 
   return (
     <Box sx={{ bgcolor: '#F8FAFC' }}>
-      {/* Tabs Header */}
       <Box
         sx={{
           background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
@@ -212,10 +182,8 @@ export default function AnalyticsDashboard() {
         </StyledTabs>
       </Box>
 
-      {/* Tab Content */}
       <TabContent>{renderTabContent()}</TabContent>
 
-      {/* Error Snackbar */}
       <StyledSnackbar
         open={showErrorToast}
         onClose={handleCloseErrorToast}
