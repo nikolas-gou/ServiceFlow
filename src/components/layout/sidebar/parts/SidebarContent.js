@@ -11,13 +11,13 @@ import {
   Tooltip,
   IconButton,
 } from '@mui/material';
-import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
-import InsightsRoundedIcon from '@mui/icons-material/InsightsRounded';
-import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
-import HandymanRoundedIcon from '@mui/icons-material/HandymanRounded';
-import InfoRoundedIcon from '@mui/icons-material/InfoRounded';
-import CableRoundedIcon from '@mui/icons-material/CableRounded';
-import RateReviewRoundedIcon from '@mui/icons-material/RateReviewRounded';
+import HomeIcon from '@mui/icons-material/Home';
+import AssessmentIcon from '@mui/icons-material/Assessment';
+import GroupIcon from '@mui/icons-material/Group';
+import BuildIcon from '@mui/icons-material/Build';
+import InfoIcon from '@mui/icons-material/Info';
+import CableIcon from '@mui/icons-material/Cable';
+import FeedbackIcon from '@mui/icons-material/Feedback';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { styled } from '@mui/material/styles';
@@ -139,20 +139,6 @@ const StyledListItemIcon = styled(ListItemIcon)({
   justifyContent: 'center',
 });
 
-const IconBadge = styled(Box, {
-  shouldForwardProp: (prop) => prop !== 'badgeColor' && prop !== 'isSelected',
-})(({ badgeColor, isSelected }) => ({
-  width: 32,
-  height: 32,
-  borderRadius: '10px',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  backgroundColor: isSelected ? `${badgeColor}40` : `${badgeColor}22`,
-  boxShadow: isSelected ? `0 2px 8px ${badgeColor}55` : 'none',
-  transition: 'all 0.2s ease',
-}));
-
 const StyledListItemText = styled(ListItemText)({
   '& .MuiListItemText-primary': {
     fontSize: '0.95rem',
@@ -233,26 +219,22 @@ export default function SidebarContent({ collapsed, onToggleCollapse }) {
     {
       text: 'Αρχική',
       route: '/dashboard/overview',
-      icon: <HomeRoundedIcon />,
-      color: '#90caf9',
+      icon: <HomeIcon sx={{ color: '#90caf9' }} />,
     },
     {
       text: 'Στατιστικά',
       route: '/dashboard/analytics',
-      icon: <InsightsRoundedIcon />,
-      color: '#81d4fa',
+      icon: <AssessmentIcon sx={{ color: '#81d4fa' }} />,
     },
     {
       text: 'Πελάτες',
       route: '/dashboard/customers',
-      icon: <PeopleAltRoundedIcon />,
-      color: '#80cbc4',
+      icon: <GroupIcon sx={{ color: '#80cbc4' }} />,
     },
     {
       text: 'Επισκευές',
       route: '/dashboard/services',
-      icon: <HandymanRoundedIcon />,
-      color: '#ffb74d',
+      icon: <BuildIcon sx={{ color: '#ffb74d' }} />,
     },
   ];
 
@@ -260,28 +242,22 @@ export default function SidebarContent({ collapsed, onToggleCollapse }) {
     {
       text: 'Συνδέσεις',
       route: '/dashboard/connections',
-      icon: <CableRoundedIcon />,
-      color: '#b39ddb',
+      icon: <CableIcon sx={{ color: '#b39ddb' }} />,
     },
     {
       text: 'Σχετικά',
       route: '/dashboard/about',
-      icon: <InfoRoundedIcon />,
-      color: '#9fa8da',
+      icon: <InfoIcon sx={{ color: '#9fa8da' }} />,
     },
     {
       text: 'Feedback',
       route: '/dashboard/feedback',
-      icon: <RateReviewRoundedIcon />,
-      color: '#f48fb1',
+      icon: <FeedbackIcon sx={{ color: '#f48fb1' }} />,
     },
   ];
 
   const renderMenuItem = (item) => {
     const isSelected = location.pathname === item.route;
-    const iconElement = React.cloneElement(item.icon, {
-      sx: { color: item.color, fontSize: collapsed ? 18 : 19 },
-    });
 
     if (collapsed) {
       return (
@@ -290,11 +266,7 @@ export default function SidebarContent({ collapsed, onToggleCollapse }) {
           selected={isSelected}
           onClick={(event) => handleListItemClick(event, item.route)}
         >
-          <CollapsedItemIcon>
-            <IconBadge badgeColor={item.color} isSelected={isSelected} sx={{ width: 28, height: 28 }}>
-              {iconElement}
-            </IconBadge>
-          </CollapsedItemIcon>
+          <CollapsedItemIcon>{item.icon}</CollapsedItemIcon>
           <CollapsedItemText primary={item.text} />
         </StyledListItemCollapsed>
       );
@@ -306,11 +278,7 @@ export default function SidebarContent({ collapsed, onToggleCollapse }) {
         selected={isSelected}
         onClick={(event) => handleListItemClick(event, item.route)}
       >
-        <StyledListItemIcon>
-          <IconBadge badgeColor={item.color} isSelected={isSelected}>
-            {iconElement}
-          </IconBadge>
-        </StyledListItemIcon>
+        <StyledListItemIcon>{item.icon}</StyledListItemIcon>
         <StyledListItemText primary={item.text} />
       </StyledListItemExpanded>
     );
