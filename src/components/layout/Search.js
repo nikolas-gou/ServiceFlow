@@ -1,11 +1,43 @@
 import React from 'react';
-import { InputAdornment, Box, IconButton } from '@mui/material';
+import { InputAdornment, Box, IconButton, TextField, styled } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useSearch } from '../../context/SearchContext';
 import Filter from './parts/tools/Filter';
 import CustomerFilter from './parts/tools/CustomerFilter';
-import { StyledTextField } from '../common/StyledFormComponents';
+
+const SearchField = styled(TextField)(({ theme }) => ({
+  minWidth: 300,
+  '& .MuiOutlinedInput-root': {
+    height: 42,
+    borderRadius: '999px',
+    backgroundColor: '#fff',
+    paddingLeft: '4px',
+    transition: 'all 0.2s ease',
+    '& fieldset': {
+      borderColor: '#e2e5ea',
+      borderWidth: '1.5px',
+    },
+    '&:hover fieldset': {
+      borderColor: '#c7cdd6',
+    },
+    '&.Mui-focused': {
+      boxShadow: '0 3px 10px rgba(25, 118, 210, 0.15)',
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: '#1976d2',
+      borderWidth: '1.5px',
+    },
+  },
+  '& .MuiOutlinedInput-input': {
+    padding: '0 8px',
+    fontSize: '0.875rem',
+    '&::placeholder': {
+      color: '#9aa4b1',
+      opacity: 1,
+    },
+  },
+}));
 
 export default function Search(props) {
   // Get context search for backward compatibility
@@ -45,7 +77,7 @@ export default function Search(props) {
       <Box flexGrow={1} />
 
       {/* Search Field */}
-      <StyledTextField
+      <SearchField
         variant="outlined"
         placeholder={
           showCustomerFilter ? 'Όνομα, email, τηλέφωνο...' : 'Μάρκα, kw, hp, πελάτης, S/N...'
@@ -55,11 +87,11 @@ export default function Search(props) {
         onChange={handleSearchInputChange}
         InputProps={{
           startAdornment: (
-            <InputAdornment position="start">
+            <InputAdornment position="start" sx={{ pl: 1.25 }}>
               <SearchIcon
                 sx={{
-                  color: '#757575',
-                  fontSize: 18,
+                  color: '#9aa4b1',
+                  fontSize: 19,
                   transition: 'color 0.2s',
                   '.MuiOutlinedInput-root.Mui-focused &': {
                     color: '#1976d2',
@@ -69,16 +101,16 @@ export default function Search(props) {
             </InputAdornment>
           ),
           endAdornment: currentSearchValue && (
-            <InputAdornment position="end">
+            <InputAdornment position="end" sx={{ pr: 0.5 }}>
               <IconButton
                 size="small"
                 onClick={clearSearch}
                 sx={{
-                  color: '#757575',
+                  color: '#9aa4b1',
                   transition: 'all 0.2s',
                   '&:hover': {
                     color: '#d32f2f',
-                    background: 'rgba(211, 47, 47, 0.04)',
+                    background: 'rgba(211, 47, 47, 0.08)',
                   },
                 }}
               >
@@ -96,7 +128,7 @@ export default function Search(props) {
       {(showRepairFilter || showRepairFilterByDefault) && (
         <Filter
           repairs={props.repairs}
-          filteredRepairs={props.filteredRepairs}
+          filters={props.filters}
           onFiltersChange={props.onFiltersChange}
         />
       )}

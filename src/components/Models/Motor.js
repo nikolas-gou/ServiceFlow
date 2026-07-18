@@ -190,11 +190,20 @@ export const typeOfStep_mapping = {
   combined: 'Μισό/Ολόκληρο',
 };
 
+export const repairStatus_types = ['in-progress', 'completed', 'delivered', 'cancelled'];
+
 export const repairStatus_mapping = {
   'in-progress': 'Σε εξέλιξη',
   completed: 'Ολοκληρώθηκε',
   delivered: 'Παραδώθηκε',
   cancelled: 'Ακυρώθηκε',
+};
+
+export const repairStatus_colors = {
+  'in-progress': '#ff9800',
+  completed: '#4caf50',
+  delivered: '#2196f3',
+  cancelled: '#f44336',
 };
 
 /**

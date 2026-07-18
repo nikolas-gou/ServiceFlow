@@ -4,7 +4,6 @@ import {
   IconButton,
   Popover,
   Paper,
-  FormControl,
   InputLabel,
   Select,
   MenuItem,
@@ -19,7 +18,6 @@ import {
 import {
   FilterList as FilterIcon,
   Clear as ClearIcon,
-  Check as CheckIcon,
   Close as CloseIcon,
 } from '@mui/icons-material';
 
@@ -28,30 +26,48 @@ import {
   volt_types_mapping,
   rpm_types,
   rpm_types_mapping,
+  typeOfMotor,
+  typeOfMotor_mapping,
+  repairStatus_types,
+  repairStatus_mapping,
+  repairStatus_colors,
 } from '../../../Models/Motor';
+import { formatDateNumeric } from '../../../../utils/dateUtils';
 import { StyledFormControl } from '../../../common/StyledFormComponents';
 
-const FilterButton = styled(IconButton)(({ theme, hasFilters }) => ({
-  background: hasFilters
-    ? 'linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)'
-    : 'linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%)',
-  borderRadius: '12px',
-  padding: '8px',
-  border: hasFilters ? '1.5px solid #2196f3' : 'none',
-  boxShadow: hasFilters ? '0 2px 8px rgba(33, 150, 243, 0.15)' : '0 1px 4px rgba(0,0,0,0.06)',
-  transition: 'all 0.2s cubic-bezier(.4,2,.6,1)',
+const EMPTY_FILTERS = {
+  status: '',
+  typeOfMotor: '',
+  manufacturer: '',
+  voltType: '',
+  rpm: '',
+  kwMin: '',
+  kwMax: '',
+  dateFrom: '',
+  dateTo: '',
+};
+
+const FilterButton = styled(IconButton, {
+  shouldForwardProp: (prop) => prop !== 'hasFilters',
+})(({ theme, hasFilters }) => ({
+  width: 42,
+  height: 42,
+  borderRadius: '999px',
+  backgroundColor: hasFilters ? '#1976d2' : '#fff',
+  border: hasFilters ? '1.5px solid #1976d2' : '1.5px solid #e2e5ea',
+  boxShadow: hasFilters ? '0 3px 10px rgba(25, 118, 210, 0.3)' : '0 1px 2px rgba(0,0,0,0.03)',
+  transition: 'all 0.18s ease',
   '&:hover': {
-    background: hasFilters
-      ? 'linear-gradient(135deg, #bbdefb 0%, #e3f2fd 100%)'
-      : 'linear-gradient(135deg, #e5e7eb 0%, #f3f4f6 100%)',
-    boxShadow: '0 4px 16px rgba(33, 150, 243, 0.18)',
+    backgroundColor: hasFilters ? '#1565c0' : '#f5f7fa',
+    borderColor: hasFilters ? '#1565c0' : '#c7cdd6',
   },
   position: 'relative',
 }));
 
 const FilterPopover = styled(Paper)(({ theme }) => ({
-  padding: '24px 20px',
-  minWidth: '340px',
+  padding: '20px',
+  minWidth: '380px',
+  maxWidth: '420px',
   borderRadius: '18px',
   boxShadow: '0 12px 32px rgba(30,60,114,0.13)',
   background: 'rgba(255,255,255,0.85)',
@@ -100,109 +116,103 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
   },
 }));
 
-// Pulse effect για τα chips
-const PulseChip = styled(Chip)(({ theme }) => ({
+const SectionLabel = ({ children }) => (
+  <Typography
+    variant="caption"
+    sx={{
+      fontWeight: 700,
+      color: '#90a4ae',
+      textTransform: 'uppercase',
+      letterSpacing: '0.06em',
+      fontSize: '0.68rem',
+    }}
+  >
+    {children}
+  </Typography>
+);
+
+const StatusDot = ({ color }) => (
+  <Box
+    component="span"
+    sx={{
+      width: 9,
+      height: 9,
+      borderRadius: '50%',
+      backgroundColor: color,
+      display: 'inline-block',
+      flexShrink: 0,
+    }}
+  />
+);
+
+const activeFilterChipSx = {
+  height: 30,
+  borderRadius: '999px',
+  backgroundColor: 'rgba(25, 118, 210, 0.08)',
+  border: '1px solid rgba(25, 118, 210, 0.15)',
+  color: '#1976d2',
   fontWeight: 500,
-  boxShadow: '0 2px 8px rgba(33,150,243,0.10)',
-  background: 'linear-gradient(90deg, #e3f2fd 0%, #bbdefb 100%)',
-  animation: 'chipPulse 0.35s',
-  '@keyframes chipPulse': {
-    '0%': { transform: 'scale(1)' },
-    '50%': { transform: 'scale(1.08)' },
-    '100%': { transform: 'scale(1)' },
+  fontSize: '0.78rem',
+  '& .MuiChip-label': {
+    px: 1.25,
+  },
+  '& .MuiChip-icon': {
+    marginLeft: '10px',
+    marginRight: '-2px',
   },
   '& .MuiChip-deleteIcon': {
     color: '#1976d2',
+    marginRight: '6px',
     '&:hover': { color: '#d32f2f' },
   },
-}));
+};
 
-export default function Filter({ repairs, filteredRepairs, onFiltersChange }) {
+export default function Filter({ repairs, filters, onFiltersChange }) {
   const [anchorEl, setAnchorEl] = useState(null);
-  const [filters, setFilters] = useState({
-    manufacturer: '',
-    status: '',
-    voltType: '',
-    kwMin: '',
-    kwMax: '',
-    serialNumber: '',
-    rpm: '',
-  });
+  const currentFilters = filters || EMPTY_FILTERS;
 
   const open = Boolean(anchorEl);
 
-  // Get unique values for dropdowns
+  // Μοναδικές τιμές μάρκας για το dropdown
   const manufacturers =
     [...new Set(repairs?.map((r) => r.motor?.manufacturer).filter(Boolean))] || [];
 
-  // Υπολογισμός του πλήθους για κάθε μάρκα
-  const manufacturerCounts =
-    filteredRepairs?.reduce((acc, repair) => {
-      const manufacturer = repair.motor?.manufacturer;
-      if (manufacturer) {
-        acc[manufacturer] = (acc[manufacturer] || 0) + 1;
-      }
-      return acc;
-    }, {}) || {};
-
-  // dummy θα το αλλαξω
-  const statuses = [...new Set(repairs?.map((r) => r.repairStatus).filter(Boolean))] || [];
-  const voltTypes = volt_types; // Από το volt_types_mapping
-  const rpmTypes = rpm_types; // Από το rpm_types_mapping
-
   const handleFilterChange = (key, value) => {
-    const newFilters = { ...filters, [key]: value };
-    setFilters(newFilters);
-    onFiltersChange?.(newFilters);
+    onFiltersChange?.({ ...currentFilters, [key]: value });
   };
 
   const clearAllFilters = () => {
-    const emptyFilters = {
-      manufacturer: '',
-      status: '',
-      voltType: '',
-      kwMin: '',
-      kwMax: '',
-      serialNumber: '',
-      rpm: '',
-    };
-    setFilters(emptyFilters);
-    onFiltersChange?.(emptyFilters);
+    onFiltersChange?.({ ...EMPTY_FILTERS });
   };
 
-  const hasActiveFilters = Object.values(filters).some((value) => value !== '');
-  const activeFiltersCount = Object.values(filters).filter((value) => value !== '').length;
+  const hasActiveFilters = Object.values(currentFilters).some((value) => value !== '');
+  const activeFiltersCount = Object.values(currentFilters).filter((value) => value !== '').length;
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  const handleClick = (event) => setAnchorEl(event.currentTarget);
+  const handleClose = () => setAnchorEl(null);
 
   return (
     <>
       <FilterButton onClick={handleClick} hasFilters={hasActiveFilters}>
         <FilterIcon
           fontSize="small"
-          sx={{
-            color: hasActiveFilters ? '#2196f3' : '#6b7280',
-          }}
+          sx={{ color: hasActiveFilters ? '#fff' : '#68727e' }}
         />
         {hasActiveFilters && (
           <Typography
             variant="caption"
             sx={{
               position: 'absolute',
-              top: -4,
-              right: -4,
-              backgroundColor: '#2196f3',
-              color: 'white',
+              top: -5,
+              right: -5,
+              backgroundColor: '#fff',
+              color: '#1976d2',
+              border: '1.5px solid #1976d2',
               borderRadius: '50%',
-              width: 16,
-              height: 16,
-              fontSize: '0.6rem',
+              width: 18,
+              height: 18,
+              fontSize: '0.62rem',
+              fontWeight: 700,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -217,14 +227,8 @@ export default function Filter({ repairs, filteredRepairs, onFiltersChange }) {
         open={open}
         anchorEl={anchorEl}
         onClose={handleClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
         <FilterPopover>
           <Box
@@ -255,115 +259,155 @@ export default function Filter({ repairs, filteredRepairs, onFiltersChange }) {
               <IconButton
                 size="small"
                 onClick={handleClose}
-                sx={{
-                  color: 'text.secondary',
-                  '&:hover': { color: 'text.primary' },
-                }}
+                sx={{ color: 'text.secondary', '&:hover': { color: 'text.primary' } }}
               >
                 <CloseIcon fontSize="small" />
               </IconButton>
             </Box>
           </Box>
 
-          <Stack spacing={2}>
-            {/* Manufacturer Filter */}
-            <StyledFormControl fullWidth size="small">
-              <InputLabel>Μάρκα</InputLabel>
-              <StyledSelect
-                value={filters.manufacturer}
-                label="Μάρκα"
-                onChange={(e) => handleFilterChange('manufacturer', e.target.value)}
-              >
-                <MenuItem value="">Όλες</MenuItem>
-                {manufacturers.map((m) => (
-                  <MenuItem key={m} value={m}>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-                      <span>{m}</span>
-                      <Typography
-                        variant="caption"
-                        sx={{
-                          color: 'text.secondary',
-                          ml: 2,
-                        }}
-                      >
-                        ({manufacturerCounts[m]})
-                      </Typography>
-                    </Box>
-                  </MenuItem>
-                ))}
-              </StyledSelect>
-            </StyledFormControl>
+          <Stack spacing={2.5}>
+            {/* Κατάσταση & Τύπος */}
+            <Stack spacing={1}>
+              <SectionLabel>Κατάσταση & Τύπος</SectionLabel>
+              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1.5 }}>
+                <StyledFormControl fullWidth size="small">
+                  <InputLabel>Κατάσταση</InputLabel>
+                  <StyledSelect
+                    value={currentFilters.status}
+                    label="Κατάσταση"
+                    onChange={(e) => handleFilterChange('status', e.target.value)}
+                  >
+                    <MenuItem value="">Όλες</MenuItem>
+                    {repairStatus_types.map((s) => (
+                      <MenuItem key={s} value={s}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, width: '100%' }}>
+                          <StatusDot color={repairStatus_colors[s]} />
+                          <span>{repairStatus_mapping[s]}</span>
+                        </Box>
+                      </MenuItem>
+                    ))}
+                  </StyledSelect>
+                </StyledFormControl>
 
-            {/* Status Filter */}
-            <StyledFormControl fullWidth size="small">
-              <InputLabel>Κατάσταση</InputLabel>
-              <StyledSelect
-                value={filters.status}
-                label="Κατάσταση"
-                onChange={(e) => handleFilterChange('status', e.target.value)}
-              >
-                <MenuItem value="">Όλες</MenuItem>
-                {statuses.map((s) => (
-                  <MenuItem key={s} value={s}>
-                    {s}
-                  </MenuItem>
-                ))}
-              </StyledSelect>
-            </StyledFormControl>
+                <StyledFormControl fullWidth size="small">
+                  <InputLabel>Τύπος</InputLabel>
+                  <StyledSelect
+                    value={currentFilters.typeOfMotor}
+                    label="Τύπος"
+                    onChange={(e) => handleFilterChange('typeOfMotor', e.target.value)}
+                  >
+                    <MenuItem value="">Όλοι</MenuItem>
+                    {typeOfMotor.map((t) => (
+                      <MenuItem key={t} value={t}>
+                        {typeOfMotor_mapping[t]}
+                      </MenuItem>
+                    ))}
+                  </StyledSelect>
+                </StyledFormControl>
+              </Box>
+            </Stack>
 
-            {/* Volt Type Filter */}
-            <StyledFormControl fullWidth size="small">
-              <InputLabel>Τάση</InputLabel>
-              <StyledSelect
-                value={filters.voltType}
-                label="Τάση"
-                onChange={(e) => handleFilterChange('voltType', e.target.value)}
-              >
-                <MenuItem value="">Όλες</MenuItem>
-                {volt_types.map((v) => (
-                  <MenuItem key={v} value={v}>
-                    {volt_types_mapping[v]}
-                  </MenuItem>
-                ))}
-              </StyledSelect>
-            </StyledFormControl>
+            <Divider />
 
-            {/* RPM Filter */}
-            <StyledFormControl fullWidth size="small">
-              <InputLabel>Στροφές</InputLabel>
-              <StyledSelect
-                value={filters.rpm}
-                label="Στροφές"
-                onChange={(e) => handleFilterChange('rpm', e.target.value)}
-              >
-                <MenuItem value="">Όλες</MenuItem>
-                {rpmTypes.map((r) => (
-                  <MenuItem key={r} value={r}>
-                    {rpm_types_mapping[r]}
-                  </MenuItem>
-                ))}
-              </StyledSelect>
-            </StyledFormControl>
+            {/* Χαρακτηριστικά Κινητήρα */}
+            <Stack spacing={1.5}>
+              <SectionLabel>Χαρακτηριστικά Κινητήρα</SectionLabel>
 
-            {/* kW Range Filter */}
-            <Box sx={{ display: 'flex', gap: 2 }}>
-              <StyledTextField
-                label="kW από"
-                type="number"
-                size="small"
-                value={filters.kwMin}
-                onChange={(e) => handleFilterChange('kwMin', e.target.value)}
-                InputProps={{ inputProps: { min: 0, step: 0.1 } }}
-              />
-              <StyledTextField
-                label="kW έως"
-                type="number"
-                size="small"
-                value={filters.kwMax}
-                onChange={(e) => handleFilterChange('kwMax', e.target.value)}
-                InputProps={{ inputProps: { min: 0, step: 0.1 } }}
-              />
-            </Box>
+              <StyledFormControl fullWidth size="small">
+                <InputLabel>Μάρκα</InputLabel>
+                <StyledSelect
+                  value={currentFilters.manufacturer}
+                  label="Μάρκα"
+                  onChange={(e) => handleFilterChange('manufacturer', e.target.value)}
+                >
+                  <MenuItem value="">Όλες</MenuItem>
+                  {manufacturers.map((m) => (
+                    <MenuItem key={m} value={m}>
+                      {m}
+                    </MenuItem>
+                  ))}
+                </StyledSelect>
+              </StyledFormControl>
+
+              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1.5 }}>
+                <StyledFormControl fullWidth size="small">
+                  <InputLabel>Τάση</InputLabel>
+                  <StyledSelect
+                    value={currentFilters.voltType}
+                    label="Τάση"
+                    onChange={(e) => handleFilterChange('voltType', e.target.value)}
+                  >
+                    <MenuItem value="">Όλες</MenuItem>
+                    {volt_types.map((v) => (
+                      <MenuItem key={v} value={v}>
+                        {volt_types_mapping[v]}
+                      </MenuItem>
+                    ))}
+                  </StyledSelect>
+                </StyledFormControl>
+
+                <StyledFormControl fullWidth size="small">
+                  <InputLabel>Στροφές</InputLabel>
+                  <StyledSelect
+                    value={currentFilters.rpm}
+                    label="Στροφές"
+                    onChange={(e) => handleFilterChange('rpm', e.target.value)}
+                  >
+                    <MenuItem value="">Όλες</MenuItem>
+                    {rpm_types.map((r) => (
+                      <MenuItem key={r} value={r}>
+                        {rpm_types_mapping[r]}
+                      </MenuItem>
+                    ))}
+                  </StyledSelect>
+                </StyledFormControl>
+              </Box>
+
+              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1.5 }}>
+                <StyledTextField
+                  label="kW από"
+                  type="number"
+                  size="small"
+                  value={currentFilters.kwMin}
+                  onChange={(e) => handleFilterChange('kwMin', e.target.value)}
+                  InputProps={{ inputProps: { min: 0, step: 0.1 } }}
+                />
+                <StyledTextField
+                  label="kW έως"
+                  type="number"
+                  size="small"
+                  value={currentFilters.kwMax}
+                  onChange={(e) => handleFilterChange('kwMax', e.target.value)}
+                  InputProps={{ inputProps: { min: 0, step: 0.1 } }}
+                />
+              </Box>
+            </Stack>
+
+            <Divider />
+
+            {/* Ημερομηνία Παραλαβής */}
+            <Stack spacing={1}>
+              <SectionLabel>Ημερομηνία Παραλαβής</SectionLabel>
+              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1.5 }}>
+                <StyledTextField
+                  label="Από"
+                  type="date"
+                  size="small"
+                  value={currentFilters.dateFrom}
+                  onChange={(e) => handleFilterChange('dateFrom', e.target.value)}
+                  InputLabelProps={{ shrink: true }}
+                />
+                <StyledTextField
+                  label="Έως"
+                  type="date"
+                  size="small"
+                  value={currentFilters.dateTo}
+                  onChange={(e) => handleFilterChange('dateTo', e.target.value)}
+                  InputLabelProps={{ shrink: true }}
+                />
+              </Box>
+            </Stack>
           </Stack>
 
           {/* Active Filters Display */}
@@ -374,88 +418,67 @@ export default function Filter({ repairs, filteredRepairs, onFiltersChange }) {
                 Ενεργά φίλτρα
               </Typography>
               <Stack direction="row" spacing={0.5} flexWrap="wrap" gap={0.5}>
-                {filters.manufacturer && (
+                {currentFilters.status && (
                   <Chip
-                    label={`Μάρκα: ${filters.manufacturer}`}
-                    onDelete={() => handleFilterChange('manufacturer', '')}
-                    size="small"
-                    sx={{
-                      backgroundColor: 'rgba(25, 118, 210, 0.08)',
-                      borderColor: 'rgba(25, 118, 210, 0.12)',
-                      color: '#1976d2',
-                      '& .MuiChip-deleteIcon': {
-                        color: '#1976d2',
-                        '&:hover': {
-                          color: '#d32f2f',
-                        },
-                      },
-                    }}
-                  />
-                )}
-                {filters.status && (
-                  <Chip
-                    label={`Κατάσταση: ${filters.status}`}
+                    icon={<StatusDot color={repairStatus_colors[currentFilters.status]} />}
+                    label={`Κατάσταση: ${repairStatus_mapping[currentFilters.status]}`}
                     onDelete={() => handleFilterChange('status', '')}
                     size="small"
-                    sx={{
-                      backgroundColor: 'rgba(25, 118, 210, 0.08)',
-                      borderColor: 'rgba(25, 118, 210, 0.12)',
-                      color: '#1976d2',
-                      '& .MuiChip-deleteIcon': {
-                        color: '#1976d2',
-                        '&:hover': {
-                          color: '#d32f2f',
-                        },
-                      },
-                    }}
+                    sx={activeFilterChipSx}
                   />
                 )}
-                {filters.voltType && (
+                {currentFilters.typeOfMotor && (
                   <Chip
-                    label={`Τάση: ${volt_types_mapping[filters.voltType]}`}
+                    label={`Τύπος: ${typeOfMotor_mapping[currentFilters.typeOfMotor]}`}
+                    onDelete={() => handleFilterChange('typeOfMotor', '')}
+                    size="small"
+                    sx={activeFilterChipSx}
+                  />
+                )}
+                {currentFilters.manufacturer && (
+                  <Chip
+                    label={`Μάρκα: ${currentFilters.manufacturer}`}
+                    onDelete={() => handleFilterChange('manufacturer', '')}
+                    size="small"
+                    sx={activeFilterChipSx}
+                  />
+                )}
+                {currentFilters.voltType && (
+                  <Chip
+                    label={`Τάση: ${volt_types_mapping[currentFilters.voltType]}`}
                     onDelete={() => handleFilterChange('voltType', '')}
                     size="small"
-                    sx={{
-                      backgroundColor: 'rgba(25, 118, 210, 0.08)',
-                      borderColor: 'rgba(25, 118, 210, 0.12)',
-                      color: '#1976d2',
-                      '& .MuiChip-deleteIcon': {
-                        color: '#1976d2',
-                        '&:hover': {
-                          color: '#d32f2f',
-                        },
-                      },
-                    }}
+                    sx={activeFilterChipSx}
                   />
                 )}
-                {filters.rpm && (
+                {currentFilters.rpm && (
                   <Chip
-                    label={`Στροφές: ${rpm_types_mapping[filters.rpm]}`}
+                    label={`Στροφές: ${rpm_types_mapping[currentFilters.rpm]}`}
                     onDelete={() => handleFilterChange('rpm', '')}
                     size="small"
-                    sx={{
-                      backgroundColor: 'rgba(25, 118, 210, 0.08)',
-                      borderColor: 'rgba(25, 118, 210, 0.12)',
-                      color: '#1976d2',
-                      '& .MuiChip-deleteIcon': {
-                        color: '#1976d2',
-                        '&:hover': {
-                          color: '#d32f2f',
-                        },
-                      },
-                    }}
+                    sx={activeFilterChipSx}
                   />
                 )}
-                {(filters.kwMin || filters.kwMax) && (
+                {(currentFilters.kwMin || currentFilters.kwMax) && (
                   <Chip
-                    label={`kW: ${filters.kwMin || '∞'}-${filters.kwMax || '∞'}`}
+                    label={`kW: ${currentFilters.kwMin || '∞'}-${currentFilters.kwMax || '∞'}`}
                     size="small"
                     onDelete={() => {
-                      handleFilterChange('kwMin', '');
-                      handleFilterChange('kwMax', '');
+                      onFiltersChange?.({ ...currentFilters, kwMin: '', kwMax: '' });
                     }}
-                    color="primary"
-                    variant="outlined"
+                    sx={activeFilterChipSx}
+                  />
+                )}
+                {(currentFilters.dateFrom || currentFilters.dateTo) && (
+                  <Chip
+                    label={`Παραλαβή: ${
+                      currentFilters.dateFrom ? formatDateNumeric(currentFilters.dateFrom) : '...'
+                    } - ${currentFilters.dateTo ? formatDateNumeric(currentFilters.dateTo) : '...'}`}
+                    size="small"
+                    onDelete={() => {
+                      onFiltersChange?.({ ...currentFilters, dateFrom: '', dateTo: '' });
+                    }}
+                    sx={activeFilterChipSx}
                   />
                 )}
               </Stack>

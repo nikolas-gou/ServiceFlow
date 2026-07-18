@@ -3,6 +3,33 @@ import { useRepairsQuery, useCreateRepair, useUpdateRepair, useSoftDeleteRepair 
 
 const RepairsContext = createContext();
 
+const FILTERS_STORAGE_KEY = 'repairs_filters';
+
+const DEFAULT_FILTERS = {
+  search: '',
+  manufacturer: '',
+  status: '',
+  typeOfMotor: '',
+  voltType: '',
+  kwMin: '',
+  kwMax: '',
+  rpm: '',
+  dateFrom: '',
+  dateTo: '',
+};
+
+const loadPersistedFilters = () => {
+  try {
+    const saved = JSON.parse(localStorage.getItem(FILTERS_STORAGE_KEY));
+    if (saved && typeof saved === 'object') {
+      return { ...DEFAULT_FILTERS, ...saved };
+    }
+  } catch (e) {
+    // αγνόησε corrupted localStorage και πέσε στα defaults
+  }
+  return DEFAULT_FILTERS;
+};
+
 export const RepairsProvider = ({ children }) => {
   const [pagination, setPagination] = useState({
     currentPage: 1,
@@ -13,15 +40,7 @@ export const RepairsProvider = ({ children }) => {
     hasPrevPage: false,
   });
 
-  const [filters, setFilters] = useState({
-    search: '',
-    manufacturer: '',
-    status: '',
-    voltType: '',
-    kwMin: '',
-    kwMax: '',
-    rpm: '',
-  });
+  const [filters, setFilters] = useState(loadPersistedFilters);
 
   const [sorting, setSorting] = useState({
     sortBy: 'is_arrived',
@@ -55,6 +74,7 @@ export const RepairsProvider = ({ children }) => {
 
   const updateFilters = (newFilters) => {
     setFilters(newFilters);
+    localStorage.setItem(FILTERS_STORAGE_KEY, JSON.stringify(newFilters));
     setPagination((prev) => ({ ...prev, currentPage: 1 }));
   };
 
