@@ -48,6 +48,33 @@ export class RepairRepository {
     return response.data || {};
   }
 
+  static async getTrashPaginated(params = {}) {
+    const cleanParams = {};
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== null && value !== undefined && value !== '') {
+        cleanParams[key] = value;
+      }
+    });
+
+    const { data: response } = await api.get('/api/repairs/trash', { params: cleanParams });
+    return {
+      data: response.data || [],
+      pagination: response.pagination || {
+        currentPage: 1,
+        perPage: 20,
+        totalItems: 0,
+        totalPages: 0,
+        hasNextPage: false,
+        hasPrevPage: false,
+      },
+    };
+  }
+
+  static async restore(repairId) {
+    const { data: response } = await api.patch(`/api/repairs/${repairId}/restore`);
+    return response.data || {};
+  }
+
   static async updateRepair(repairId, data) {
     const { data: response } = await api.put(`/api/repairs/${repairId}`, data);
     return response.data || {};

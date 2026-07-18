@@ -4,6 +4,7 @@ import Overview from '../pages/Overview';
 import CustomersPage from '../pages/CustomersPage';
 import { ConnectionismPage } from '../pages/ConnectionismPage';
 import RepairsPage from '../pages/RepairsPage';
+import RepairsTrashPage from '../pages/RepairsTrashPage';
 
 export const routes = [
   {
@@ -25,6 +26,10 @@ export const routes = [
   {
     path: '/dashboard/services',
     element: <RepairsPage />,
+  },
+  {
+    path: '/dashboard/services/trash',
+    element: <RepairsTrashPage />,
   },
   { path: '/dashboard/connections', element: <ConnectionismPage /> },
 ];

@@ -18,6 +18,31 @@ export function useRepairsQuery(params) {
   });
 }
 
+export function useRepairsTrashQuery(params) {
+  const cleanParams = {};
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== '' && value !== null && value !== undefined) {
+      cleanParams[key] = value;
+    }
+  });
+
+  return useQuery({
+    queryKey: [REPAIRS_KEY, 'trash', cleanParams],
+    queryFn: () => RepairRepository.getTrashPaginated(cleanParams),
+    placeholderData: (prev) => prev,
+  });
+}
+
+export function useRestoreRepair() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (repairId) => RepairRepository.restore(repairId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [REPAIRS_KEY] });
+    },
+  });
+}
+
 export function useRepairById(id) {
   return useQuery({
     queryKey: [REPAIRS_KEY, id],

@@ -21,8 +21,10 @@ import {
   Button,
   Tooltip,
 } from '@mui/material';
-import ViewColumnIcon from '@mui/icons-material/ViewColumn';
+import ViewColumnRoundedIcon from '@mui/icons-material/ViewColumnRounded';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
+import RecyclingRoundedIcon from '@mui/icons-material/RecyclingRounded';
+import { useNavigate } from 'react-router-dom';
 import { useRepairs } from '../../../context/RepairsContext';
 import Search from '../Search';
 import { RepairDetailModal } from './parts/RepairDetailModal';
@@ -65,8 +67,23 @@ const ResizeHandle = styled(Box)(({ theme }) => ({
   },
 }));
 
+const ToolbarIconButton = styled(IconButton, {
+  shouldForwardProp: (prop) => prop !== 'iconColor',
+})(({ iconColor }) => ({
+  width: 40,
+  height: 40,
+  borderRadius: '12px',
+  color: iconColor,
+  backgroundColor: `${iconColor}1f`,
+  transition: 'all 0.15s ease',
+  '&:hover': {
+    backgroundColor: `${iconColor}33`,
+  },
+}));
+
 // Main Modal Repairs Component
 export default function Repairs() {
+  const navigate = useNavigate();
   const {
     repairs,
     loading,
@@ -245,20 +262,24 @@ export default function Repairs() {
 
           {/* Column visibility control */}
           <Tooltip title="Στήλες">
-            <IconButton
+            <ToolbarIconButton
+              iconColor="#7e57c2"
               onClick={(e) => setColumnsAnchorEl(e.currentTarget)}
-              sx={{
-                width: 42,
-                height: 42,
-                borderRadius: '999px',
-                backgroundColor: '#fff',
-                border: '1.5px solid #e2e5ea',
-                '&:hover': { backgroundColor: '#f5f7fa', borderColor: '#c7cdd6' },
-              }}
             >
-              <ViewColumnIcon fontSize="small" sx={{ color: '#68727e' }} />
-            </IconButton>
+              <ViewColumnRoundedIcon fontSize="small" />
+            </ToolbarIconButton>
           </Tooltip>
+
+          {/* Κάδος ανακύκλωσης */}
+          <Tooltip title="Κάδος ανακύκλωσης">
+            <ToolbarIconButton
+              iconColor="#43a047"
+              onClick={() => navigate('/dashboard/services/trash')}
+            >
+              <RecyclingRoundedIcon fontSize="small" />
+            </ToolbarIconButton>
+          </Tooltip>
+
           <Popover
             open={columnsMenuOpen}
             anchorEl={columnsAnchorEl}

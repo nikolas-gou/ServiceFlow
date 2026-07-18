@@ -16,7 +16,7 @@ import {
   styled,
 } from '@mui/material';
 import {
-  FilterList as FilterIcon,
+  TuneRounded as FilterIcon,
   Clear as ClearIcon,
   Close as CloseIcon,
 } from '@mui/icons-material';
@@ -50,16 +50,15 @@ const EMPTY_FILTERS = {
 const FilterButton = styled(IconButton, {
   shouldForwardProp: (prop) => prop !== 'hasFilters',
 })(({ theme, hasFilters }) => ({
-  width: 42,
-  height: 42,
-  borderRadius: '999px',
-  backgroundColor: hasFilters ? '#1976d2' : '#fff',
-  border: hasFilters ? '1.5px solid #1976d2' : '1.5px solid #e2e5ea',
-  boxShadow: hasFilters ? '0 3px 10px rgba(25, 118, 210, 0.3)' : '0 1px 2px rgba(0,0,0,0.03)',
-  transition: 'all 0.18s ease',
+  width: 40,
+  height: 40,
+  borderRadius: '12px',
+  backgroundColor: hasFilters ? '#1976d2' : 'rgba(25, 118, 210, 0.10)',
+  border: 'none',
+  boxShadow: hasFilters ? '0 3px 10px rgba(25, 118, 210, 0.28)' : 'none',
+  transition: 'all 0.15s ease',
   '&:hover': {
-    backgroundColor: hasFilters ? '#1565c0' : '#f5f7fa',
-    borderColor: hasFilters ? '#1565c0' : '#c7cdd6',
+    backgroundColor: hasFilters ? '#1565c0' : 'rgba(25, 118, 210, 0.18)',
   },
   position: 'relative',
 }));
@@ -196,7 +195,7 @@ export default function Filter({ repairs, filters, onFiltersChange }) {
       <FilterButton onClick={handleClick} hasFilters={hasActiveFilters}>
         <FilterIcon
           fontSize="small"
-          sx={{ color: hasActiveFilters ? '#fff' : '#68727e' }}
+          sx={{ color: hasActiveFilters ? '#fff' : '#1976d2' }}
         />
         {hasActiveFilters && (
           <Typography
