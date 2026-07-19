@@ -123,7 +123,11 @@ export default function Search(props) {
 
       {/* Filter Component */}
       {showCustomerFilter && (
-        <CustomerFilter customers={props.customers} onFiltersChange={props.onFiltersChange} />
+        <CustomerFilter
+          customers={props.customers}
+          filters={props.filters}
+          onFiltersChange={props.onFiltersChange}
+        />
       )}
       {(showRepairFilter || showRepairFilterByDefault) && (
         <Filter

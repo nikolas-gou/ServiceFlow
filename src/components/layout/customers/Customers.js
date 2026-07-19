@@ -11,14 +11,24 @@ import {
   Typography,
   styled,
   Divider,
+  IconButton,
+  Popover,
+  FormControlLabel,
+  Checkbox,
+  Tooltip,
+  Stack,
 } from '@mui/material';
-import { useSearch } from '../../../context/SearchContext';
+import ViewColumnRoundedIcon from '@mui/icons-material/ViewColumnRounded';
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import { useCustomers } from '../../../hooks/useCustomers';
 import Search from '../Search';
 import { CustomerDetailModal } from './parts/CustomerDetailModal';
 import { CustomerRow } from './parts/CustomerRow';
 import PeopleIcon from '@mui/icons-material/People';
 import InboxIcon from '@mui/icons-material/Inbox';
+import { CUSTOMERS_COLUMNS, ACTIONS_COLUMN } from './parts/customersColumns';
+import { useTableColumns } from '../../../hooks/useTableColumns';
+import PaginationComponent from '../pagination/PaginationComponent';
 
 // Styled components για compact εμφάνιση
 const CompactTableCell = styled(TableCell)(({ theme }) => ({
@@ -37,24 +47,89 @@ const CompactTableCell = styled(TableCell)(({ theme }) => ({
   },
 }));
 
+const ResizeHandle = styled(Box)(({ theme }) => ({
+  position: 'absolute',
+  right: -4,
+  top: 0,
+  bottom: 0,
+  width: 8,
+  cursor: 'col-resize',
+  zIndex: 2,
+  '&:hover, &:active': {
+    backgroundColor: 'rgba(25, 118, 210, 0.3)',
+  },
+}));
+
+const ToolbarIconButton = styled(IconButton, {
+  shouldForwardProp: (prop) => prop !== 'iconColor',
+})(({ iconColor }) => ({
+  width: 40,
+  height: 40,
+  borderRadius: '12px',
+  color: iconColor,
+  backgroundColor: `${iconColor}1f`,
+  transition: 'all 0.15s ease',
+  '&:hover': {
+    backgroundColor: `${iconColor}33`,
+  },
+}));
+
+const EMPTY_FILTERS = { type: '', email: '' };
+
 // Main Customers Component
 export default function Customers() {
-  const { searchQuery } = useSearch();
   const { data: customers = [], isLoading: loading } = useCustomers();
 
   // Modal state
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
 
-  // State για τα filters
-  const [filters, setFilters] = useState({
-    type: '',
-    email: '',
-  });
+  const [filters, setFilters] = useState(EMPTY_FILTERS);
+  const [search, setSearch] = useState('');
 
-  // Συνάρτηση για να χειριστεί τις αλλαγές στα φίλτρα
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(() => Number(localStorage.getItem('customersPerPage')) || 10);
+
+  // Ορατότητα/πλάτος στηλών πίνακα, με persistence στο localStorage
+  const { visibleColumns, columnWidths, toggleColumn, setColumnWidth, resetColumns } =
+    useTableColumns('customersTable', CUSTOMERS_COLUMNS);
+
+  const [columnsAnchorEl, setColumnsAnchorEl] = useState(null);
+  const activeColumns = CUSTOMERS_COLUMNS.filter((col) => visibleColumns.includes(col.id));
+  const columnsMenuOpen = Boolean(columnsAnchorEl);
+
   const handleFiltersChange = (newFilters) => {
     setFilters(newFilters);
+    setPage(1);
+  };
+
+  const handleSearchChange = (newSearch) => {
+    setSearch(newSearch);
+    setPage(1);
+  };
+
+  const handleItemsPerPageChange = (newPerPage) => {
+    setPerPage(newPerPage);
+    setPage(1);
+    localStorage.setItem('customersPerPage', newPerPage);
+  };
+
+  const handleResizeStart = (colId, minWidth, event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const startX = event.clientX;
+    const startWidth = columnWidths[colId] || 100;
+
+    const onMouseMove = (moveEvent) => {
+      const delta = moveEvent.clientX - startX;
+      setColumnWidth(colId, Math.max(minWidth, Math.round(startWidth + delta)));
+    };
+    const onMouseUp = () => {
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
   };
 
   // Handle modal open
@@ -71,23 +146,27 @@ export default function Customers() {
 
   // Φιλτράρισμα με βάση το search και τα filters
   const filteredCustomers = customers.filter((customer) => {
-    // Search query filter
     const matchesSearch =
-      !searchQuery ||
-      customer.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      customer.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      customer.phone?.includes(searchQuery) ||
-      customer.type?.toLowerCase().includes(searchQuery.toLowerCase());
+      !search ||
+      customer.name?.toLowerCase().includes(search.toLowerCase()) ||
+      customer.email?.toLowerCase().includes(search.toLowerCase()) ||
+      customer.phone?.includes(search) ||
+      customer.type?.toLowerCase().includes(search.toLowerCase());
 
-    // Type filter
     const matchesType = !filters.type || customer.type === filters.type;
 
-    // Email filter
     const matchesEmail =
       !filters.email || customer.email?.toLowerCase().includes(filters.email.toLowerCase());
 
     return matchesSearch && matchesType && matchesEmail;
   });
+
+  const totalPages = Math.max(1, Math.ceil(filteredCustomers.length / perPage));
+  const currentPage = Math.min(page, totalPages);
+  const paginatedCustomers = filteredCustomers.slice(
+    (currentPage - 1) * perPage,
+    currentPage * perPage,
+  );
 
   if (loading) {
     return (
@@ -148,42 +227,111 @@ export default function Customers() {
           </Box>
         </Box>
 
-        {/* Search και Filter components */}
-        <Search customers={customers} onFiltersChange={handleFiltersChange} />
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25 }}>
+          {/* Search και Filter components */}
+          <Search
+            customers={customers}
+            filters={filters}
+            onFiltersChange={handleFiltersChange}
+            onSearchChange={handleSearchChange}
+            searchValue={search}
+          />
+
+          {/* Column visibility control */}
+          <Tooltip title="Στήλες">
+            <ToolbarIconButton
+              iconColor="#7e57c2"
+              onClick={(e) => setColumnsAnchorEl(e.currentTarget)}
+            >
+              <ViewColumnRoundedIcon fontSize="small" />
+            </ToolbarIconButton>
+          </Tooltip>
+
+          <Popover
+            open={columnsMenuOpen}
+            anchorEl={columnsAnchorEl}
+            onClose={() => setColumnsAnchorEl(null)}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+          >
+            <Box sx={{ p: 2, minWidth: 240 }}>
+              <Box
+                sx={{
+                  mb: 1,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Ορατές στήλες
+                </Typography>
+                <Tooltip title="Επαναφορά προεπιλογών">
+                  <IconButton size="small" onClick={resetColumns}>
+                    <RestartAltIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+              <Divider sx={{ mb: 1 }} />
+              <Stack spacing={0}>
+                {CUSTOMERS_COLUMNS.map((col) => (
+                  <FormControlLabel
+                    key={col.id}
+                    control={
+                      <Checkbox
+                        size="small"
+                        checked={visibleColumns.includes(col.id)}
+                        onChange={() => toggleColumn(col.id)}
+                      />
+                    }
+                    label={<Typography variant="body2">{col.label}</Typography>}
+                  />
+                ))}
+              </Stack>
+            </Box>
+          </Popover>
+        </Box>
       </Box>
 
       <TableContainer
         component={Paper}
         sx={{
-          maxHeight: 'calc(100vh - 280px)',
+          maxHeight: '50vh',
           boxShadow: '0 2px 8px rgba(25,118,210,0.08)',
           borderRadius: '16px',
         }}
       >
-        <Table stickyHeader size="small">
+        <Table stickyHeader size="small" sx={{ tableLayout: 'fixed' }}>
           <TableHead>
             <TableRow>
-              <CompactTableCell>Όνομα</CompactTableCell>
-              <CompactTableCell>Τύπος</CompactTableCell>
-              <CompactTableCell>Email</CompactTableCell>
-              <CompactTableCell>Τηλέφωνο</CompactTableCell>
-              <CompactTableCell>Ημ/νία Δημιουργίας</CompactTableCell>
-              <CompactTableCell width="50px">Ενέργειες</CompactTableCell>
+              {activeColumns.map((col) => (
+                <CompactTableCell
+                  key={col.id}
+                  sx={{ position: 'relative', width: columnWidths[col.id] }}
+                >
+                  {col.label}
+                  <ResizeHandle onMouseDown={(e) => handleResizeStart(col.id, col.minWidth, e)} />
+                </CompactTableCell>
+              ))}
+              <CompactTableCell sx={{ width: ACTIONS_COLUMN.width }}>
+                {ACTIONS_COLUMN.label}
+              </CompactTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredCustomers.map((customer, index) => (
+            {paginatedCustomers.map((customer, index) => (
               <CustomerRow
                 key={customer.id}
                 customer={customer}
-                index={index}
+                columns={activeColumns}
+                columnWidths={columnWidths}
                 onOpenModal={handleOpenModal}
                 zebra={index % 2 === 0}
               />
             ))}
             {filteredCustomers.length === 0 && (
               <TableRow>
-                <CompactTableCell colSpan={6} align="center">
+                <CompactTableCell colSpan={activeColumns.length + 1} align="center">
                   <Box
                     sx={{
                       py: 4,
@@ -195,7 +343,7 @@ export default function Customers() {
                   >
                     <InboxIcon sx={{ fontSize: 48, mb: 1 }} />
                     <Typography variant="body2">
-                      {searchQuery || Object.values(filters).some((f) => f !== '')
+                      {search || Object.values(filters).some((f) => f !== '')
                         ? `Δεν βρέθηκαν αποτελέσματα`
                         : 'Δεν υπάρχουν πελάτες'}
                     </Typography>
@@ -206,6 +354,17 @@ export default function Customers() {
           </TableBody>
         </Table>
       </TableContainer>
+
+      {/* Pagination Component */}
+      <PaginationComponent
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalItems={filteredCustomers.length}
+        itemsPerPage={perPage}
+        onPageChange={setPage}
+        onItemsPerPageChange={handleItemsPerPageChange}
+        showItemsPerPage={true}
+      />
 
       {/* Customer Detail Modal */}
       <CustomerDetailModal

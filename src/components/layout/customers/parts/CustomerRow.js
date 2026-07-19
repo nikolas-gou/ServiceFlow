@@ -1,12 +1,17 @@
 import React from 'react';
 import { Typography, Chip, IconButton, styled, TableCell, TableRow, Tooltip } from '@mui/material';
 import { Visibility as VisibilityIcon } from '@mui/icons-material';
+import { customerType_mapping, customerType_colors } from '../../../Models/Customer';
 import { formatDateNumeric } from '../../../../utils/dateUtils';
+import { ACTIONS_COLUMN } from './customersColumns';
 
 // Styled components για compact εμφάνιση
 const CompactTableCell = styled(TableCell)(({ theme }) => ({
   padding: '6px 8px',
   fontSize: '0.8rem',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
   '&.MuiTableCell-head': {
     fontWeight: 600,
     backgroundColor: '#f8f9fa',
@@ -27,34 +32,50 @@ const CompactTableRow = styled(TableRow)(({ theme }) => ({
   transition: 'all 0.2s ease',
 }));
 
-export const CustomerRow = ({ customer, index, onOpenModal, zebra }) => {
-  const getTypeChip = (type) => {
-    const typeConfig = {
-      individual: { label: 'Ιδιώτης', color: 'info' },
-      factory: { label: 'Εργοστάσιο', color: 'warning' },
-    };
-
-    const config = typeConfig[type] || { label: type, color: 'default' };
-
-    return (
-      <Chip
-        label={config.label}
-        size="small"
-        color={config.color}
-        variant="filled"
-        sx={{
-          fontWeight: 600,
-          minWidth: 90,
-          fontSize: '0.75rem',
-          height: '24px',
-        }}
-      />
-    );
-  };
+export const CustomerRow = ({ customer, onOpenModal, zebra, columns, columnWidths }) => {
+  const typeColor = customerType_colors[customer.type] || { base: '#e0e0e0', dark: '#616161' };
+  const typeLabel = customerType_mapping[customer.type] || customer.type;
 
   const handleViewClick = (e) => {
     e.stopPropagation();
     onOpenModal(customer);
+  };
+
+  // Περιεχόμενο κάθε στήλης, keyed by column id (βλ. customersColumns.js)
+  const cellContent = {
+    name: (
+      <Typography variant="body2" fontWeight={600} fontSize="0.8rem">
+        {customer.name || '-'}
+      </Typography>
+    ),
+    type: (
+      <Chip
+        label={typeLabel}
+        size="small"
+        sx={{
+          fontWeight: 600,
+          fontSize: '0.75rem',
+          height: '24px',
+          backgroundColor: `${typeColor.base}33`,
+          color: typeColor.dark,
+        }}
+      />
+    ),
+    email: (
+      <Typography variant="caption" fontSize="0.75rem">
+        {customer.email || '-'}
+      </Typography>
+    ),
+    phone: (
+      <Typography variant="caption" fontSize="0.75rem">
+        {customer.phone || '-'}
+      </Typography>
+    ),
+    createdAt: (
+      <Typography variant="caption" color="text.secondary" fontSize="0.75rem">
+        {formatDateNumeric(customer.createdAt)}
+      </Typography>
+    ),
   };
 
   return (
@@ -67,33 +88,20 @@ export const CustomerRow = ({ customer, index, onOpenModal, zebra }) => {
       }}
       onClick={() => onOpenModal(customer)}
     >
-      <CompactTableCell>
-        <Typography variant="body2" fontWeight={600} fontSize="0.8rem">
-          {customer.name || '-'}
-        </Typography>
-      </CompactTableCell>
-
-      <CompactTableCell>{getTypeChip(customer.type)}</CompactTableCell>
-
-      <CompactTableCell>
-        <Typography variant="caption" fontSize="0.75rem">
-          {customer.email || '-'}
-        </Typography>
-      </CompactTableCell>
-
-      <CompactTableCell>
-        <Typography variant="caption" fontSize="0.75rem">
-          {customer.phone || '-'}
-        </Typography>
-      </CompactTableCell>
-
-      <CompactTableCell>
-        <Typography variant="caption" fontSize="0.75rem">
-          {formatDateNumeric(customer.createdAt)}
-        </Typography>
-      </CompactTableCell>
-
-      <CompactTableCell sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+      {columns.map((col) => (
+        <CompactTableCell key={col.id} sx={{ width: columnWidths[col.id] }}>
+          {cellContent[col.id]}
+        </CompactTableCell>
+      ))}
+      <CompactTableCell
+        sx={{
+          width: ACTIONS_COLUMN.width,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 0.5,
+          overflow: 'visible',
+        }}
+      >
         <Tooltip title="Προβολή">
           <IconButton
             size="small"
