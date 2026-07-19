@@ -1,5 +1,6 @@
 import React from 'react';
 import { InputAdornment, Box, IconButton, TextField, styled } from '@mui/material';
+import { alpha } from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useSearch } from '../../context/SearchContext';
@@ -22,10 +23,10 @@ const SearchField = styled(TextField)(({ theme }) => ({
       borderColor: '#c7cdd6',
     },
     '&.Mui-focused': {
-      boxShadow: '0 3px 10px rgba(25, 118, 210, 0.15)',
+      boxShadow: `0 3px 10px ${alpha(theme.palette.primary.main, 0.15)}`,
     },
     '&.Mui-focused fieldset': {
-      borderColor: '#1976d2',
+      borderColor: theme.palette.primary.main,
       borderWidth: '1.5px',
     },
   },
@@ -33,7 +34,7 @@ const SearchField = styled(TextField)(({ theme }) => ({
     padding: '0 8px',
     fontSize: '0.875rem',
     '&::placeholder': {
-      color: '#9aa4b1',
+      color: theme.palette.text.secondary,
       opacity: 1,
     },
   },
@@ -90,11 +91,11 @@ export default function Search(props) {
             <InputAdornment position="start" sx={{ pl: 1.25 }}>
               <SearchIcon
                 sx={{
-                  color: '#9aa4b1',
+                  color: 'text.secondary',
                   fontSize: 19,
                   transition: 'color 0.2s',
                   '.MuiOutlinedInput-root.Mui-focused &': {
-                    color: '#1976d2',
+                    color: 'primary.main',
                   },
                 }}
               />
@@ -106,7 +107,7 @@ export default function Search(props) {
                 size="small"
                 onClick={clearSearch}
                 sx={{
-                  color: '#9aa4b1',
+                  color: 'text.secondary',
                   transition: 'all 0.2s',
                   '&:hover': {
                     color: '#d32f2f',

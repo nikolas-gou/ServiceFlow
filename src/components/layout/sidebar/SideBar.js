@@ -5,12 +5,12 @@ import SidebarContent from './parts/SidebarContent';
 
 const StyledDrawer = styled(Drawer, {
   shouldForwardProp: (prop) => prop !== 'drawerWidth',
-})(({ drawerWidth }) => ({
+})(({ theme, drawerWidth }) => ({
   width: drawerWidth,
   flexShrink: 0,
   '& .MuiDrawer-paper': {
     width: drawerWidth,
-    background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
+    background: theme.custom.gradients.primary,
     borderRight: 'none',
     boxShadow: '4px 0 24px rgba(0, 0, 0, 0.15)',
     color: 'white',

@@ -7,6 +7,7 @@ import {
   Power,
 } from '@mui/icons-material';
 import { CardFactory } from '../../../utils/CardFactory';
+import { categoryGradients } from './categoryGradients';
 
 /**
  * Κάρτες για τα στατιστικά κινητήρων
@@ -27,7 +28,7 @@ export class MotorCardsData {
         icon: <Memory />,
         category: 'motors',
         type: 'line',
-        gradient: 'linear-gradient(135deg, #1976d2 0%, #1e3c72 100%)',
+        gradient: categoryGradients.motors,
         trendsPath: analyticsData.motor?.trends?.monthlyTrends,
         valueFormat: 'number',
         isMainCard: true,

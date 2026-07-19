@@ -17,6 +17,7 @@ import {
   Alert,
   InputAdornment,
 } from '@mui/material';
+import { useTheme, alpha } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import RecyclingRoundedIcon from '@mui/icons-material/RecyclingRounded';
@@ -51,6 +52,7 @@ const CompactTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function RepairsTrash() {
+  const theme = useTheme();
   const navigate = useNavigate();
 
   const [page, setPage] = useState(1);
@@ -61,7 +63,12 @@ export default function RepairsTrash() {
   const restoreMutation = useRestoreRepair();
 
   const repairs = result?.data || [];
-  const pagination = result?.pagination || { currentPage: 1, totalPages: 0, totalItems: 0, perPage };
+  const pagination = result?.pagination || {
+    currentPage: 1,
+    totalPages: 0,
+    totalItems: 0,
+    perPage,
+  };
 
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [selectedRepair, setSelectedRepair] = useState({});
@@ -109,7 +116,7 @@ export default function RepairsTrash() {
                 '&:hover': { backgroundColor: '#f5f7fa' },
               }}
             >
-              <ArrowBackIcon fontSize="small" sx={{ color: '#68727e' }} />
+              <ArrowBackIcon fontSize="small" sx={{ color: 'text.secondary' }} />
             </IconButton>
           </Tooltip>
           <Box
@@ -146,7 +153,7 @@ export default function RepairsTrash() {
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
-                <SearchIcon sx={{ color: '#9aa4b1', fontSize: 18 }} />
+                <SearchIcon sx={{ color: 'text.secondary', fontSize: 18 }} />
               </InputAdornment>
             ),
             endAdornment: search && (
@@ -164,7 +171,7 @@ export default function RepairsTrash() {
         component={Paper}
         sx={{
           maxHeight: '55vh',
-          boxShadow: '0 2px 8px rgba(25,118,210,0.08)',
+          boxShadow: `0 2px 8px ${alpha(theme.palette.primary.main, 0.08)}`,
           borderRadius: '16px',
         }}
       >
@@ -195,20 +202,6 @@ export default function RepairsTrash() {
                   <CompactTableCell>{formatDateNumeric(repair.isArrived)}</CompactTableCell>
                   <CompactTableCell>{formatDateNumeric(repair.deletedAt)}</CompactTableCell>
                   <CompactTableCell sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                    <Tooltip title="Προβολή">
-                      <IconButton
-                        size="small"
-                        sx={{
-                          color: '#1976d2',
-                          backgroundColor: 'rgba(25, 118, 210, 0.10)',
-                          p: 0.5,
-                          '&:hover': { backgroundColor: 'rgba(25, 118, 210, 0.2)' },
-                        }}
-                        onClick={() => handleView(repair)}
-                      >
-                        <VisibilityIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
                     <Tooltip title="Επαναφορά">
                       <IconButton
                         size="small"

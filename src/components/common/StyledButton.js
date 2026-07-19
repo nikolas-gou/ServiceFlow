@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { styled, alpha, darken } from '@mui/material/styles';
 
 /**
  * Enhanced Styled Button Component
@@ -45,37 +45,41 @@ import { styled } from '@mui/material/styles';
  *   onClick={handleSave}
  * />
  */
-const StyledButtonWrapper = styled(Button)(({ theme, variant }) => ({
-  borderRadius: '12px',
-  padding: theme.spacing(1.5, 3),
-  fontSize: '0.95rem',
-  fontWeight: 600,
-  textTransform: 'none',
-  minWidth: '140px',
-  transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
-  boxShadow:
-    variant === 'contained' ? '0 4px 12px rgba(25, 118, 210, 0.3)' : '0 2px 8px rgba(0, 0, 0, 0.1)',
-  ...(variant === 'contained' && {
-    background: 'linear-gradient(135deg, #1976d2 0%, #2196f3 100%)',
-    border: '1px solid #1976d2',
-    '&:hover': {
-      background: 'linear-gradient(135deg, #1565c0 0%, #1976d2 100%)',
-      transform: 'translateY(-2px)',
-      boxShadow: '0 6px 20px rgba(25, 118, 210, 0.4)',
-    },
-  }),
-  ...(variant === 'outlined' && {
-    borderColor: '#1976d2',
-    color: '#1976d2',
-    background: 'rgba(25, 118, 210, 0.02)',
-    '&:hover': {
-      background: 'rgba(25, 118, 210, 0.08)',
-      borderColor: '#1565c0',
-      transform: 'translateY(-2px)',
-      boxShadow: '0 6px 16px rgba(25, 118, 210, 0.2)',
-    },
-  }),
-}));
+const StyledButtonWrapper = styled(Button)(({ theme, variant }) => {
+  const { primary } = theme.palette;
+
+  return {
+    borderRadius: theme.custom.radius.md,
+    padding: theme.spacing(1.5, 3),
+    fontSize: '0.95rem',
+    fontWeight: 600,
+    textTransform: 'none',
+    minWidth: '140px',
+    transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+    boxShadow:
+      variant === 'contained' ? `0 4px 12px ${alpha(primary.main, 0.3)}` : '0 2px 8px rgba(0, 0, 0, 0.1)',
+    ...(variant === 'contained' && {
+      background: theme.custom.gradients.primary,
+      border: `1px solid ${primary.dark}`,
+      '&:hover': {
+        background: `linear-gradient(135deg, ${darken(primary.dark, 0.25)} 0%, ${primary.dark} 100%)`,
+        transform: 'translateY(-2px)',
+        boxShadow: `0 6px 20px ${alpha(primary.main, 0.4)}`,
+      },
+    }),
+    ...(variant === 'outlined' && {
+      borderColor: primary.main,
+      color: primary.main,
+      background: alpha(primary.main, 0.02),
+      '&:hover': {
+        background: alpha(primary.main, 0.08),
+        borderColor: primary.dark,
+        transform: 'translateY(-2px)',
+        boxShadow: `0 6px 16px ${alpha(primary.main, 0.2)}`,
+      },
+    }),
+  };
+});
 
 const StyledButton = ({
   variant = 'contained',

@@ -1,5 +1,16 @@
 import React, { useState } from 'react';
-import { Typography, IconButton, styled, TableCell, TableRow, Tooltip, Box } from '@mui/material';
+import {
+  Typography,
+  IconButton,
+  styled,
+  TableCell,
+  TableRow,
+  Tooltip,
+  Box,
+  Select,
+  MenuItem,
+} from '@mui/material';
+import { useTheme, alpha } from '@mui/material/styles';
 import {
   Visibility as VisibilityIcon,
   Edit as EditIcon,
@@ -11,6 +22,9 @@ import {
   typeOfVolt_mapping,
   typeOfStep_mapping,
   rpm_types_mapping,
+  repairStatus_types,
+  repairStatus_mapping,
+  repairStatus_colors,
 } from '../../../Models/Motor';
 import { useSoftDeleteRepair } from '../../../../hooks/useRepairs';
 import { DeleteConfirmationModal } from './DeleteConfirmationModal';
@@ -38,13 +52,22 @@ const CompactTableRow = styled(TableRow)(({ theme }) => ({
     backgroundColor: '#f8f9fa',
     cursor: 'pointer',
     '& .view-icon': {
-      color: '#1976d2',
+      color: theme.palette.primary.main,
     },
   },
   transition: 'all 0.2s ease',
 }));
 
-export const RepairRow = ({ repair, onView, onEdit, zebra, columns, columnWidths }) => {
+export const RepairRow = ({
+  repair,
+  onView,
+  onEdit,
+  onStatusChange,
+  zebra,
+  columns,
+  columnWidths,
+}) => {
+  const theme = useTheme();
   const motor = repair?.motor || {};
   const customer = repair?.customer || {};
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -80,6 +103,30 @@ export const RepairRow = ({ repair, onView, onEdit, zebra, columns, columnWidths
       <Typography variant="body2" fontWeight={600} fontSize="0.8rem">
         {repair.id}
       </Typography>
+    ),
+    status: (
+      <Select
+        value={repair.repairStatus}
+        onClick={(e) => e.stopPropagation()}
+        onChange={(e) => onStatusChange(repair, e.target.value)}
+        size="small"
+        variant="standard"
+        disableUnderline
+        sx={{
+          fontSize: '0.75rem',
+          fontWeight: 600,
+          borderRadius: '8px',
+          color: repairStatus_colors[repair.repairStatus],
+          backgroundColor: `${repairStatus_colors[repair.repairStatus]}1a`,
+          '& .MuiSelect-select': { py: 0.4, pl: 1.25, pr: 3 },
+        }}
+      >
+        {repairStatus_types.map((status) => (
+          <MenuItem key={status} value={status} sx={{ fontSize: '0.8rem' }}>
+            {repairStatus_mapping[status]}
+          </MenuItem>
+        ))}
+      </Select>
     ),
     serialNumber: (
       <Typography variant="body2" fontWeight={600} fontSize="0.8rem">
@@ -157,7 +204,7 @@ export const RepairRow = ({ repair, onView, onEdit, zebra, columns, columnWidths
         sx={{
           backgroundColor: zebra ? '#f8fafd' : '#fff',
           transition: 'background 0.2s',
-          '&:hover': { backgroundColor: 'rgba(25, 118, 210, 0.08)' },
+          '&:hover': { backgroundColor: alpha(theme.palette.primary.main, 0.08) },
         }}
         onClick={() => onView(repair)}
       >

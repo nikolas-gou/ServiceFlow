@@ -1,4 +1,32 @@
-// Κεντρική παλέτα χρωμάτων (accent colors), βασισμένη στις ακριβείς αποχρώσεις
+// Μοναδική πηγή αλήθειας για raw hex τιμές σε όλη την εφαρμογή.
+// Κανένα άλλο αρχείο δεν πρέπει να ξαναγράφει αυτά τα hex ως literal string —
+// είτε τα εισάγει από εδώ, είτε (μέσα σε styled components) διαβάζει το ήδη
+// wired theme.palette / theme.custom (βλ. src/styles/Themes.js).
+
+// Το βασικό "χρώμα ταυτότητας" της εφαρμογής (sidebar, header, modals, κουμπιά).
+// Αντλείται από εδώ το theme.palette.primary στο Themes.js.
+export const brand = {
+  main: '#2a5298',
+  dark: '#1e3c72',
+  light: '#5478b3',
+};
+
+// Ουδέτερα χρώματα κειμένου/εικονιδίων που χρησιμοποιούνται συχνά έξω από το theme.
+export const neutral = {
+  textSecondary: '#6B7280', // = theme.palette.text.secondary
+};
+
+// Αποχρώσεις ανά ενότητα, για τα gradient των στατιστικών καρτών (βλ. categoryGradients.js).
+// Ξεχωριστές από το accentColors παρακάτω: εκείνο είναι για tints/badges πάνω σε
+// φόντο, αυτό εδώ για gradient φόντα με λευκό κείμενο (χρειάζονται πιο βαθιά απόχρωση).
+export const categoryAccents = {
+  repairs: { main: '#4caf50', dark: '#388e3c' },
+  motors: brand,
+  customers: { main: '#00897b', dark: '#00695c' },
+  revenue: { main: '#9c27b0', dark: '#7b1fa2' },
+};
+
+// Παλέτα accent χρωμάτων, βασισμένη στις ακριβείς αποχρώσεις
 // που ήδη χρησιμοποιεί το sidebar (SidebarContent.js) ως πηγή αλήθειας.
 // `base`  = η ίδια απόχρωση με το sidebar (badges, dots, tints).
 // `dark`  = πιο σκούρα εκδοχή της ίδιας απόχρωσης, για ευανάγνωστο κείμενο πάνω σε ανοιχτό φόντο.

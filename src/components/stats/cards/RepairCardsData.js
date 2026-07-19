@@ -1,5 +1,6 @@
 import { Build, AccountBalance } from '@mui/icons-material';
 import { CardFactory } from '../../../utils/CardFactory';
+import { categoryGradients } from './categoryGradients';
 
 /**
  * Κάρτες για τα στατιστικά επισκευών
@@ -20,7 +21,7 @@ export class RepairCardsData {
         icon: <Build />,
         category: 'repairs',
         type: 'line',
-        gradient: 'linear-gradient(135deg, #4caf50 0%, #388e3c 100%)',
+        gradient: categoryGradients.repairs,
         trendsPath: analyticsData.repair?.trends?.monthlyTrends,
         valueFormat: 'number',
         isMainCard: true,
@@ -33,7 +34,7 @@ export class RepairCardsData {
         icon: <AccountBalance />,
         category: 'revenue',
         type: 'line',
-        gradient: 'linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%)',
+        gradient: categoryGradients.revenue,
         trendsPath: analyticsData.revenue?.trends?.monthlyTrends,
         valueFormat: 'currency',
         isMainCard: true,

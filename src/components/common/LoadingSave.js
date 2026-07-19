@@ -7,7 +7,7 @@ import { styled } from '@mui/material/styles';
  *
  * @param {boolean} show - Καθορίζει αν το loading overlay είναι εμφανές
  * @param {string} message - Μήνυμα που εμφανίζεται κάτω από το spinner (default: "Αποθήκευση...")
- * @param {string} spinnerColor - Χρώμα του spinner (default: "#1976d2")
+ * @param {string} spinnerColor - Χρώμα του spinner (default: το brand χρώμα, theme.palette.primary.main)
  * @param {number} spinnerSize - Μέγεθος του spinner σε pixels (default: 40)
  * @param {string} backgroundColor - Χρώμα φόντου του overlay (default: "rgba(255, 255, 255, 0.9)")
  * @param {string} borderRadius - Border radius του overlay (default: "24px")
@@ -59,24 +59,27 @@ const LoadingOverlay = styled(Box)(
   }),
 );
 
-const SpinnerBox = styled(Box)(({ spinnerSize = 40, spinnerColor = '#1976d2' }) => ({
-  width: spinnerSize,
-  height: spinnerSize,
-  margin: '0 auto 16px',
-  border: `3px solid ${spinnerColor}33`, // 33 για transparency
-  borderTop: `3px solid ${spinnerColor}`,
-  borderRadius: '50%',
-  animation: 'spin 1s linear infinite',
-  '@keyframes spin': {
-    '0%': { transform: 'rotate(0deg)' },
-    '100%': { transform: 'rotate(360deg)' },
-  },
-}));
+const SpinnerBox = styled(Box)(({ theme, spinnerSize = 40, spinnerColor }) => {
+  const color = spinnerColor || theme.palette.primary.main;
+  return {
+    width: spinnerSize,
+    height: spinnerSize,
+    margin: '0 auto 16px',
+    border: `3px solid ${color}33`, // 33 για transparency
+    borderTop: `3px solid ${color}`,
+    borderRadius: '50%',
+    animation: 'spin 1s linear infinite',
+    '@keyframes spin': {
+      '0%': { transform: 'rotate(0deg)' },
+      '100%': { transform: 'rotate(360deg)' },
+    },
+  };
+});
 
 const LoadingSave = ({
   show = false,
   message = 'Αποθήκευση...',
-  spinnerColor = '#1976d2',
+  spinnerColor,
   spinnerSize = 40,
   backgroundColor = 'rgba(255, 255, 255, 0.9)',
   borderRadius = '24px',

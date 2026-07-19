@@ -1,5 +1,6 @@
 import React from 'react';
 import { MotorCrossSectionLinks } from './MotorCrossSectionLinks';
+import { brand } from '../../styles/colors';
 
 export class Motor {
   constructor(data = {}) {
@@ -202,7 +203,7 @@ export const repairStatus_mapping = {
 export const repairStatus_colors = {
   'in-progress': '#ff9800',
   completed: '#4caf50',
-  delivered: '#2196f3',
+  delivered: brand.main,
   cancelled: '#f44336',
 };
 

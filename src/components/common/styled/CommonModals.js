@@ -1,5 +1,5 @@
 import { Modal, Box, IconButton, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { styled, alpha } from '@mui/material/styles';
 
 // Styled Components για το Modal
 export const StyledModal = styled(Modal)(({ theme }) => ({
@@ -8,13 +8,13 @@ export const StyledModal = styled(Modal)(({ theme }) => ({
   justifyContent: 'center',
   '& .MuiBackdrop-root': {
     backdropFilter: 'blur(8px)',
-    backgroundColor: 'rgba(30, 60, 114, 0.4)',
+    backgroundColor: alpha(theme.palette.primary.dark, 0.4),
     transition: 'all 0.3s ease',
   },
 }));
 
 export const ModalHeader = styled(Box)(({ theme }) => ({
-  background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
+  background: theme.custom.gradients.primary,
   padding: theme.spacing(2.5, 3),
   position: 'relative',
   borderRadius: '20px 20px 0 0',
@@ -88,10 +88,10 @@ export const ModalContent = styled(Box)(({ theme }) => ({
     background: 'transparent',
   },
   '&::-webkit-scrollbar-thumb': {
-    background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
+    background: theme.custom.gradients.primary,
     borderRadius: '4px',
     '&:hover': {
-      background: 'linear-gradient(135deg, #2a5298 0%, #1e3c72 100%)',
+      background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
     },
   },
   '&::-webkit-scrollbar-track': {

@@ -21,6 +21,7 @@ import {
   Button,
   Tooltip,
 } from '@mui/material';
+import { useTheme, alpha } from '@mui/material/styles';
 import ViewColumnRoundedIcon from '@mui/icons-material/ViewColumnRounded';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import RecyclingRoundedIcon from '@mui/icons-material/RecyclingRounded';
@@ -36,6 +37,8 @@ import PaginationComponent from '../pagination/PaginationComponent';
 import { repairStatus_types, repairStatus_mapping, repairStatus_colors } from '../../Models/Motor';
 import { REPAIRS_COLUMNS, ACTIONS_COLUMN } from './parts/repairsColumns';
 import { useTableColumns } from '../../../hooks/useTableColumns';
+import { useUpdateRepair } from '../../../hooks/useRepairs';
+import { Repair } from '../../Models/Repair';
 
 // Styled components για compact εμφάνιση
 const CompactTableCell = styled(TableCell)(({ theme }) => ({
@@ -63,7 +66,7 @@ const ResizeHandle = styled(Box)(({ theme }) => ({
   cursor: 'col-resize',
   zIndex: 2,
   '&:hover, &:active': {
-    backgroundColor: 'rgba(25, 118, 210, 0.3)',
+    backgroundColor: alpha(theme.palette.primary.main, 0.3),
   },
 }));
 
@@ -83,6 +86,7 @@ const ToolbarIconButton = styled(IconButton, {
 
 // Main Modal Repairs Component
 export default function Repairs() {
+  const theme = useTheme();
   const navigate = useNavigate();
   const {
     repairs,
@@ -117,6 +121,13 @@ export default function Repairs() {
   const [columnsAnchorEl, setColumnsAnchorEl] = useState(null);
 
   const activeColumns = REPAIRS_COLUMNS.filter((col) => visibleColumns.includes(col.id));
+
+  const updateRepairMutation = useUpdateRepair();
+
+  const handleStatusChange = (repair, newStatus) => {
+    const dataApi = new Repair({ ...repair, repairStatus: newStatus });
+    updateRepairMutation.mutate({ id: repair.id, data: { repair: dataApi } });
+  };
 
   const handleFiltersChange = (newFilters) => {
     setLocalFilters(newFilters);
@@ -356,7 +367,7 @@ export default function Repairs() {
                 fontSize: '0.8rem',
                 border: `1.5px solid ${isActive ? color : '#e2e5ea'}`,
                 backgroundColor: isActive ? color : '#fff',
-                color: isActive ? '#fff' : '#546e7a',
+                color: isActive ? '#fff' : 'text.secondary',
                 boxShadow: isActive ? `0 3px 10px ${color}55` : '0 1px 2px rgba(0,0,0,0.03)',
                 transition: 'all 0.18s ease',
                 '& .MuiChip-icon': {
@@ -380,7 +391,7 @@ export default function Repairs() {
         component={Paper}
         sx={{
           maxHeight: '50vh',
-          boxShadow: '0 2px 8px rgba(25,118,210,0.08)',
+          boxShadow: `0 2px 8px ${alpha(theme.palette.primary.main, 0.08)}`,
           borderRadius: '16px',
         }}
       >
@@ -425,6 +436,7 @@ export default function Repairs() {
                 columnWidths={columnWidths}
                 onView={handleViewRepair}
                 onEdit={handleEditRepair}
+                onStatusChange={handleStatusChange}
                 zebra={index % 2 === 0}
               />
             ))}

@@ -17,7 +17,9 @@ import {
   Checkbox,
   Tooltip,
   Stack,
+  TableSortLabel,
 } from '@mui/material';
+import { useTheme, alpha } from '@mui/material/styles';
 import ViewColumnRoundedIcon from '@mui/icons-material/ViewColumnRounded';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import { useCustomers } from '../../../hooks/useCustomers';
@@ -56,7 +58,7 @@ const ResizeHandle = styled(Box)(({ theme }) => ({
   cursor: 'col-resize',
   zIndex: 2,
   '&:hover, &:active': {
-    backgroundColor: 'rgba(25, 118, 210, 0.3)',
+    backgroundColor: alpha(theme.palette.primary.main, 0.3),
   },
 }));
 
@@ -78,6 +80,7 @@ const EMPTY_FILTERS = { type: '', email: '' };
 
 // Main Customers Component
 export default function Customers() {
+  const theme = useTheme();
   const { data: customers = [], isLoading: loading } = useCustomers();
 
   // Modal state
@@ -89,6 +92,16 @@ export default function Customers() {
 
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(() => Number(localStorage.getItem('customersPerPage')) || 10);
+
+  const [sorting, setSorting] = useState({ sortBy: 'name', sortOrder: 'ASC' });
+
+  const onClickSortingTable = (columnName) => {
+    setSorting((prev) => ({
+      sortBy: columnName,
+      sortOrder: prev.sortBy === columnName && prev.sortOrder === 'ASC' ? 'DESC' : 'ASC',
+    }));
+    setPage(1);
+  };
 
   // Ορατότητα/πλάτος στηλών πίνακα, με persistence στο localStorage
   const { visibleColumns, columnWidths, toggleColumn, setColumnWidth, resetColumns } =
@@ -161,9 +174,29 @@ export default function Customers() {
     return matchesSearch && matchesType && matchesEmail;
   });
 
+  const sortedCustomers = [...filteredCustomers].sort((a, b) => {
+    let aVal = a[sorting.sortBy];
+    let bVal = b[sorting.sortBy];
+
+    if (sorting.sortBy === 'createdAt') {
+      aVal = aVal ? new Date(aVal).getTime() : 0;
+      bVal = bVal ? new Date(bVal).getTime() : 0;
+    } else if (sorting.sortBy === 'id') {
+      aVal = Number(aVal) || 0;
+      bVal = Number(bVal) || 0;
+    } else {
+      aVal = (aVal || '').toString().toLowerCase();
+      bVal = (bVal || '').toString().toLowerCase();
+    }
+
+    if (aVal < bVal) return sorting.sortOrder === 'ASC' ? -1 : 1;
+    if (aVal > bVal) return sorting.sortOrder === 'ASC' ? 1 : -1;
+    return 0;
+  });
+
   const totalPages = Math.max(1, Math.ceil(filteredCustomers.length / perPage));
   const currentPage = Math.min(page, totalPages);
-  const paginatedCustomers = filteredCustomers.slice(
+  const paginatedCustomers = sortedCustomers.slice(
     (currentPage - 1) * perPage,
     currentPage * perPage,
   );
@@ -297,7 +330,7 @@ export default function Customers() {
         component={Paper}
         sx={{
           maxHeight: '50vh',
-          boxShadow: '0 2px 8px rgba(25,118,210,0.08)',
+          boxShadow: `0 2px 8px ${alpha(theme.palette.primary.main, 0.08)}`,
           borderRadius: '16px',
         }}
       >
@@ -309,7 +342,19 @@ export default function Customers() {
                   key={col.id}
                   sx={{ position: 'relative', width: columnWidths[col.id] }}
                 >
-                  {col.label}
+                  {col.sortKey ? (
+                    <TableSortLabel
+                      active={sorting.sortBy === col.sortKey}
+                      onClick={() => onClickSortingTable(col.sortKey)}
+                      direction={
+                        sorting.sortBy === col.sortKey ? sorting.sortOrder.toLowerCase() : 'asc'
+                      }
+                    >
+                      {col.label}
+                    </TableSortLabel>
+                  ) : (
+                    col.label
+                  )}
                   <ResizeHandle onMouseDown={(e) => handleResizeStart(col.id, col.minWidth, e)} />
                 </CompactTableCell>
               ))}

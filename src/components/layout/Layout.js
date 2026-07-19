@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Box, Fab } from '@mui/material';
+import { useTheme, alpha } from '@mui/material/styles';
 import AddIcon from '@mui/icons-material/Add';
 import SideBar from './sidebar/SideBar';
 import TopAppBar from './TopAppBar';
@@ -9,6 +10,7 @@ import { ModalConnectionForm } from './form/parts/ModalConnectionForm';
 import useResponsive from '../../hooks/useResponsive';
 
 const Layout = (props) => {
+  const theme = useTheme();
   const [openModal, setOpenModal] = useState(false);
   const { isLargeScreen } = useResponsive();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(!isLargeScreen);
@@ -101,14 +103,14 @@ const Layout = (props) => {
             bottom: 24,
             right: 24,
             zIndex: 1000,
-            background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
+            background: theme.custom.gradients.primary,
             color: 'white',
-            boxShadow: '0 4px 12px rgba(30, 60, 114, 0.3)',
+            boxShadow: `0 4px 12px ${alpha(theme.palette.primary.dark, 0.3)}`,
             transition: 'all 0.2s ease',
             '&:hover': {
-              background: 'linear-gradient(135deg, #2a5298 0%, #1e3c72 100%)',
+              background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
               transform: 'scale(1.05)',
-              boxShadow: '0 6px 16px rgba(30, 60, 114, 0.4)',
+              boxShadow: `0 6px 16px ${alpha(theme.palette.primary.dark, 0.4)}`,
             },
             '& .MuiSvgIcon-root': {
               transition: 'transform 0.2s',

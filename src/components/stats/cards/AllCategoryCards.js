@@ -1,5 +1,6 @@
 import { Build, Memory, People, AccountBalance } from '@mui/icons-material';
 import { CardFactory } from '../../../utils/CardFactory';
+import { categoryGradients } from './categoryGradients';
 
 /**
  * Κύριες κάρτες για το tab "Όλα"
@@ -19,7 +20,7 @@ export class AllCategoryCards {
         icon: <Build />,
         category: 'repairs',
         type: 'line',
-        gradient: 'linear-gradient(135deg, #4caf50 0%, #388e3c 100%)',
+        gradient: categoryGradients.repairs,
         trendsPath: analyticsData.repair?.trends?.monthlyTrends,
         valueFormat: 'number',
         isMainCard: true,
@@ -31,7 +32,7 @@ export class AllCategoryCards {
         icon: <Memory />,
         category: 'motors',
         type: 'line',
-        gradient: 'linear-gradient(135deg, #1976d2 0%, #1e3c72 100%)',
+        gradient: categoryGradients.motors,
         trendsPath: analyticsData.motor?.trends?.monthlyTrends,
         valueFormat: 'number',
         isMainCard: true,
@@ -43,7 +44,7 @@ export class AllCategoryCards {
         icon: <People />,
         category: 'customers',
         type: 'line',
-        gradient: 'linear-gradient(135deg, #1976d2 0%, #1565c0 100%)',
+        gradient: categoryGradients.customers,
         trendsPath: analyticsData.customer?.trends?.monthlyTrends,
         valueFormat: 'number',
         isMainCard: true,
@@ -55,7 +56,7 @@ export class AllCategoryCards {
         icon: <AccountBalance />,
         category: 'revenue',
         type: 'line',
-        gradient: 'linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%)',
+        gradient: categoryGradients.revenue,
         trendsPath: analyticsData.revenue?.trends?.monthlyTrends,
         valueFormat: 'currency',
         isMainCard: true,

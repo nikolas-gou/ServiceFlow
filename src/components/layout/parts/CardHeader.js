@@ -15,12 +15,11 @@ import {
 const HeaderCard = styled(Card)(({ theme }) => ({
   padding: theme.spacing(2),
   marginBottom: theme.spacing(2),
-  background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
+  background: theme.custom.gradients.primary,
   color: 'white',
   borderRadius: theme.spacing(3),
   position: 'relative',
   overflow: 'visible',
-  elevation: 6,
 }));
 
 const HeaderAvatar = styled(Avatar)({

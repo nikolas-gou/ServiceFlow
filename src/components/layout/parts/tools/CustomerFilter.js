@@ -15,8 +15,10 @@ import {
   styled,
 } from '@mui/material';
 import { TuneRounded as FilterIcon, Clear as ClearIcon, Close as CloseIcon } from '@mui/icons-material';
+import { alpha } from '@mui/material/styles';
 import { customerType_types, customerType_mapping, customerType_colors } from '../../../Models/Customer';
 import { StyledFormControl, StyledTextField } from '../../../common/StyledFormComponents';
+import { brand } from '../../../../styles/colors';
 
 const EMPTY_FILTERS = {
   type: '',
@@ -29,12 +31,14 @@ const FilterButton = styled(IconButton, {
   width: 40,
   height: 40,
   borderRadius: '12px',
-  backgroundColor: hasFilters ? '#1976d2' : 'rgba(25, 118, 210, 0.10)',
+  backgroundColor: hasFilters ? theme.palette.primary.main : alpha(theme.palette.primary.main, 0.1),
   border: 'none',
-  boxShadow: hasFilters ? '0 3px 10px rgba(25, 118, 210, 0.28)' : 'none',
+  boxShadow: hasFilters ? `0 3px 10px ${alpha(theme.palette.primary.main, 0.28)}` : 'none',
   transition: 'all 0.15s ease',
   '&:hover': {
-    backgroundColor: hasFilters ? '#1565c0' : 'rgba(25, 118, 210, 0.18)',
+    backgroundColor: hasFilters
+      ? theme.palette.primary.dark
+      : alpha(theme.palette.primary.main, 0.18),
   },
   position: 'relative',
 }));
@@ -43,7 +47,7 @@ const FilterPopover = styled(Paper)(({ theme }) => ({
   padding: '20px',
   minWidth: '320px',
   borderRadius: '18px',
-  boxShadow: '0 12px 32px rgba(30,60,114,0.13)',
+  boxShadow: `0 12px 32px ${alpha(theme.palette.primary.dark, 0.13)}`,
   background: 'rgba(255,255,255,0.85)',
   backdropFilter: 'blur(8px)',
   opacity: 0,
@@ -63,8 +67,8 @@ const StyledSelect = styled(Select)(({ theme }) => ({
     borderColor: '#bdbdbd',
   },
   '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-    borderColor: '#1976d2',
-    boxShadow: '0 0 0 3px rgba(25, 118, 210, 0.08)',
+    borderColor: theme.palette.primary.main,
+    boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.08)}`,
   },
   '& .MuiSelect-select': {
     padding: '8px 14px',
@@ -88,16 +92,16 @@ const TypeDot = ({ color }) => (
 const activeFilterChipSx = {
   height: 30,
   borderRadius: '999px',
-  backgroundColor: 'rgba(25, 118, 210, 0.08)',
-  border: '1px solid rgba(25, 118, 210, 0.15)',
-  color: '#1976d2',
+  backgroundColor: alpha(brand.main, 0.08),
+  border: `1px solid ${alpha(brand.main, 0.15)}`,
+  color: 'primary.main',
   fontWeight: 500,
   fontSize: '0.78rem',
   '& .MuiChip-label': {
     px: 1.25,
   },
   '& .MuiChip-deleteIcon': {
-    color: '#1976d2',
+    color: 'primary.main',
     marginRight: '6px',
     '&:hover': { color: '#d32f2f' },
   },
@@ -126,7 +130,7 @@ export default function CustomerFilter({ filters, onFiltersChange }) {
   return (
     <>
       <FilterButton onClick={handleClick} hasFilters={hasActiveFilters}>
-        <FilterIcon fontSize="small" sx={{ color: hasActiveFilters ? '#fff' : '#1976d2' }} />
+        <FilterIcon fontSize="small" sx={{ color: hasActiveFilters ? '#fff' : 'primary.main' }} />
         {hasActiveFilters && (
           <Typography
             variant="caption"
@@ -135,8 +139,10 @@ export default function CustomerFilter({ filters, onFiltersChange }) {
               top: -5,
               right: -5,
               backgroundColor: '#fff',
-              color: '#1976d2',
-              border: '1.5px solid #1976d2',
+              color: 'primary.main',
+              borderWidth: '1.5px',
+              borderStyle: 'solid',
+              borderColor: 'primary.main',
               borderRadius: '50%',
               width: 18,
               height: 18,

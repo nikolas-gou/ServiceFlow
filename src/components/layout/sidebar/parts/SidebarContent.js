@@ -22,6 +22,7 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { styled } from '@mui/material/styles';
 import logo from '../../../../assets/OIP-removebg-preview-2.png';
+import { accentColors } from '../../../../styles/colors';
 
 const LogoContainer = styled(Box)(({ theme }) => ({
   textAlign: 'center',
@@ -174,12 +175,7 @@ const FooterText = styled(Typography)(({ theme }) => ({
   color: 'rgba(255, 255, 255, 0.6)',
   opacity: 0.8,
   transition: 'opacity 0.2s ease',
-  whiteSpace: 'nowrap',
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-  '&:hover': {
-    opacity: 1,
-  },
+  whiteSpace: 'wrap',
 }));
 
 const StyledDivider = styled(Divider)({
@@ -219,22 +215,22 @@ export default function SidebarContent({ collapsed, onToggleCollapse }) {
     {
       text: 'Αρχική',
       route: '/dashboard/overview',
-      icon: <HomeIcon sx={{ color: '#90caf9' }} />,
+      icon: <HomeIcon sx={{ color: accentColors.blue.base }} />,
     },
     {
       text: 'Στατιστικά',
       route: '/dashboard/analytics',
-      icon: <AssessmentIcon sx={{ color: '#81d4fa' }} />,
+      icon: <AssessmentIcon sx={{ color: accentColors.cyan.base }} />,
     },
     {
       text: 'Πελάτες',
       route: '/dashboard/customers',
-      icon: <GroupIcon sx={{ color: '#80cbc4' }} />,
+      icon: <GroupIcon sx={{ color: accentColors.teal.base }} />,
     },
     {
       text: 'Επισκευές',
       route: '/dashboard/services',
-      icon: <BuildIcon sx={{ color: '#ffb74d' }} />,
+      icon: <BuildIcon sx={{ color: accentColors.orange.base }} />,
     },
   ];
 
@@ -242,17 +238,17 @@ export default function SidebarContent({ collapsed, onToggleCollapse }) {
     {
       text: 'Συνδέσεις',
       route: '/dashboard/connections',
-      icon: <CableIcon sx={{ color: '#b39ddb' }} />,
+      icon: <CableIcon sx={{ color: accentColors.purple.base }} />,
     },
     {
       text: 'Σχετικά',
       route: '/dashboard/about',
-      icon: <InfoIcon sx={{ color: '#9fa8da' }} />,
+      icon: <InfoIcon sx={{ color: accentColors.indigo.base }} />,
     },
     {
       text: 'Feedback',
       route: '/dashboard/feedback',
-      icon: <FeedbackIcon sx={{ color: '#f48fb1' }} />,
+      icon: <FeedbackIcon sx={{ color: accentColors.pink.base }} />,
     },
   ];
 
@@ -325,7 +321,7 @@ export default function SidebarContent({ collapsed, onToggleCollapse }) {
     <>
       <LogoContainer>
         <Box sx={{ position: 'absolute', top: 8, right: 8 }}>
-            <Tooltip title="Σύμπτυξη μενού" placement="right" arrow>
+          <Tooltip title="Σύμπτυξη μενού" placement="right" arrow>
             <CollapseButton onClick={onToggleCollapse} size="small">
               <ChevronLeftIcon />
             </CollapseButton>
@@ -356,13 +352,9 @@ export default function SidebarContent({ collapsed, onToggleCollapse }) {
           Service Flow
         </Typography>
       </LogoContainer>
-      <List>
-        {menuItems.map((item) => renderMenuItem(item))}
-      </List>
+      <List>{menuItems.map((item) => renderMenuItem(item))}</List>
       <StyledDivider />
-      <List>
-        {settingsItems.map((item) => renderMenuItem(item))}
-      </List>
+      <List>{settingsItems.map((item) => renderMenuItem(item))}</List>
       <FooterText>© 2025 Nikolaos Gkouziotis. All rights reserved.</FooterText>
     </>
   );

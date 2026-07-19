@@ -3,6 +3,7 @@
 // ώστε ορατότητα/πλάτος/σειρά να μένουν συγχρονισμένα.
 export const REPAIRS_COLUMNS = [
   { id: 'id', label: 'ID', defaultWidth: 70, minWidth: 50, sortKey: 'id' },
+  { id: 'status', label: 'Κατάσταση', defaultWidth: 140, minWidth: 110 },
   { id: 'serialNumber', label: 'S/N', defaultWidth: 110, minWidth: 70 },
   { id: 'customer', label: 'Πελάτης', defaultWidth: 140, minWidth: 90 },
   { id: 'description', label: 'Περιγραφή Κινητήρα', defaultWidth: 190, minWidth: 100 },

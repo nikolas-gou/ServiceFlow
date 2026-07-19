@@ -1,5 +1,5 @@
 import { Paper } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { styled, alpha } from '@mui/material/styles';
 
 export const StyledPaper = styled(Paper)(({ theme }) => ({
   width: '90%',
@@ -9,7 +9,7 @@ export const StyledPaper = styled(Paper)(({ theme }) => ({
   position: 'relative',
   borderRadius: '20px',
   background: 'linear-gradient(135deg, #ffffff 0%, #f8fafb 100%)',
-  boxShadow: '0 20px 40px rgba(30, 60, 114, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1)',
+  boxShadow: `0 20px 40px ${alpha(theme.palette.primary.dark, 0.15)}, 0 8px 16px rgba(0, 0, 0, 0.1)`,
   border: '1px solid rgba(255, 255, 255, 0.2)',
   display: 'flex',
   flexDirection: 'column',

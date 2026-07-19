@@ -45,6 +45,7 @@ import {
   BarElement,
 } from 'chart.js';
 import { formatValue } from '../../utils/statistics';
+import { useTheme, alpha } from '@mui/material/styles';
 
 ChartJS.register(
   ArcElement,
@@ -93,12 +94,12 @@ const ModalContent = styled(Box)({
 const HeroCard = styled(Card)(({ theme }) => ({
   padding: theme.spacing(3),
   margin: theme.spacing(2),
-  background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
+  background: theme.custom.gradients.primary,
   color: 'white',
   borderRadius: theme.spacing(3),
   position: 'relative',
   overflow: 'visible',
-  boxShadow: '0 8px 32px rgba(30, 60, 114, 0.3)',
+  boxShadow: `0 8px 32px ${alpha(theme.palette.primary.dark, 0.3)}`,
   minHeight: 120,
   display: 'flex',
   alignItems: 'center',
@@ -109,7 +110,7 @@ const HeroCard = styled(Card)(({ theme }) => ({
     left: -2,
     right: -2,
     bottom: -2,
-    background: 'linear-gradient(135deg, #1e3c72, #2a5298, #1e3c72)',
+    background: `linear-gradient(135deg, ${theme.palette.primary.dark}, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
     borderRadius: theme.spacing(3),
     zIndex: -1,
     filter: 'blur(6px)',
@@ -136,19 +137,19 @@ const StatsChipsContainer = styled(Box)(({ theme }) => ({
 
 const StatsChip = styled(Chip)(({ theme }) => ({
   backgroundColor: 'rgba(255,255,255,0.9)',
-  color: '#1e3c72',
+  color: theme.palette.primary.dark,
   fontWeight: 700,
   fontSize: '0.95rem',
   height: 32,
   borderRadius: 16,
-  boxShadow: '0 4px 12px rgba(30,60,114,0.15)',
+  boxShadow: `0 4px 12px ${alpha(theme.palette.primary.dark, 0.15)}`,
   letterSpacing: '0.5px',
   border: '1px solid rgba(255,255,255,0.5)',
   backdropFilter: 'blur(10px)',
   transition: 'all 0.3s ease',
   '&:hover': {
     transform: 'translateY(-2px)',
-    boxShadow: '0 6px 20px rgba(30,60,114,0.2)',
+    boxShadow: `0 6px 20px ${alpha(theme.palette.primary.dark, 0.2)}`,
   },
 }));
 
@@ -232,6 +233,7 @@ const TabPanel = styled(Box)(({ theme }) => ({
 }));
 
 export const MotorStatisticsModal = ({ open, statistics, onClose }) => {
+  const theme = useTheme();
   const [activeTab, setActiveTab] = useState(0);
 
   if (!statistics || !statistics.motor) return null;
@@ -252,8 +254,8 @@ export const MotorStatisticsModal = ({ open, statistics, onClose }) => {
           types.totalPumpMotors || 0,
           types.totalGeneratorMotors || 0,
         ],
-        backgroundColor: ['#1e3c72', '#00bcd4', '#ffc107'],
-        borderColor: ['#1e3c72', '#00bcd4', '#ffc107'],
+        backgroundColor: [theme.palette.primary.dark, '#00bcd4', '#ffc107'],
+        borderColor: [theme.palette.primary.dark, '#00bcd4', '#ffc107'],
         borderWidth: 3,
         hoverOffset: 8,
         borderRadius: 8,
@@ -267,8 +269,8 @@ export const MotorStatisticsModal = ({ open, statistics, onClose }) => {
     datasets: [
       {
         data: [types.totalOnePhaseMotors || 0, types.totalThreePhaseMotors || 0],
-        backgroundColor: ['#1e3c72', '#4caf50'],
-        borderColor: ['#1e3c72', '#4caf50'],
+        backgroundColor: [theme.palette.primary.dark, '#4caf50'],
+        borderColor: [theme.palette.primary.dark, '#4caf50'],
         borderWidth: 3,
         hoverOffset: 8,
         borderRadius: 8,
@@ -311,11 +313,11 @@ export const MotorStatisticsModal = ({ open, statistics, onClose }) => {
       {
         label: 'Ηλεκτρικά Μοτέρ',
         data: trends.monthlyElMotorTrends || [],
-        borderColor: '#1e3c72',
-        backgroundColor: 'rgba(30, 60, 114, 0.1)',
+        borderColor: theme.palette.primary.dark,
+        backgroundColor: alpha(theme.palette.primary.dark, 0.1),
         borderWidth: 4,
         fill: true,
-        pointBackgroundColor: '#1e3c72',
+        pointBackgroundColor: theme.palette.primary.dark,
         pointBorderColor: '#fff',
         pointBorderWidth: 3,
         pointRadius: 6,
@@ -533,10 +535,10 @@ export const MotorStatisticsModal = ({ open, statistics, onClose }) => {
                     fontSize: '1rem',
                   },
                   '& .Mui-selected': {
-                    color: '#1e3c72 !important',
+                    color: `${theme.palette.primary.dark} !important`,
                   },
                   '& .MuiTabs-indicator': {
-                    backgroundColor: '#1e3c72',
+                    backgroundColor: theme.palette.primary.dark,
                     height: 3,
                   },
                 }}
@@ -604,7 +606,7 @@ export const MotorStatisticsModal = ({ open, statistics, onClose }) => {
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={4}>
                     <MetricCard>
-                      <ElectricalServices sx={{ fontSize: 32, color: '#1e3c72', mb: 1 }} />
+                      <ElectricalServices sx={{ fontSize: 32, color: 'primary.dark', mb: 1 }} />
                       <Typography variant="h6" fontWeight="bold" color="#1a365d">
                         {formatValue(types.totalElMotorMotors)}
                       </Typography>
@@ -619,9 +621,9 @@ export const MotorStatisticsModal = ({ open, statistics, onClose }) => {
                             flex: 1,
                             height: 8,
                             borderRadius: 4,
-                            backgroundColor: 'rgba(30, 60, 114, 0.2)',
+                            backgroundColor: alpha(theme.palette.primary.dark, 0.2),
                             '& .MuiLinearProgress-bar': {
-                              backgroundColor: '#1e3c72',
+                              backgroundColor: 'primary.dark',
                               borderRadius: 4,
                             },
                           }}
@@ -801,7 +803,7 @@ export const MotorStatisticsModal = ({ open, statistics, onClose }) => {
                 <Grid container spacing={3}>
                   <Grid item xs={12} md={4}>
                     <EnhancedCard>
-                      <FloatingIcon bgcolor="#1e3c72">
+                      <FloatingIcon bgcolor={theme.palette.primary.dark}>
                         <Engineering />
                       </FloatingIcon>
                       <CardContent sx={{ pt: 4, pb: 2 }}>
@@ -905,7 +907,7 @@ export const MotorStatisticsModal = ({ open, statistics, onClose }) => {
 
                   <Grid item xs={12} md={6}>
                     <EnhancedCard>
-                      <FloatingIcon bgcolor="#1e3c72">
+                      <FloatingIcon bgcolor={theme.palette.primary.dark}>
                         <Assessment />
                       </FloatingIcon>
                       <CardContent sx={{ pt: 4, pb: 2 }}>

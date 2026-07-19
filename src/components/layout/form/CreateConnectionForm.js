@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box } from '@mui/material';
 import { Save as SaveIcon } from '@mui/icons-material';
-import { styled } from '@mui/material/styles';
+import { styled, alpha } from '@mui/material/styles';
 import { Connection } from '../../Models/Connection';
 import {
   poles_types_mapping_to_rpm,
@@ -29,7 +29,7 @@ const NavigationContainer = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   padding: theme.spacing(2.5, 0),
   marginTop: theme.spacing(1.5),
-  borderTop: '1px solid rgba(30, 60, 114, 0.1)',
+  borderTop: `1px solid ${alpha(theme.palette.primary.dark, 0.1)}`,
   background: 'linear-gradient(135deg, #fafbfc 0%, #ffffff 100%)',
   borderRadius: '0 0 12px 12px',
   margin: theme.spacing(0, -2.5, -2.5, -2.5),

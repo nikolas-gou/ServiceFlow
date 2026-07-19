@@ -11,7 +11,6 @@ const StyledCard = styled(Card)(({ theme }) => ({
   transition: 'all 0.3s ease-in-out',
   background: 'linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%)',
   border: '1px solid rgba(0,0,0,0.08)',
-  elevation: 4,
   '&:hover': {
     transform: 'translateY(-2px)',
     boxShadow: theme.shadows[6],

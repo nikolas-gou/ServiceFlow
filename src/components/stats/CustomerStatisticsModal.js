@@ -16,6 +16,7 @@ import {
   Tab,
 } from '@mui/material';
 import { Close as CloseIcon, People, Business, TrendingUp, Warning } from '@mui/icons-material';
+import { useTheme, alpha } from '@mui/material/styles';
 import { Pie, Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -84,8 +85,7 @@ const MainCard = styled(Card)(({ theme }) => ({
   position: 'relative',
   background: '#fff',
   border: '1px solid #e0e0e0',
-  elevation: 2,
-  boxShadow: '0 2px 8px 0 rgba(30,60,114,0.07)',
+  boxShadow: `0 2px 8px 0 ${alpha(theme.palette.primary.dark, 0.07)}`,
   minHeight: 180, // Μικρότερο από το αρχικό 220
   display: 'flex',
   flexDirection: 'column',
@@ -136,12 +136,12 @@ const ChartContainer = styled(Box)({
 const HeroCard = styled(Card)(({ theme }) => ({
   padding: theme.spacing(3),
   margin: theme.spacing(2),
-  background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
+  background: theme.custom.gradients.primary,
   color: 'white',
   borderRadius: theme.spacing(3),
   position: 'relative',
   overflow: 'visible',
-  boxShadow: '0 8px 32px rgba(30, 60, 114, 0.3)',
+  boxShadow: `0 8px 32px ${alpha(theme.palette.primary.dark, 0.3)}`,
   minHeight: 120,
   display: 'flex',
   alignItems: 'center',
@@ -152,7 +152,7 @@ const HeroCard = styled(Card)(({ theme }) => ({
     left: -2,
     right: -2,
     bottom: -2,
-    background: 'linear-gradient(135deg, #1e3c72, #2a5298, #1e3c72)',
+    background: `linear-gradient(135deg, ${theme.palette.primary.dark}, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
     borderRadius: theme.spacing(3),
     zIndex: -1,
     filter: 'blur(6px)',
@@ -187,6 +187,7 @@ const TabPanel = styled(Box)(({ theme }) => ({
 }));
 
 export const CustomerStatisticsModal = ({ open = false, statistics, onClose }) => {
+  const theme = useTheme();
   // State για tabs navigation
   const [activeTab, setActiveTab] = useState(0);
 
@@ -225,8 +226,8 @@ export const CustomerStatisticsModal = ({ open = false, statistics, onClose }) =
           individualData.isError ? 0 : individualData.value || 0,
           factoryData.isError ? 0 : factoryData.value || 0,
         ],
-        backgroundColor: ['#1976d2', '#ff9800'],
-        borderColor: ['#1565c0', '#f57c00'],
+        backgroundColor: [theme.palette.primary.main, '#ff9800'],
+        borderColor: [theme.palette.primary.dark, '#f57c00'],
         borderWidth: 2,
         hoverOffset: 4,
       },
@@ -261,8 +262,8 @@ export const CustomerStatisticsModal = ({ open = false, statistics, onClose }) =
           monthlyTrends.length > 0
             ? monthlyTrends
             : Array(statistics?.chartData?.totalMonths || 12).fill(0),
-        borderColor: '#1976d2',
-        backgroundColor: 'rgba(25, 118, 210, 0.1)',
+        borderColor: theme.palette.primary.main,
+        backgroundColor: alpha(theme.palette.primary.main, 0.1),
         fill: true,
         borderWidth: 3,
         tension: 0.4,
@@ -396,10 +397,10 @@ export const CustomerStatisticsModal = ({ open = false, statistics, onClose }) =
                   fontSize: '1rem',
                 },
                 '& .Mui-selected': {
-                  color: '#1e3c72 !important',
+                  color: `${theme.palette.primary.dark} !important`,
                 },
                 '& .MuiTabs-indicator': {
-                  backgroundColor: '#1e3c72',
+                  backgroundColor: theme.palette.primary.dark,
                   height: 3,
                 },
               }}

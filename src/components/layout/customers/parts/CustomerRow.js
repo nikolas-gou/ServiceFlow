@@ -1,5 +1,6 @@
 import React from 'react';
 import { Typography, Chip, IconButton, styled, TableCell, TableRow, Tooltip } from '@mui/material';
+import { useTheme, alpha } from '@mui/material/styles';
 import { Visibility as VisibilityIcon } from '@mui/icons-material';
 import { customerType_mapping, customerType_colors } from '../../../Models/Customer';
 import { formatDateNumeric } from '../../../../utils/dateUtils';
@@ -26,13 +27,14 @@ const CompactTableRow = styled(TableRow)(({ theme }) => ({
     backgroundColor: '#f8f9fa',
     cursor: 'pointer',
     '& .view-icon': {
-      color: '#1976d2',
+      color: theme.palette.primary.main,
     },
   },
   transition: 'all 0.2s ease',
 }));
 
 export const CustomerRow = ({ customer, onOpenModal, zebra, columns, columnWidths }) => {
+  const theme = useTheme();
   const typeColor = customerType_colors[customer.type] || { base: '#e0e0e0', dark: '#616161' };
   const typeLabel = customerType_mapping[customer.type] || customer.type;
 
@@ -43,6 +45,11 @@ export const CustomerRow = ({ customer, onOpenModal, zebra, columns, columnWidth
 
   // Περιεχόμενο κάθε στήλης, keyed by column id (βλ. customersColumns.js)
   const cellContent = {
+    id: (
+      <Typography variant="caption" color="text.secondary" fontSize="0.75rem">
+        #{customer.id}
+      </Typography>
+    ),
     name: (
       <Typography variant="body2" fontWeight={600} fontSize="0.8rem">
         {customer.name || '-'}
@@ -84,7 +91,7 @@ export const CustomerRow = ({ customer, onOpenModal, zebra, columns, columnWidth
       sx={{
         backgroundColor: zebra ? '#f8fafd' : '#fff',
         transition: 'background 0.2s',
-        '&:hover': { backgroundColor: 'rgba(25, 118, 210, 0.08)' },
+        '&:hover': { backgroundColor: alpha(theme.palette.primary.main, 0.08) },
       }}
       onClick={() => onOpenModal(customer)}
     >

@@ -7,6 +7,7 @@ import {
   MenuItem,
   styled,
 } from '@mui/material';
+import { alpha, darken } from '@mui/material/styles';
 import useResponsive from '../../../hooks/useResponsive';
 import {
   FirstPage as FirstPageIcon,
@@ -25,12 +26,12 @@ const PaginationContainer = styled(Box)(({ theme }) => ({
   backgroundColor: 'rgba(255, 255, 255, 0.8)',
   backdropFilter: 'blur(10px)',
   borderRadius: '16px',
-  boxShadow: '0 2px 8px rgba(25,118,210,0.08)',
-  border: '1px solid rgba(25, 118, 210, 0.12)',
+  boxShadow: `0 2px 8px ${alpha(theme.palette.primary.main, 0.08)}`,
+  border: `1px solid ${alpha(theme.palette.primary.main, 0.12)}`,
   transition: 'all 0.3s ease',
   '&:hover': {
-    boxShadow: '0 4px 12px rgba(25,118,210,0.12)',
-    borderColor: 'rgba(25, 118, 210, 0.2)',
+    boxShadow: `0 4px 12px ${alpha(theme.palette.primary.main, 0.12)}`,
+    borderColor: alpha(theme.palette.primary.main, 0.2),
   },
 }));
 
@@ -42,18 +43,20 @@ const PageButton = styled(IconButton)(({ theme, isActive }) => ({
   fontSize: '0.875rem',
   fontWeight: 600,
   transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-  background: isActive ? 'linear-gradient(135deg, #1976d2 0%, #1565c0 100%)' : 'transparent',
-  color: isActive ? '#ffffff' : '#546e7a',
-  boxShadow: isActive ? '0 4px 12px rgba(25, 118, 210, 0.25)' : 'none',
-  border: isActive ? 'none' : '1px solid rgba(25, 118, 210, 0.15)',
+  background: isActive
+    ? `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`
+    : 'transparent',
+  color: isActive ? '#ffffff' : theme.palette.text.secondary,
+  boxShadow: isActive ? `0 4px 12px ${alpha(theme.palette.primary.main, 0.25)}` : 'none',
+  border: isActive ? 'none' : `1px solid ${alpha(theme.palette.primary.main, 0.15)}`,
   '&:hover': {
     background: isActive
-      ? 'linear-gradient(135deg, #1565c0 0%, #0d47a1 100%)'
-      : 'rgba(25, 118, 210, 0.08)',
+      ? `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${darken(theme.palette.primary.dark, 0.2)} 100%)`
+      : alpha(theme.palette.primary.main, 0.08),
     transform: 'translateY(-2px)',
     boxShadow: isActive
-      ? '0 6px 16px rgba(25, 118, 210, 0.3)'
-      : '0 2px 8px rgba(25, 118, 210, 0.12)',
+      ? `0 6px 16px ${alpha(theme.palette.primary.main, 0.3)}`
+      : `0 2px 8px ${alpha(theme.palette.primary.main, 0.12)}`,
   },
   '&:disabled': {
     opacity: 0.3,
@@ -70,18 +73,20 @@ const PageNumberButton = styled(IconButton)(({ theme, isActive }) => ({
   fontSize: '0.875rem',
   fontWeight: 600,
   transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-  background: isActive ? 'linear-gradient(135deg, #1976d2 0%, #1565c0 100%)' : 'transparent',
-  color: isActive ? '#ffffff' : '#546e7a',
-  boxShadow: isActive ? '0 4px 12px rgba(25, 118, 210, 0.25)' : 'none',
-  border: isActive ? 'none' : '1px solid rgba(25, 118, 210, 0.15)',
+  background: isActive
+    ? `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`
+    : 'transparent',
+  color: isActive ? '#ffffff' : theme.palette.text.secondary,
+  boxShadow: isActive ? `0 4px 12px ${alpha(theme.palette.primary.main, 0.25)}` : 'none',
+  border: isActive ? 'none' : `1px solid ${alpha(theme.palette.primary.main, 0.15)}`,
   '&:hover': {
     background: isActive
-      ? 'linear-gradient(135deg, #1565c0 0%, #0d47a1 100%)'
-      : 'rgba(25, 118, 210, 0.08)',
+      ? `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${darken(theme.palette.primary.dark, 0.2)} 100%)`
+      : alpha(theme.palette.primary.main, 0.08),
     transform: 'translateY(-2px)',
     boxShadow: isActive
-      ? '0 6px 16px rgba(25, 118, 210, 0.3)'
-      : '0 2px 8px rgba(25, 118, 210, 0.12)',
+      ? `0 6px 16px ${alpha(theme.palette.primary.main, 0.3)}`
+      : `0 2px 8px ${alpha(theme.palette.primary.main, 0.12)}`,
   },
 }));
 
@@ -93,17 +98,17 @@ const StyledSelect = styled(Select)(({ theme }) => ({
   backgroundColor: 'rgba(255, 255, 255, 0.9)',
   transition: 'all 0.3s ease',
   '& .MuiOutlinedInput-notchedOutline': {
-    borderColor: 'rgba(25, 118, 210, 0.2)',
+    borderColor: alpha(theme.palette.primary.main, 0.2),
     borderWidth: '1px',
   },
   '&:hover .MuiOutlinedInput-notchedOutline': {
-    borderColor: 'rgba(25, 118, 210, 0.4)',
-    boxShadow: '0 2px 8px rgba(25, 118, 210, 0.1)',
+    borderColor: alpha(theme.palette.primary.main, 0.4),
+    boxShadow: `0 2px 8px ${alpha(theme.palette.primary.main, 0.1)}`,
   },
   '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-    borderColor: '#1976d2',
+    borderColor: theme.palette.primary.main,
     borderWidth: '2px',
-    boxShadow: '0 4px 12px rgba(25, 118, 210, 0.2)',
+    boxShadow: `0 4px 12px ${alpha(theme.palette.primary.main, 0.2)}`,
   },
   '& .MuiSelect-select': {
     padding: '8px 14px',

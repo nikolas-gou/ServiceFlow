@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Grid, styled, Tabs, Tab } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { AllInclusive, Build, Memory, People } from '@mui/icons-material';
 import { useDashboardStats } from '../../hooks/useStatistics';
 import { CustomerStatisticsModal } from './CustomerStatisticsModal';
@@ -15,7 +16,7 @@ import { RepairCardsData } from './cards/RepairCardsData';
 import StyledSnackbar from '../common/StyledSnackbar';
 
 const StyledTabs = styled(Tabs)(({ theme }) => ({
-  background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
+  background: theme.custom.gradients.primary,
   borderRadius: '16px 16px 0 0',
   minHeight: '64px',
   '& .MuiTabs-indicator': {
@@ -67,6 +68,7 @@ const TabContent = styled(Box)(({ theme }) => ({
 }));
 
 export default function AnalyticsDashboard() {
+  const theme = useTheme();
   const { data: analyticsData = {}, isLoading } = useDashboardStats();
   const [activeTab, setActiveTab] = useState(0);
   const [customerModalOpen, setCustomerModalOpen] = useState(false);
@@ -164,7 +166,7 @@ export default function AnalyticsDashboard() {
     <Box sx={{ bgcolor: '#F8FAFC' }}>
       <Box
         sx={{
-          background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
+          background: theme.custom.gradients.primary,
           borderRadius: '16px 16px 0 0',
           boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
           mb: 0,

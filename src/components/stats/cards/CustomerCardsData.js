@@ -1,5 +1,6 @@
 import { People, Person, Business } from '@mui/icons-material';
 import { CardFactory } from '../../../utils/CardFactory';
+import { categoryGradients } from './categoryGradients';
 
 /**
  * Κάρτες για τα στατιστικά πελατών
@@ -20,7 +21,7 @@ export class CustomerCardsData {
         icon: <People />,
         category: 'customers',
         type: 'line',
-        gradient: 'linear-gradient(135deg, #1976d2 0%, #1565c0 100%)',
+        gradient: categoryGradients.customers,
         trendsPath: analyticsData.customer?.trends?.monthlyTrends,
         valueFormat: 'number',
         isMainCard: true,

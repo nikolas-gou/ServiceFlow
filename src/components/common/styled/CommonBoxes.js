@@ -7,7 +7,6 @@ export const MainCard = styled(Card)(({ theme }) => ({
   position: 'relative',
   background: 'linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%)',
   border: '1px solid rgba(0,0,0,0.08)',
-  elevation: 4,
 }));
 
 export const CategoryIcon = styled(Box)(({ theme, bgcolor }) => ({

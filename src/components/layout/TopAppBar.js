@@ -4,7 +4,7 @@ import Breadcrumbs from './Breadcrumbs';
 import DateDisplay from './parts/DateDisplay';
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
-  background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
+  background: theme.custom.gradients.primary,
   boxShadow: 'none',
   color: 'white',
 }));
