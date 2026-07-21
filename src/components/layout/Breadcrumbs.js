@@ -13,6 +13,7 @@ import FeedbackIcon from '@mui/icons-material/Feedback';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import CableIcon from '@mui/icons-material/Cable';
 
+
 const StyledBreadcrumbs = styled(MuiBreadcrumbs)(({ theme }) => ({
   '& .MuiBreadcrumbs-separator': {
     color: 'rgba(255, 255, 255, 0.5)',
@@ -100,6 +101,10 @@ const pathMap = {
     label: 'Σχετικά',
     icon: <InfoIcon sx={{ color: '#9fa8da' }} />,
   },
+  motors: {
+    label: 'Κινητήρες',
+    icon: <SettingsIcon sx={{ color: '#7986cb' }} />,
+  },
   feedback: {
     label: 'Feedback',
     icon: <FeedbackIcon sx={{ color: '#f48fb1' }} />,
@@ -128,7 +133,7 @@ export default function Breadcrumbs() {
           }
 
           return (
-            <StyledLink key={to} component={RouterLink} to="/dashboard/overview" underline="none">
+            <StyledLink key={to} component={RouterLink} to={to} underline="none">
               {pathInfo.icon}
               {pathInfo.label}
             </StyledLink>
