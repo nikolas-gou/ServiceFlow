@@ -27,18 +27,18 @@ function App() {
         <RepairsProvider>
           <ConnectionsProvider>
             <SearchProvider>
-            <BrowserRouter>
-              <CssBaseline />
-              <SuggestedFormValuesProvider>
-                <Layout>
-                  <Routes>
-                    {routes.map((route) => (
-                      <Route key={route.path} path={route.path} element={route.element} />
-                    ))}
-                  </Routes>
-                </Layout>
-              </SuggestedFormValuesProvider>
-            </BrowserRouter>
+              <BrowserRouter>
+                <CssBaseline />
+                <SuggestedFormValuesProvider>
+                  <Layout>
+                    <Routes>
+                      {routes.map((route) => (
+                        <Route key={route.path} path={route.path} element={route.element} />
+                      ))}
+                    </Routes>
+                  </Layout>
+                </SuggestedFormValuesProvider>
+              </BrowserRouter>
             </SearchProvider>
           </ConnectionsProvider>
         </RepairsProvider>
