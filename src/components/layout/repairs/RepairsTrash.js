@@ -130,7 +130,7 @@ export default function RepairsTrash() {
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <RecyclingRoundedIcon sx={{ color: '#43a047', fontSize: 20 }} />
             <Typography variant="h6" sx={{ fontSize: '1rem', fontWeight: 600 }}>
-              Κάδος Ανακύκλωσης
+              Επαναφορά Επισκευών
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'text.secondary' }}>
               <Divider orientation="vertical" flexItem sx={{ mx: 1, height: 16 }} />

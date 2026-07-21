@@ -12,7 +12,7 @@ export class Repair {
     this.description = data.description || '';
     this.cost = data.cost || null;
     this.createdAt = data.createdAt || null;
-    this.isArrived = data.isArrived || null;
+    this.isArrived = data.isArrived || new Date().toISOString().split('T')[0];
     this.estimatedIsComplete = data.estimatedIsComplete || null;
     this.deletedAt = data.deletedAt || null;
     this.customer = data.customer ? new Customer(data.customer) : new Customer();

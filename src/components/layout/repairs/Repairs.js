@@ -416,9 +416,7 @@ export default function Repairs() {
                   ) : (
                     col.label
                   )}
-                  <ResizeHandle
-                    onMouseDown={(e) => handleResizeStart(col.id, col.minWidth, e)}
-                  />
+                  <ResizeHandle onMouseDown={(e) => handleResizeStart(col.id, col.minWidth, e)} />
                 </CompactTableCell>
               ))}
               <CompactTableCell sx={{ width: ACTIONS_COLUMN.width }}>

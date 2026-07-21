@@ -34,6 +34,7 @@ export const accentColors = {
   blue: { base: '#90caf9', dark: '#1565c0' }, // Αρχική
   cyan: { base: '#81d4fa', dark: '#0277bd' }, // Στατιστικά
   teal: { base: '#80cbc4', dark: '#00796b' }, // Πελάτες
+  motorBlue: { base: '#7986cb', dark: '#3949ab' }, // Κινητήρες
   orange: { base: '#ffb74d', dark: '#e65100' }, // Επισκευές
   purple: { base: '#b39ddb', dark: '#5e35b1' }, // Συνδέσεις
   indigo: { base: '#9fa8da', dark: '#3949ab' }, // Σχετικά

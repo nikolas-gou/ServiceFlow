@@ -2,6 +2,8 @@ import { Navigate } from 'react-router-dom';
 import AnalyticsDashboard from '../components/stats/AnalyticsDashboard';
 import Overview from '../pages/Overview';
 import CustomersPage from '../pages/CustomersPage';
+import MotorsPage from '../pages/MotorsPage';
+import MotorDetail from '../components/layout/motors/MotorDetail';
 import { ConnectionismPage } from '../pages/ConnectionismPage';
 import RepairsPage from '../pages/RepairsPage';
 import RepairsTrashPage from '../pages/RepairsTrashPage';
@@ -22,6 +24,14 @@ export const routes = [
   {
     path: '/dashboard/customers',
     element: <CustomersPage />,
+  },
+  {
+    path: '/dashboard/motors',
+    element: <MotorsPage />,
+  },
+  {
+    path: '/dashboard/motors/:id',
+    element: <MotorDetail />,
   },
   {
     path: '/dashboard/services',

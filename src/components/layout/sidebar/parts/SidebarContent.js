@@ -15,6 +15,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import GroupIcon from '@mui/icons-material/Group';
 import BuildIcon from '@mui/icons-material/Build';
+import SettingsIcon from '@mui/icons-material/Settings';
 import InfoIcon from '@mui/icons-material/Info';
 import CableIcon from '@mui/icons-material/Cable';
 import FeedbackIcon from '@mui/icons-material/Feedback';
@@ -228,6 +229,11 @@ export default function SidebarContent({ collapsed, onToggleCollapse }) {
       icon: <GroupIcon sx={{ color: accentColors.teal.base }} />,
     },
     {
+      text: 'Κινητήρες',
+      route: '/dashboard/motors',
+      icon: <SettingsIcon sx={{ color: accentColors.motorBlue.base }} />,
+    },
+    {
       text: 'Επισκευές',
       route: '/dashboard/services',
       icon: <BuildIcon sx={{ color: accentColors.orange.base }} />,
@@ -253,7 +259,10 @@ export default function SidebarContent({ collapsed, onToggleCollapse }) {
   ];
 
   const renderMenuItem = (item) => {
-    const isSelected = location.pathname === item.route;
+    const isSelected =
+      item.route === '/dashboard'
+        ? location.pathname === item.route
+        : location.pathname.startsWith(item.route);
 
     if (collapsed) {
       return (
