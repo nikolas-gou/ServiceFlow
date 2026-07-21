@@ -11,4 +11,9 @@ export class MotorRepository {
     const { data: response } = await api.get(`/api/motors/${id}`);
     return new Motor(response.data || {});
   }
+
+  static async getRepairsByMotorId(motorId) {
+    const { data: response } = await api.get(`/api/motors/${motorId}/repairs`);
+    return response.data || [];
+  }
 }
