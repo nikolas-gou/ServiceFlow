@@ -42,8 +42,10 @@ export const RepairsProvider = ({ children }) => {
 
   const [filters, setFilters] = useState(loadPersistedFilters);
 
+  // Προεπιλογή "id DESC" ώστε να φαίνεται πάντα πρώτη η τελευταία καταχωρημένη επισκευή
+  // (μονότονα αυξανόμενο, σε αντίθεση με το is_arrived που μπορεί να έχει ίδιες/παλαιότερες ημερομηνίες).
   const [sorting, setSorting] = useState({
-    sortBy: 'is_arrived',
+    sortBy: 'id',
     sortOrder: 'DESC',
   });
 
