@@ -7,6 +7,8 @@ import MotorDetail from '../components/layout/motors/MotorDetail';
 import { ConnectionismPage } from '../pages/ConnectionismPage';
 import RepairsPage from '../pages/RepairsPage';
 import RepairsTrashPage from '../pages/RepairsTrashPage';
+import RepairDetail from '../components/layout/repairs/RepairDetail';
+import RepairFormV2Page from '../pages/RepairFormV2Page';
 
 export const routes = [
   {
@@ -40,6 +42,15 @@ export const routes = [
   {
     path: '/dashboard/services/trash',
     element: <RepairsTrashPage />,
+  },
+  {
+    // Φόρμα καταχώρησης νέας επισκευής (stepper) - βλ. MIGRATION_V2.md
+    path: '/dashboard/services/new-v2',
+    element: <RepairFormV2Page />,
+  },
+  {
+    path: '/dashboard/services/:id',
+    element: <RepairDetail />,
   },
   { path: '/dashboard/connections', element: <ConnectionismPage /> },
 ];

@@ -11,31 +11,39 @@ import { CardConnectionism } from './CardConnectionism';
 import { CardPhotos } from './CardPhotos';
 import MainCardWrapper from '../../common/card/MainCardWrapper';
 import BoxInfoDisplay from '../../common/box/main/EnhancedMotorRepairDisplay/BoxInfoDisplay';
-import SplitBoxInfoDisplay from '../../common/box/main/EnhancedMotorRepairDisplay/SplitBoxInfoDisplay';
+import CombinedBoxInfoDisplay from '../../common/box/main/EnhancedMotorRepairDisplay/CombinedBoxInfoDisplay';
 import { getWindingConfigMapByType } from '../../../configs/motor';
 import { commonStyles } from '../../common/styled/CommonStyles';
 
 /**
- * @param {Object} repair - The repair object
+ * @param {Object} config - The winding config (from getWindingConfigMapByType)
  * @returns {JSX.Element|null} JSX elements for winding display or null if no config found
  * @description A function to define the template for rendering the winding specs based on the motor type.
  */
-function renderWindingSpecs(repair) {
-  // get type of motor and map it to the config map
-  const typeString = getMotorTypeString(repair.motor);
-  const config = getWindingConfigMapByType(repair.motor, typeString);
+function renderWindingSpecs(config) {
   if (!config) return null;
 
-  if (typeString === '1-phase-combined') {
+  // Συνδυασμένη περιέλιξη μονοφασικού: δύο boxes (κυρίως + βοηθητικό),
+  // το καθένα με στήλη για το μισό και στήλη για το ολόκληρο
+  if (config.splitCombined) {
     return (
       <>
         <Grid item xs={12} md={6}>
-          <SplitBoxInfoDisplay {...config.left} />
+          <CombinedBoxInfoDisplay {...config.left} />
         </Grid>
         <Grid item xs={12} md={6}>
-          <SplitBoxInfoDisplay {...config.right} />
+          <CombinedBoxInfoDisplay {...config.right} />
         </Grid>
       </>
+    );
+  }
+
+  // Συνδυασμένη περιέλιξη τριφασικού: ένα πηνίο -> ένα box με στήλες ανά αριθμό βήματος
+  if (config.combined) {
+    return (
+      <Grid item xs={12}>
+        <CombinedBoxInfoDisplay {...config} />
+      </Grid>
     );
   }
 
@@ -48,6 +56,18 @@ function renderWindingSpecs(repair) {
         <Grid item xs={12} md={6}>
           <BoxInfoDisplay {...config.right} />
         </Grid>
+        {/* Ορατή λεζάντα που εξηγεί τον συνδυασμό με τις πραγματικές τιμές (π.χ. "το 6 μισό, το 8 ολόκληρο") */}
+        {config.caption && (
+          <Grid item xs={12}>
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{ display: 'block', ...commonStyles.centeredText, fontStyle: 'italic' }}
+            >
+              {config.caption}
+            </Typography>
+          </Grid>
+        )}
       </>
     );
   }
@@ -70,6 +90,10 @@ function EnhancedMotorRepairDisplay({ repair }) {
     );
   }
 
+  // get type of motor and map it to the config map
+  const typeString = getMotorTypeString(repair.motor);
+  const config = getWindingConfigMapByType(repair.motor, typeString);
+
   return (
     <Box sx={{ margin: 1 }}>
       {/* Header Card */}
@@ -80,10 +104,13 @@ function EnhancedMotorRepairDisplay({ repair }) {
         <Grid item xs={12} lg={8}>
           <MainCardWrapper icon={<Memory sx={{ fontSize: 18 }} />} title="Τεχνικά Χαρακτηριστικά">
             <Grid container spacing={2}>
-              {renderWindingSpecs(repair)}
+              {renderWindingSpecs(config)}
             </Grid>
 
-            <CardConnectionism connectionism={repair.motor.connectionism} />
+            {/* Όταν η Σύνδεση εμφανίζεται ήδη μέσα στο box (τριφασικός standard/half), το chip είναι περιττό */}
+            {!config?.includesConnection && (
+              <CardConnectionism connectionism={repair.motor.connectionism} />
+            )}
           </MainCardWrapper>
 
           {/* Description Card */}

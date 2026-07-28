@@ -1,22 +1,32 @@
 import React from 'react';
-import { Box, Typography, Stack } from '@mui/material';
+import { Box, Typography, Stack, Tooltip } from '@mui/material';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { ColoredBox } from '../../../styled/CommonBoxes';
 import { commonStyles } from '../../../styled/CommonStyles';
+import { boxTitleSx, boxLabelSx, boxValueSx } from './windingBoxStyles';
 
 function BoxInfoDisplay(props) {
   return (
     <ColoredBox color={props.color}>
-      <Typography sx={{ mb: 1.5, ...commonStyles.whiteText, ...commonStyles.flexBetween }}>
-        {props.icon}
-        {props.title || ''}
+      {/* component="div": ο τίτλος περιέχει Box, που δεν επιτρέπεται μέσα σε <p> */}
+      <Typography component="div" sx={{ mb: 1.5, ...boxTitleSx, ...commonStyles.flexBetween }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+          {props.icon}
+          {props.title || ''}
+          {props.titleTooltip && (
+            <Tooltip title={props.titleTooltip} arrow placement="top">
+              <InfoOutlinedIcon sx={{ fontSize: 15, opacity: 0.85, cursor: 'help' }} />
+            </Tooltip>
+          )}
+        </Box>
       </Typography>
-      <Stack spacing={1.5}>
+      <Stack spacing={1.25}>
         {props.values?.map(({ label, value }) => (
-          <Box key={label} sx={commonStyles.flexBetween}>
-            <Typography variant="body2" sx={commonStyles.whiteTextSemi}>
+          <Box key={label} sx={{ ...commonStyles.flexBetween, alignItems: 'baseline', gap: 2 }}>
+            <Typography variant="body2" sx={boxLabelSx}>
               {label}
             </Typography>
-            <Typography variant="body1" sx={{ ...commonStyles.whiteText, fontWeight: 'bold' }}>
+            <Typography variant="body1" sx={{ ...boxValueSx, textAlign: 'right' }}>
               {value || '-'}
             </Typography>
           </Box>

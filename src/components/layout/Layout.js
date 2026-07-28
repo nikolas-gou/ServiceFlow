@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useState, useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, Fab } from '@mui/material';
 import { useTheme, alpha } from '@mui/material/styles';
 import AddIcon from '@mui/icons-material/Add';
 import SideBar from './sidebar/SideBar';
 import TopAppBar from './TopAppBar';
-import { ModalRepairForm } from './form/parts/ModalRepairForm';
 import { ModalConnectionForm } from './form/parts/ModalConnectionForm';
 import useResponsive from '../../hooks/useResponsive';
+import { useScrollRestoration } from '../../hooks/useScrollRestoration';
 
 const Layout = (props) => {
   const theme = useTheme();
@@ -15,10 +15,19 @@ const Layout = (props) => {
   const { isLargeScreen } = useResponsive();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(!isLargeScreen);
   const location = useLocation();
+  const navigate = useNavigate();
   const [root, parent, child] = location.pathname.split('/');
+  const scrollContainerRef = useRef(null);
+  useScrollRestoration(scrollContainerRef, 'layout');
 
-  const handleOpenModal = () => {
-    setOpenModal(true);
+  // Νέα επισκευή -> πάντα η v2 σελίδα (η παλιά modal φόρμα δημιουργίας δεν υπάρχει πια).
+  // Οι συνδέσεις (connections) συνεχίζουν να χρησιμοποιούν το δικό τους modal.
+  const handleFabClick = () => {
+    if (typeOfModal() === 'repair') {
+      navigate('/dashboard/services/new-v2');
+    } else {
+      setOpenModal(true);
+    }
   };
 
   const handleToggleCollapse = () => {
@@ -69,6 +78,7 @@ const Layout = (props) => {
         <TopAppBar />
         {/* Scrollable Content */}
         <Box
+          ref={scrollContainerRef}
           sx={{
             flexGrow: 1,
             p: 3,
@@ -97,7 +107,7 @@ const Layout = (props) => {
         <Fab
           color="primary"
           aria-label="add"
-          onClick={handleOpenModal}
+          onClick={handleFabClick}
           sx={{
             position: 'fixed',
             bottom: 24,
@@ -123,15 +133,7 @@ const Layout = (props) => {
           <AddIcon />
         </Fab>
 
-        {/* Modal for the form */}
-        {typeOfModal() == 'repair' && (
-          <ModalRepairForm
-            open={openModal}
-            onClose={() => setOpenModal(false)}
-            repair={null}
-            isEdit={false}
-          />
-        )}
+        {/* Modal για συνδέσεις - η δημιουργία επισκευής πλέον πηγαίνει στη v2 σελίδα, όχι modal */}
         {typeOfModal() == 'connection' && (
           <ModalConnectionForm
             open={openModal}

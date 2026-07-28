@@ -44,7 +44,7 @@ import {
 } from '../../Models/Motor';
 import { getWindingConfigMapByType } from '../../../configs/motor';
 import BoxInfoDisplay from '../../common/box/main/EnhancedMotorRepairDisplay/BoxInfoDisplay';
-import SplitBoxInfoDisplay from '../../common/box/main/EnhancedMotorRepairDisplay/SplitBoxInfoDisplay';
+import CombinedBoxInfoDisplay from '../../common/box/main/EnhancedMotorRepairDisplay/CombinedBoxInfoDisplay';
 import { CardConnectionism } from '../parts/CardConnectionism';
 import { useMotorById, useMotorRepairs } from '../../../hooks/useMotors';
 import LoadingCard from '../../common/LoadingCard';
@@ -309,10 +309,16 @@ export default function MotorDetail() {
       {windingConfig && (
         <>
           <SectionLabel>Πληροφορίες Περιέλιξης</SectionLabel>
-          {typeString === '1-phase-combined' ? (
+          {windingConfig.splitCombined ? (
+            // Μονοφασικός συνδυασμένος: δύο boxes με στήλες ΜΙΣΟ/ΟΛΟΚΛΗΡΟ
             <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2 }}>
-              <SplitBoxInfoDisplay {...windingConfig.left} />
-              <SplitBoxInfoDisplay {...windingConfig.right} />
+              <CombinedBoxInfoDisplay {...windingConfig.left} />
+              <CombinedBoxInfoDisplay {...windingConfig.right} />
+            </Box>
+          ) : windingConfig.combined ? (
+            // Τριφασικός συνδυασμένος: ένα box με στήλες ανά αριθμό βήματος
+            <Box>
+              <CombinedBoxInfoDisplay {...windingConfig} />
             </Box>
           ) : windingConfig.split ? (
             <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2 }}>

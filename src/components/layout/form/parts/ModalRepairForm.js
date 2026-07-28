@@ -1,7 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { Box } from '@mui/material';
 import { Close as CloseIcon, Build as BuildIcon } from '@mui/icons-material';
-import CreateRepairForm from '../CreateRepairForm';
 import EditRepairForm from '../EditRepairForm';
 import {
   StyledModal,
@@ -14,7 +13,7 @@ import {
 } from '../../../common/styled/CommonModals';
 import { StyledPaper } from '../../../common/styled/CommonPapers';
 
-export const ModalRepairForm = ({ open, onClose, repair, isEdit }) => {
+export const ModalRepairForm = ({ open, onClose, repair }) => {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   const handleDirtyChange = useCallback((dirty) => {
@@ -51,14 +50,8 @@ export const ModalRepairForm = ({ open, onClose, repair, isEdit }) => {
             <BuildIcon />
           </HeaderIcon>
           <Box flex={1}>
-            <HeaderTitle id="repair-modal-title">
-              {!isEdit ? 'Καταχώρηση Νέας Επισκευής' : 'Επεξεργασία Επισκευής'}
-            </HeaderTitle>
-            <HeaderSubtitle>
-              {!isEdit
-                ? 'Συμπληρώστε τα στοιχεία για τη νέα επισκευή'
-                : 'Τροποποιήστε τα στοιχεία της επισκευής'}
-            </HeaderSubtitle>
+            <HeaderTitle id="repair-modal-title">Επεξεργασία Επισκευής</HeaderTitle>
+            <HeaderSubtitle>Τροποποιήστε τα στοιχεία της επισκευής</HeaderSubtitle>
           </Box>
           <StyledCloseButton aria-label="close" onClick={handleClose}>
             <CloseIcon />
@@ -66,24 +59,14 @@ export const ModalRepairForm = ({ open, onClose, repair, isEdit }) => {
         </ModalHeader>
 
         <ModalContent>
-          {!isEdit ? (
-            <CreateRepairForm
-              onSubmitSuccess={() => {
-                setHasUnsavedChanges(false);
-                onClose();
-              }}
-              onDirtyChange={handleDirtyChange}
-            />
-          ) : (
-            <EditRepairForm
-              repair={repair}
-              onSubmitSuccess={() => {
-                setHasUnsavedChanges(false);
-                onClose();
-              }}
-              onDirtyChange={handleDirtyChange}
-            />
-          )}
+          <EditRepairForm
+            repair={repair}
+            onSubmitSuccess={() => {
+              setHasUnsavedChanges(false);
+              onClose();
+            }}
+            onDirtyChange={handleDirtyChange}
+          />
         </ModalContent>
       </StyledPaper>
     </StyledModal>

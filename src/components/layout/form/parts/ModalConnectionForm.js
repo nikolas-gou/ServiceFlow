@@ -43,7 +43,6 @@ export const ModalConnectionForm = ({ open, onClose, connection, isEdit }) => {
 
         <ModalContent>
           {!isEdit ? (
-            // <CreateRepairForm onSubmitSuccess={handleClose} />
             <CreateConnectionForm onSubmitSuccess={handleClose} />
           ) : (
             // <EditRepairForm repair={repair} onSubmitSuccess={handleClose} />

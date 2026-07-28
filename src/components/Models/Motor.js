@@ -232,11 +232,19 @@ export const getMotorCrossSectionsByType = (motor, types) => {
     .filter((crossSection) => crossSection !== null && crossSection !== undefined);
 };
 
+// Στυλ για κάθε ομάδα συρμάτων (πάνω στα χρωματιστά boxes του detail view).
+// Ίδιο μέγεθος με τις υπόλοιπες τιμές (Βήμα/Σπείρες) - μόνο το "σύρμ." μένει μικρότερο.
+const crossSectionPillStyle = {
+  fontSize: '1em',
+  whiteSpace: 'nowrap',
+};
+
 // Helper function για σωστή εμφάνιση διατομών
+// Κάθε ομάδα συρμάτων σε δικό της "πλακίδιο", με ρητή ένδειξη πλήθους: "12 σύρμ. × 2.5/10"
 export const getDisplayCrossSectionsValue = (crossSections, type = 'standard') => {
   const links = crossSections || [];
   if (links.length === 0) return '';
-  let color = type.includes('helper') ? '#c62828' : '#ff9800';
+  let color = type.includes('helper') ? '#ffcdd2' : '#FAC775';
 
   // Φιλτράρουμε μόνο τα links που ανήκουν στον συγκεκριμένο τύπο
   const filteredLinks = links.filter((link) => link.type === type);
@@ -249,22 +257,32 @@ export const getDisplayCrossSectionsValue = (crossSections, type = 'standard') =
     return acc;
   }, {});
 
-  return Object.entries(grouped)
-    .map(([section, count], index) => {
-      if (count > 1) {
-        return (
-          <span key={`${section}-${count}`}>
-            <span style={{ color: color, fontWeight: 'bold', fontSize: '1.1em' }}>{count}x</span>{' '}
+  return (
+    <span
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        flexWrap: 'wrap',
+        gap: '6px',
+      }}
+    >
+      {Object.entries(grouped).map(([section, count], index) => (
+        <React.Fragment key={`${section}-${count}`}>
+          {index > 0 && <span style={{ opacity: 0.7 }}>+</span>}
+          <span style={crossSectionPillStyle}>
+            {count > 1 && (
+              <>
+                <span style={{ color: color, fontWeight: 'bold' }}>{count}</span>
+                <span style={{ fontSize: '0.75em', opacity: 0.85 }}> σύρμ. </span>×{' '}
+              </>
+            )}
             {section}
           </span>
-        );
-      }
-      return <span key={section}>{section}</span>;
-    })
-    .reduce((acc, element, index, array) => {
-      if (index === 0) return [element];
-      return [...acc, ' + ', element];
-    }, []);
+        </React.Fragment>
+      ))}
+    </span>
+  );
 };
 
 export const cleanDetailsWindingOnVoltStepChange = (motor) => {
@@ -281,6 +299,7 @@ export const cleanDetailsWindingOnVoltStepChange = (motor) => {
     ['motor.coilsCount']: 1,
     ['motor.halfCoilsCount']: 1,
     ['motor.helperCoilsCount']: 1,
+    ['motor.helperHalfCoilsCount']: 1,
   };
   return fieldsToClear;
 };

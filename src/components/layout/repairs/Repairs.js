@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   Box,
   Table,
   TableBody,
   TableCell,
-  TableContainer,
   TableHead,
   TableRow,
   Paper,
@@ -38,9 +37,12 @@ import { repairStatus_types, repairStatus_mapping, repairStatus_colors } from '.
 import { REPAIRS_COLUMNS, ACTIONS_COLUMN } from './parts/repairsColumns';
 import { useTableColumns } from '../../../hooks/useTableColumns';
 import { useUpdateRepair } from '../../../hooks/useRepairs';
+import { useScrollRestoration } from '../../../hooks/useScrollRestoration';
 import { Repair } from '../../Models/Repair';
 
-// Styled components για compact εμφάνιση
+// Styled components για compact εμφάνιση.
+// Το header είναι πλέον ξεχωριστός (μη κυλιόμενος) πίνακας πάνω από το σώμα -
+// βλ. σχόλιο στο render - άρα δεν χρειάζεται πια position: sticky.
 const CompactTableCell = styled(TableCell)(({ theme }) => ({
   padding: '6px 8px',
   fontSize: '0.8rem',
@@ -50,10 +52,6 @@ const CompactTableCell = styled(TableCell)(({ theme }) => ({
     borderBottom: '2px solid #e9ecef',
     fontSize: '0.75rem',
     padding: '8px',
-    position: 'sticky',
-    top: 0,
-    zIndex: 1,
-    boxShadow: '0 2px 4px rgba(0,0,0,0.03)',
   },
 }));
 
@@ -169,8 +167,7 @@ export default function Repairs() {
   };
 
   const handleViewRepair = (repair) => {
-    setSelectedRepair(repair);
-    setViewModalOpen(true);
+    navigate(`/dashboard/services/${repair.id}`);
   };
 
   const handleEditRepair = (repair) => {
@@ -211,6 +208,20 @@ export default function Repairs() {
   };
 
   const columnsMenuOpen = Boolean(columnsAnchorEl);
+
+  // Header και σώμα του πίνακα κυλάνε οριζόντια μαζί, αλλά κάθετα κυλάει μόνο το σώμα -
+  // έτσι το κάθετο scrollbar εμφανίζεται μόνο δίπλα στις γραμμές, όχι δίπλα στο header.
+  const headerScrollRef = useRef(null);
+  const bodyScrollRef = useRef(null);
+  const handleBodyScroll = () => {
+    if (headerScrollRef.current && bodyScrollRef.current) {
+      headerScrollRef.current.scrollLeft = bodyScrollRef.current.scrollLeft;
+    }
+  };
+  // Το component αυτό unmount-άρει/remount-άρει σε κάθε navigation (π.χ. άνοιγμα/κλείσιμο
+  // λεπτομέρειας επισκευής), οπότε η θέση scroll του πίνακα πρέπει να θυμάται σε ξεχωριστό
+  // namespace ώστε να μην συγκρούεται με το γενικό scroll της σελίδας (ίδιο pathname).
+  useScrollRestoration(bodyScrollRef, 'repairsTableBody');
 
   return (
     <Box sx={{ mt: 2 }}>
@@ -387,82 +398,93 @@ export default function Repairs() {
         })}
       </Stack>
 
-      <TableContainer
-        component={Paper}
+      <Paper
         sx={{
-          maxHeight: '50vh',
           boxShadow: `0 2px 8px ${alpha(theme.palette.primary.main, 0.08)}`,
           borderRadius: '16px',
+          overflow: 'hidden',
+          maxHeight: '50vh',
+          display: 'flex',
+          flexDirection: 'column',
         }}
       >
-        <Table stickyHeader size="small" sx={{ tableLayout: 'fixed' }}>
-          <TableHead>
-            <TableRow>
-              {activeColumns.map((col) => (
-                <CompactTableCell
-                  key={col.id}
-                  sx={{ position: 'relative', width: columnWidths[col.id] }}
-                >
-                  {col.sortKey ? (
-                    <TableSortLabel
-                      active={sorting.sortBy === col.sortKey}
-                      onClick={() => onClickSortingTable(col.sortKey)}
-                      direction={
-                        sorting.sortBy === col.sortKey ? sorting.sortOrder.toLowerCase() : 'asc'
-                      }
-                    >
-                      {col.label}
-                    </TableSortLabel>
-                  ) : (
-                    col.label
-                  )}
-                  <ResizeHandle onMouseDown={(e) => handleResizeStart(col.id, col.minWidth, e)} />
-                </CompactTableCell>
-              ))}
-              <CompactTableCell sx={{ width: ACTIONS_COLUMN.width }}>
-                {ACTIONS_COLUMN.label}
-              </CompactTableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {repairs.map((repair, index) => (
-              <RepairRow
-                key={repair.id}
-                repair={repair}
-                index={(pagination.currentPage - 1) * pagination.perPage + index}
-                columns={activeColumns}
-                columnWidths={columnWidths}
-                onView={handleViewRepair}
-                onEdit={handleEditRepair}
-                onStatusChange={handleStatusChange}
-                zebra={index % 2 === 0}
-              />
-            ))}
-            {repairs.length === 0 && !loading && (
+        {/* Header - χωρίς δικό του scrollbar, ακολουθεί οριζόντια το σώμα */}
+        <Box ref={headerScrollRef} sx={{ overflow: 'hidden', flexShrink: 0 }}>
+          <Table size="small" sx={{ tableLayout: 'fixed' }}>
+            <TableHead>
               <TableRow>
-                <CompactTableCell colSpan={activeColumns.length + 1} align="center">
-                  <Box
-                    sx={{
-                      py: 4,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      color: 'text.secondary',
-                    }}
+                {activeColumns.map((col) => (
+                  <CompactTableCell
+                    key={col.id}
+                    sx={{ position: 'relative', width: columnWidths[col.id] }}
                   >
-                    <InboxIcon sx={{ fontSize: 48, mb: 1 }} />
-                    <Typography variant="body2">
-                      {localSearch || Object.values(localFilters).some((f) => f !== '')
-                        ? `Δεν βρέθηκαν αποτελέσματα`
-                        : 'Δεν υπάρχουν επισκευές'}
-                    </Typography>
-                  </Box>
+                    {col.sortKey ? (
+                      <TableSortLabel
+                        active={sorting.sortBy === col.sortKey}
+                        onClick={() => onClickSortingTable(col.sortKey)}
+                        direction={
+                          sorting.sortBy === col.sortKey ? sorting.sortOrder.toLowerCase() : 'asc'
+                        }
+                      >
+                        {col.label}
+                      </TableSortLabel>
+                    ) : (
+                      col.label
+                    )}
+                    <ResizeHandle onMouseDown={(e) => handleResizeStart(col.id, col.minWidth, e)} />
+                  </CompactTableCell>
+                ))}
+                <CompactTableCell sx={{ width: ACTIONS_COLUMN.width }}>
+                  {ACTIONS_COLUMN.label}
                 </CompactTableCell>
               </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+          </Table>
+        </Box>
+
+        {/* Σώμα - μόνο εδώ εμφανίζεται το κάθετο scrollbar, κάτω από το header */}
+        <Box ref={bodyScrollRef} onScroll={handleBodyScroll} sx={{ overflow: 'auto', flex: 1, minHeight: 0 }}>
+          <Table size="small" sx={{ tableLayout: 'fixed' }}>
+            <TableBody>
+              {repairs.map((repair, index) => (
+                <RepairRow
+                  key={repair.id}
+                  repair={repair}
+                  index={(pagination.currentPage - 1) * pagination.perPage + index}
+                  columns={activeColumns}
+                  columnWidths={columnWidths}
+                  onView={handleViewRepair}
+                  onEdit={handleEditRepair}
+                  onStatusChange={handleStatusChange}
+                  zebra={index % 2 === 0}
+                />
+              ))}
+              {repairs.length === 0 && !loading && (
+                <TableRow>
+                  <CompactTableCell colSpan={activeColumns.length + 1} align="center">
+                    <Box
+                      sx={{
+                        py: 4,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        color: 'text.secondary',
+                      }}
+                    >
+                      <InboxIcon sx={{ fontSize: 48, mb: 1 }} />
+                      <Typography variant="body2">
+                        {localSearch || Object.values(localFilters).some((f) => f !== '')
+                          ? `Δεν βρέθηκαν αποτελέσματα`
+                          : 'Δεν υπάρχουν επισκευές'}
+                      </Typography>
+                    </Box>
+                  </CompactTableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </Box>
+      </Paper>
 
       {/* Pagination Component */}
       <PaginationComponent
@@ -477,12 +499,7 @@ export default function Repairs() {
 
       {/* Repair Detail Modal */}
       <RepairDetailModal open={viewModalOpen} repair={selectedRepair} onClose={handleCloseModal} />
-      <ModalRepairForm
-        open={editModalOpen}
-        onClose={handleCloseModal}
-        repair={selectedRepair}
-        isEdit={true}
-      />
+      <ModalRepairForm open={editModalOpen} onClose={handleCloseModal} repair={selectedRepair} />
     </Box>
   );
 }

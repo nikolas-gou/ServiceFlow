@@ -1,5 +1,6 @@
 import React from 'react';
-import { Grid, InputLabel, Select, MenuItem } from '@mui/material';
+import { Grid, InputAdornment, InputLabel, Select, MenuItem } from '@mui/material';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { Customer } from '../../../Models/Customer';
 import { typeOfMotor, typeOfMotor_translated } from '../../../Models/Motor';
 import {
@@ -12,6 +13,7 @@ import { useSuggestedFormValues } from '../../../../context/SuggestedFormValuesC
 export const BasicInfo = (props) => {
   const { suggested } = useSuggestedFormValues();
   const { customer, motor } = suggested;
+  const isExistingCustomer = Boolean(props.repair.customer?.id);
 
   const successStyle = {
     '& .MuiOutlinedInput-root': {
@@ -113,7 +115,7 @@ export const BasicInfo = (props) => {
             <StyledTextField
               {...params}
               required
-              sx={props.repair.customer?.id ? successStyle : null}
+              sx={isExistingCustomer ? successStyle : null}
               label="Πελάτης"
               name="customer.name"
               variant="outlined"
@@ -135,13 +137,32 @@ export const BasicInfo = (props) => {
                 }
               }}
               error={props.hasError('customer.name')}
-              helperText={props.getErrorMessage('customer.name')}
+              helperText={
+                props.hasError('customer.name')
+                  ? props.getErrorMessage('customer.name')
+                  : isExistingCustomer
+                    ? 'Βρέθηκε υπάρχων πελάτης - τα στοιχεία του συμπληρώθηκαν αυτόματα.'
+                    : ''
+              }
+              FormHelperTextProps={
+                !props.hasError('customer.name') && isExistingCustomer
+                  ? { sx: { color: '#2e7d32', fontWeight: 600 } }
+                  : undefined
+              }
+              InputProps={{
+                ...params.InputProps,
+                startAdornment: isExistingCustomer ? (
+                  <InputAdornment position="start">
+                    <CheckCircleIcon sx={{ color: '#2e7d32', fontSize: 20 }} />
+                  </InputAdornment>
+                ) : undefined,
+              }}
             />
           )}
         />
       </Grid>
       <Grid item xs={12} sm={6}>
-        <StyledFormControl fullWidth sx={props.repair.customer?.id ? successStyle : null}>
+        <StyledFormControl fullWidth sx={isExistingCustomer ? successStyle : null}>
           <InputLabel id="type-select-label">Τύπος</InputLabel>
           <Select
             labelId="type-select-label"
@@ -159,7 +180,7 @@ export const BasicInfo = (props) => {
       <Grid item xs={12} sm={6}>
         <StyledTextField
           fullWidth
-          sx={props.repair.customer?.id ? successStyle : null}
+          sx={isExistingCustomer ? successStyle : null}
           label="Τηλέφωνο"
           name="customer.phone"
           variant="outlined"
@@ -172,7 +193,7 @@ export const BasicInfo = (props) => {
       <Grid item xs={12} sm={6}>
         <StyledTextField
           fullWidth
-          sx={props.repair.customer?.id ? successStyle : null}
+          sx={isExistingCustomer ? successStyle : null}
           label="Email"
           name="customer.email"
           variant="outlined"

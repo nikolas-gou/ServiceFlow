@@ -1,6 +1,7 @@
 import React from 'react';
 import ThreePhaseFields from './winding/parts/ThreePhaseFields';
 import { OnePhaseFields } from './winding/parts/OnePhaseFields';
+import CombinedStepBuilder from './winding/parts/CombinedStepBuilder';
 
 function WindingsContentFields(props) {
   return (
@@ -49,50 +50,63 @@ function WindingsContentFields(props) {
               handleInputChange={props.handleInputChange}
             />
           )}
-          {props.repair.motor?.typeOfStep == 'combined' && (
-            // συνδιασμος
-            <>
-              {/* Μισό */}
-              <ThreePhaseFields
-                sx={{ pb: 3 }}
-                step_label="Βήμα (Μισό - Μισό)"
-                step_name="motor.halfStep"
-                step_value={props.repair.motor?.halfStep || ''}
-                coils_count_label="Πόσες μαζί (Μισό - Μισό)"
-                coils_count_name="motor.halfCoilsCount"
-                coils_count_value={props.repair.motor?.halfCoilsCount || ''}
-                spiral_label="Σπείρες (Μισό - Μισό)"
-                spiral_name="motor.halfSpiral"
-                spiral_value={props.repair.motor?.halfSpiral || ''}
-                cross_section_label="Διατομή (Μισό - Μισό)"
-                cross_section_name="motor.motorCrossSectionLinks.crossSection"
-                cross_section_value={props.repair.motor?.motorCrossSectionLinks?.crossSection || []}
-                cross_section_type="half"
+          {props.repair.motor?.typeOfStep == 'combined' &&
+            (props.useGranularCombinedBuilder ? (
+              // Νέο μοντέλο (μόνο v2 φόρμα, προς το παρόν): ένα πηνίο, σπείρες ανά αριθμό
+              // βήματος, κοινή διατομή - βλ. σχόλιο στο CombinedStepBuilder.
+              <CombinedStepBuilder
                 repair={props.repair}
                 setRepair={props.setRepair}
                 handleInputChange={props.handleInputChange}
               />
-              {/* ολόκληρο */}
-              <ThreePhaseFields
-                step_label="Βήμα (Ολόκληρο)"
-                step_name="motor.step"
-                step_value={props.repair.motor?.step || ''}
-                coils_count_label="Πόσες μαζί (Ολόκληρο)"
-                coils_count_name="motor.coilsCount"
-                coils_count_value={props.repair.motor?.coilsCount || ''}
-                spiral_label="Σπείρες (Ολόκληρο)"
-                spiral_name="motor.spiral"
-                spiral_value={props.repair.motor?.spiral || ''}
-                cross_section_label="Διατομή (Ολόκληρο)"
-                cross_section_name="motor.motorCrossSectionLinks.crossSection"
-                cross_section_value={props.repair.motor?.motorCrossSectionLinks?.crossSection || []}
-                cross_section_type="standard"
-                repair={props.repair}
-                setRepair={props.setRepair}
-                handleInputChange={props.handleInputChange}
-              />
-            </>
-          )}
+            ) : (
+              // συνδιασμος (παλιό μοντέλο: δύο ξεχωριστές περιελίξεις)
+              <>
+                {/* Μισό */}
+                <ThreePhaseFields
+                  sx={{ pb: 3 }}
+                  step_label="Βήμα (Μισό - Μισό)"
+                  step_name="motor.halfStep"
+                  step_value={props.repair.motor?.halfStep || ''}
+                  coils_count_label="Πόσες μαζί (Μισό - Μισό)"
+                  coils_count_name="motor.halfCoilsCount"
+                  coils_count_value={props.repair.motor?.halfCoilsCount || ''}
+                  spiral_label="Σπείρες (Μισό - Μισό)"
+                  spiral_name="motor.halfSpiral"
+                  spiral_value={props.repair.motor?.halfSpiral || ''}
+                  cross_section_label="Διατομή (Μισό - Μισό)"
+                  cross_section_name="motor.motorCrossSectionLinks.crossSection"
+                  cross_section_value={
+                    props.repair.motor?.motorCrossSectionLinks?.crossSection || []
+                  }
+                  cross_section_type="half"
+                  repair={props.repair}
+                  setRepair={props.setRepair}
+                  handleInputChange={props.handleInputChange}
+                />
+                {/* ολόκληρο */}
+                <ThreePhaseFields
+                  step_label="Βήμα (Ολόκληρο)"
+                  step_name="motor.step"
+                  step_value={props.repair.motor?.step || ''}
+                  coils_count_label="Πόσες μαζί (Ολόκληρο)"
+                  coils_count_name="motor.coilsCount"
+                  coils_count_value={props.repair.motor?.coilsCount || ''}
+                  spiral_label="Σπείρες (Ολόκληρο)"
+                  spiral_name="motor.spiral"
+                  spiral_value={props.repair.motor?.spiral || ''}
+                  cross_section_label="Διατομή (Ολόκληρο)"
+                  cross_section_name="motor.motorCrossSectionLinks.crossSection"
+                  cross_section_value={
+                    props.repair.motor?.motorCrossSectionLinks?.crossSection || []
+                  }
+                  cross_section_type="standard"
+                  repair={props.repair}
+                  setRepair={props.setRepair}
+                  handleInputChange={props.handleInputChange}
+                />
+              </>
+            ))}
         </>
       )}
       {props.repair.motor?.typeOfVolt == '1-phase' && (
