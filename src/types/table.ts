@@ -4,6 +4,7 @@ export interface TableColumnDef {
   defaultWidth: number;
   minWidth: number;
   sortKey?: string;
+  defaultColumn: boolean;
 }
 
 export interface ActionsColumnDef {

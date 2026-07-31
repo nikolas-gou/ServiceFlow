@@ -1,5 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
 import type { TableColumnDef } from '../types/table';
+import { ListItem } from '@mui/material';
 
 /**
  * Διαχειρίζεται ορατότητα + πλάτος στηλών ενός πίνακα, με persistence στο localStorage.
@@ -10,7 +11,10 @@ export function useTableColumns(storageKey: string, columns: TableColumnDef[]) {
   const visibleStorageKey = `${storageKey}_visibleColumns`;
   const widthsStorageKey = `${storageKey}_columnWidths`;
 
-  const defaultVisible = useMemo(() => columns.map((c) => c.id), [columns]);
+  const defaultVisible = useMemo(
+    () => columns.filter((c) => c.defaultColumn).map((c) => c.id),
+    [columns],
+  );
   const defaultWidths = useMemo(
     () =>
       columns.reduce<Record<string, number>>((acc, c) => {
