@@ -1,0 +1,205 @@
+import { useState } from 'react';
+import { Box, Grid, styled, Tabs, Tab } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { AllInclusive, Build, Memory, People } from '@mui/icons-material';
+import { useDashboardStats } from '../../hooks/useStatistics';
+import { CustomerStatisticsModal } from './CustomerStatisticsModal';
+import { MotorStatisticsModal } from './MotorStatisticsModal';
+import LoadingCard from '../common/LoadingCard';
+import { useErrorSnackbar } from '../../hooks/useErrorSnackbar';
+import { safeStatValue } from '../../utils/errorHandling';
+import { AnalyticsCard } from './parts/AnalyticsCard';
+import { AllCategoryCards } from './cards/AllCategoryCards';
+import { MotorCardsData } from './cards/MotorCardsData';
+import { CustomerCardsData } from './cards/CustomerCardsData';
+import { RepairCardsData } from './cards/RepairCardsData';
+import StyledSnackbar from '../common/StyledSnackbar';
+import type { DashboardStatsData } from '../../types/statistics';
+import type { StatCard } from '../../utils/CardFactory';
+
+const StyledTabs = styled(Tabs)(({ theme }) => ({
+  background: theme.custom.gradients.primary,
+  borderRadius: '16px 16px 0 0',
+  minHeight: '64px',
+  '& .MuiTabs-indicator': {
+    backgroundColor: '#ffb74d',
+    height: '4px',
+    borderRadius: '4px 4px 0 0',
+    boxShadow: '0 0 8px rgba(255, 183, 77, 0.6)',
+  },
+  '& .MuiTabs-flexContainer': {
+    height: '64px',
+  },
+}));
+
+const StyledTab = styled(Tab)(() => ({
+  color: 'rgba(255, 255, 255, 0.7)',
+  fontWeight: 600,
+  fontSize: '0.95rem',
+  textTransform: 'none',
+  minHeight: '64px',
+  padding: '12px 24px',
+  transition: 'all 0.3s ease',
+  '&.Mui-selected': {
+    color: '#ffb74d',
+    fontWeight: 700,
+    textShadow: '0 0 8px rgba(255, 183, 77, 0.3)',
+    '& .MuiSvgIcon-root': {
+      color: '#ffb74d',
+      filter: 'drop-shadow(0 0 4px rgba(255, 183, 77, 0.4))',
+    },
+  },
+  '&:hover': {
+    color: '#fff',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    '& .MuiSvgIcon-root': {
+      transform: 'scale(1.1)',
+    },
+  },
+  '& .MuiSvgIcon-root': {
+    marginRight: '8px',
+    fontSize: '20px',
+    transition: 'all 0.3s ease',
+  },
+}));
+
+const TabContent = styled(Box)(({ theme }) => ({
+  backgroundColor: '#F8FAFC',
+  minHeight: 'calc(100vh - 200px)',
+  padding: theme.spacing(3),
+}));
+
+type CardCategory = 'main' | 'motors' | 'customers' | 'repairs';
+
+export default function AnalyticsDashboard() {
+  const theme = useTheme();
+  const { data: dashboardData, isLoading } = useDashboardStats();
+  const analyticsData: DashboardStatsData = dashboardData || {};
+  const [activeTab, setActiveTab] = useState(0);
+  const [customerModalOpen, setCustomerModalOpen] = useState(false);
+  const [motorModalOpen, setMotorModalOpen] = useState(false);
+
+  const { showErrorToast, errorMessage, handleCloseErrorToast } = useErrorSnackbar(
+    analyticsData as Record<string, unknown>,
+    safeStatValue,
+  );
+
+  const tabs = [
+    { label: 'Όλα', icon: <AllInclusive />, value: 0 },
+    { label: 'Επισκευές', icon: <Build />, value: 1 },
+    { label: 'Κινητήρες', icon: <Memory />, value: 2 },
+    { label: 'Πελάτες', icon: <People />, value: 3 },
+  ];
+
+  const getFilteredCards = (category: CardCategory): StatCard[] => {
+    switch (category) {
+      case 'main':
+        return AllCategoryCards.getMainCards(analyticsData);
+      case 'motors':
+        return MotorCardsData.getMotorCards(analyticsData);
+      case 'customers':
+        return CustomerCardsData.getCustomerCards(analyticsData);
+      case 'repairs':
+        return RepairCardsData.getRepairCards(analyticsData);
+      default:
+        return [];
+    }
+  };
+
+  const handleTabChange = (event: unknown, newValue: number) => {
+    setActiveTab(newValue);
+  };
+
+  const getCardsForActiveTab = (): StatCard[] => {
+    switch (activeTab) {
+      case 0:
+        return getFilteredCards('main');
+      case 1:
+        return getFilteredCards('repairs');
+      case 2:
+        return getFilteredCards('motors');
+      case 3:
+        return getFilteredCards('customers');
+      default:
+        return [];
+    }
+  };
+
+  const renderTabContent = () => {
+    if (isLoading) {
+      return <LoadingCard />;
+    }
+
+    const filteredCards = getCardsForActiveTab();
+    const gridSize = activeTab === 0 ? 3 : 3;
+
+    return (
+      <>
+        <Grid container spacing={3}>
+          {filteredCards.map((card, index) => (
+            <Grid item xs={12} sm={6} lg={gridSize} key={index} sx={{ display: 'flex' }}>
+              <Box sx={{ width: '100%' }}>
+                <AnalyticsCard
+                  {...card}
+                  onClick={
+                    card.title === 'Συνολικοί Κινητήρες'
+                      ? () => setMotorModalOpen(true)
+                      : card.title === 'Συνολικοί Πελάτες'
+                      ? () => setCustomerModalOpen(true)
+                      : undefined
+                  }
+                />
+              </Box>
+            </Grid>
+          ))}
+        </Grid>
+        <CustomerStatisticsModal
+          open={customerModalOpen}
+          statistics={analyticsData}
+          onClose={() => setCustomerModalOpen(false)}
+        />
+        <MotorStatisticsModal
+          open={motorModalOpen}
+          statistics={analyticsData}
+          onClose={() => setMotorModalOpen(false)}
+        />
+      </>
+    );
+  };
+
+  return (
+    <Box sx={{ bgcolor: '#F8FAFC' }}>
+      <Box
+        sx={{
+          background: theme.custom.gradients.primary,
+          borderRadius: '16px 16px 0 0',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+          mb: 0,
+        }}
+      >
+        <StyledTabs
+          value={activeTab}
+          onChange={handleTabChange}
+          variant="fullWidth"
+          sx={{ background: 'transparent' }}
+        >
+          {tabs.map((tab) => (
+            <StyledTab key={tab.value} label={tab.label} icon={tab.icon} iconPosition="start" />
+          ))}
+        </StyledTabs>
+      </Box>
+
+      <TabContent>{renderTabContent()}</TabContent>
+
+      <StyledSnackbar
+        open={showErrorToast}
+        onClose={handleCloseErrorToast}
+        severity="error"
+        title="Σφάλμα"
+        message={errorMessage}
+        autoHideDuration={6000}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      />
+    </Box>
+  );
+}

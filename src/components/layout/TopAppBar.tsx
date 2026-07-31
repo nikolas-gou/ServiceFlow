@@ -1,0 +1,45 @@
+import { AppBar, Toolbar, Box, styled } from '@mui/material';
+import Breadcrumbs from './Breadcrumbs';
+import DateDisplay from './parts/DateDisplay';
+
+const StyledAppBar = styled(AppBar)(({ theme }) => ({
+  background: theme.custom.gradients.primary,
+  boxShadow: 'none',
+  color: 'white',
+}));
+
+const StyledToolbar = styled(Toolbar)({
+  display: 'flex',
+  justifyContent: 'space-between',
+  padding: '8px 24px',
+  gap: '16px',
+  minHeight: '64px',
+});
+
+const ContentBox = styled(Box)({
+  flexGrow: 1,
+  minWidth: 0,
+  display: 'flex',
+  alignItems: 'center',
+});
+
+const DateBox = styled(Box)({
+  flexShrink: 0,
+  display: 'flex',
+  alignItems: 'center',
+});
+
+export default function TopAppBar() {
+  return (
+    <StyledAppBar position="static">
+      <StyledToolbar>
+        <ContentBox>
+          <Breadcrumbs />
+        </ContentBox>
+        <DateBox>
+          <DateDisplay />
+        </DateBox>
+      </StyledToolbar>
+    </StyledAppBar>
+  );
+}

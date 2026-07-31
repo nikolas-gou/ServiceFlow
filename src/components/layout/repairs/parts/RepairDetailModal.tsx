@@ -1,0 +1,94 @@
+import { Box, Typography, IconButton, Modal, Backdrop, Fade, styled } from '@mui/material';
+import { Close as CloseIcon } from '@mui/icons-material';
+import EnhancedMotorRepairDisplay from '../../parts/EnhancedMotorRepairDisplay';
+import type { RepairJSON } from '../../../Models/Repair';
+
+// Modal styling
+const ModalStyle = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: '95vw',
+  maxWidth: '1200px',
+  maxHeight: '90vh',
+  bgcolor: 'background.paper',
+  borderRadius: 3,
+  boxShadow: 24,
+  overflow: 'hidden',
+  display: 'flex',
+  flexDirection: 'column',
+} as const;
+
+const ModalHeader = styled(Box)(() => ({
+  padding: '16px 24px',
+  borderBottom: '1px solid #e0e0e0',
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  backgroundColor: '#f8f9fa',
+  minHeight: '60px',
+}));
+
+const ModalContent = styled(Box)({
+  flex: 1,
+  overflow: 'auto',
+  padding: '0',
+});
+
+interface RepairDetailModalProps {
+  open: boolean;
+  repair: RepairJSON | null;
+  onClose: () => void;
+}
+
+export const RepairDetailModal = ({ open, repair, onClose }: RepairDetailModalProps) => {
+  if (!repair) return null;
+
+  return (
+    <Modal
+      open={open}
+      onClose={onClose}
+      closeAfterTransition
+      BackdropComponent={Backdrop}
+      BackdropProps={{
+        timeout: 300,
+        sx: {
+          backdropFilter: 'blur(3px)',
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        },
+      }}
+    >
+      <Fade in={open} timeout={300}>
+        <Box sx={ModalStyle}>
+          <ModalHeader>
+            <Box>
+              <Typography variant="h6" component="h2" sx={{ fontWeight: 600 }}>
+                Λεπτομέρειες Επισκευής
+              </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+              <IconButton
+                onClick={onClose}
+                sx={{
+                  color: 'text.secondary',
+                  transition: 'all 0.2s ease',
+                  '&:hover': {
+                    backgroundColor: 'action.hover',
+                    transform: 'rotate(90deg)',
+                  },
+                }}
+              >
+                <CloseIcon />
+              </IconButton>
+            </Box>
+          </ModalHeader>
+
+          <ModalContent>
+            <EnhancedMotorRepairDisplay repair={repair} />
+          </ModalContent>
+        </Box>
+      </Fade>
+    </Modal>
+  );
+};

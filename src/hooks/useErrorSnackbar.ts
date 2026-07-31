@@ -1,0 +1,165 @@
+import { useState, useEffect } from 'react';
+import type { SafeStatValue } from '../utils/errorHandling';
+
+type SafeStatValueFn = (field: unknown) => SafeStatValue;
+
+/**
+ * Custom hook για τη διαχείριση error snackbar
+ */
+export function useErrorSnackbar(statistics: Record<string, unknown> | null | undefined, safeStatValue: SafeStatValueFn) {
+  const [showErrorToast, setShowErrorToast] = useState(false);
+  const [errorCount, setErrorCount] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
+
+  // Έλεγχος για errors όταν αλλάζουν τα statistics
+  useEffect(() => {
+    if (!statistics || Object.keys(statistics).length === 0) return;
+
+    // Μέτρηση errors βάσει του είδους των statistics
+    let errors = 0;
+    let total = 0;
+
+    // Έλεγχος αν είναι dashboard data (nested structure)
+    if (statistics.customer || statistics.motor || statistics.repair || statistics.revenue) {
+      // Dashboard data structure - ελέγχουμε κάθε section
+      const sections = ['customer', 'motor', 'repair', 'revenue'];
+
+      sections.forEach((sectionName) => {
+        const section = statistics[sectionName];
+        if (section && typeof section === 'object') {
+          // Ελέγχουμε αν ολόκληρο το section είναι error
+          const sectionResult = safeStatValue(section);
+          if (sectionResult.isError) {
+            total++;
+            errors++;
+          } else {
+            // Ελέγχουμε κάθε field μέσα στο section (recursive για nested objects)
+            const checkFields = (obj: Record<string, unknown>, depth: number = 0): void => {
+              if (depth > 2) return; // Αποφυγή infinite recursion
+
+              Object.values(obj).forEach((field) => {
+                if (field !== undefined && field !== null) {
+                  if (typeof field === 'object' && !Array.isArray(field)) {
+                    // Nested object - ελέγχουμε αν είναι error ή συνεχίζουμε recursive
+                    const result = safeStatValue(field);
+                    if (result.isError) {
+                      total++;
+                      errors++;
+                    } else {
+                      // Συνεχίζουμε recursively
+                      checkFields(field as Record<string, unknown>, depth + 1);
+                    }
+                  } else {
+                    // Primitive value ή array
+                    total++;
+                    const result = safeStatValue(field);
+                    if (result.isError) errors++;
+                  }
+                }
+              });
+            };
+
+            checkFields(section as Record<string, unknown>);
+          }
+        }
+      });
+    }
+
+    // Για customer statistics (direct structure)
+    else if (statistics.totalCustomers !== undefined) {
+      const customerTypes = statistics.customerTypes as Record<string, unknown> | undefined;
+      const trends = statistics.trends as Record<string, unknown> | undefined;
+      const customerFields = [
+        statistics.totalCustomers,
+        customerTypes?.individual,
+        customerTypes?.factory,
+        trends?.monthlyTrends,
+        trends?.monthlyIndividualTrends,
+        trends?.monthlyFactoryTrends,
+        statistics.topCustomersByRevenue,
+      ];
+
+      customerFields.forEach((field) => {
+        if (field !== undefined) {
+          total++;
+          const result = safeStatValue(field);
+          if (result.isError) errors++;
+        }
+      });
+    }
+
+    // Για motor statistics
+    else if (statistics.totalMotors !== undefined) {
+      const motorTypes = statistics.motorTypes as Record<string, unknown> | undefined;
+      const trends = statistics.trends as Record<string, unknown> | undefined;
+      const motorFields = [
+        statistics.totalMotors,
+        motorTypes?.totalOnePhaseMotors,
+        motorTypes?.totalThreePhaseMotors,
+        motorTypes?.totalElMotorMotors,
+        motorTypes?.totalPumpMotors,
+        motorTypes?.totalGeneratorMotors,
+        statistics.topBrands,
+        trends?.monthlyTrends,
+        trends?.monthlyOnePhaseTrends,
+        trends?.monthlyThreePhaseTrends,
+        trends?.monthlyElMotorTrends,
+        trends?.monthlyPumpTrends,
+        trends?.monthlyGeneratorTrends,
+      ];
+
+      motorFields.forEach((field) => {
+        if (field !== undefined) {
+          total++;
+          const result = safeStatValue(field);
+          if (result.isError) errors++;
+        }
+      });
+    }
+
+    // Για repair statistics
+    else if (statistics.totalRepairs !== undefined || statistics.yearlyRevenue !== undefined) {
+      const trends = statistics.trends as Record<string, unknown> | undefined;
+      const repairFields = [statistics.totalRepairs, statistics.yearlyRevenue, trends?.monthlyTrends];
+
+      repairFields.forEach((field) => {
+        if (field !== undefined) {
+          total++;
+          const result = safeStatValue(field);
+          if (result.isError) errors++;
+        }
+      });
+    }
+
+    setErrorCount(errors);
+    setTotalCount(total);
+
+    // Εμφάνιση snackbar μόνο αν υπάρχουν errors
+    if (errors > 0) {
+      setShowErrorToast(true);
+    }
+  }, [statistics, safeStatValue]);
+
+  const handleCloseErrorToast = (event: unknown, reason?: string) => {
+    if (reason === 'clickaway') return;
+    setShowErrorToast(false);
+  };
+
+  const getErrorMessage = () => {
+    if (errorCount === 0) return '';
+
+    if (errorCount === 1) {
+      return 'Ένα στατιστικό δεν φορτώθηκε';
+    } else {
+      return `Κάποια στατιστικά δεν φορτώθηκαν (${errorCount} από ${totalCount})`;
+    }
+  };
+
+  return {
+    showErrorToast,
+    errorCount,
+    totalCount,
+    errorMessage: getErrorMessage(),
+    handleCloseErrorToast,
+  };
+}
